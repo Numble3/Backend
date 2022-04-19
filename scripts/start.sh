@@ -4,7 +4,7 @@ ABSPATH=$(readlink -f $0)
 ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
 REPOSITORY=/home/ec2-user/app/step3
-PROJECT_NAME=mediate-springboot2-webservice
+PROJECT_NAME=numble-springboot-webservice
 
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY/zip/*.jar $REPOSITORY/"
