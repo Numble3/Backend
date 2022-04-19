@@ -1,6 +1,6 @@
 spring:
   config:
     activate:
-      on-profile: prod2
+      on-profile: prod1
 server:
-  port: 8082
+  port: 8081
