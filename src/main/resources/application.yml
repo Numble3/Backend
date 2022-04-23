@@ -3,3 +3,5 @@ spring:
     group:
       prod1: prod-db
       prod2: prod-db
+    include:
+      - token-secret
