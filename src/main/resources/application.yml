@@ -5,3 +5,7 @@ spring:
       prod2: prod-db
     include:
       - token-secret
+      - oauth2
+  redis:
+    host: 127.0.0.1
+    port: 6379
