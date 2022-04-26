@@ -8,7 +8,6 @@ import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.exception.sign.TokenFailureException;
 import com.numble.team3.jwt.PrivateClaims;
 import com.numble.team3.jwt.TokenHelper;
-import com.numble.team3.sign.application.mapper.SignUpMapper;
 import com.numble.team3.sign.application.request.SignInDto;
 import com.numble.team3.sign.application.request.SignUpDto;
 import com.numble.team3.sign.application.response.TokenDto;
@@ -36,7 +35,7 @@ public class RedisSignService implements SignService {
   public void signUp(SignUpDto dto) {
     validateSignUpInfo(dto);
 
-    accountRepository.save(SignUpMapper.INSTANCE.toEntity(dto));
+    accountRepository.save(SignUpDto.toEntity(dto));
   }
 
   @Transactional(readOnly = true)
