@@ -1,5 +1,6 @@
 package com.numble.team3.sign.application.request;
 
+import com.numble.team3.account.domain.Account;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -19,4 +20,8 @@ public class SignUpDto {
 
   @NotBlank(message = "닉네임을 입력해주세요.")
   private String nickname;
+
+  public static Account toEntity(SignUpDto dto) {
+    return new Account(dto.getEmail(), dto.getPassword(), dto.getNickname());
+  }
 }

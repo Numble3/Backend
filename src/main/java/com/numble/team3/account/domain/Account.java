@@ -18,10 +18,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Builder
 @Table(name = "tb_account")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Account {
 
   @Id
@@ -42,7 +40,6 @@ public class Account {
   private String profile;
 
   @Enumerated(EnumType.STRING)
-  @Builder.Default
   private RoleType roleType = RoleType.ROLE_USER;
 
   @Column(columnDefinition="tinyint(1)")
