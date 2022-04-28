@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,6 +67,15 @@ public class SignController {
     Map<String, String> message = new HashMap<>();
     message.put("message", "refreshToken 쿠키가 누락되었습니다.");
     return new ResponseEntity(message, HttpStatus.UNAUTHORIZED);
+  }
+
+  @DeleteMapping("/withdrawal")
+  public ResponseEntity accountWithdrawal(
+    @RequestHeader(value = "Authorization") String accessToken, HttpServletResponse response) {
+    signService.withdrawal(accessToken);
+    deleteCookie(response);
+
+    return new ResponseEntity(HttpStatus.OK);
   }
 
   private void createCookie(String token, int maxAge, HttpServletResponse response) {
