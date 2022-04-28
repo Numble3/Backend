@@ -1,6 +1,7 @@
 package com.numble.team3.sign.application;
 
 import com.numble.team3.account.domain.Account;
+import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.exception.account.AccountEmailAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNicknameAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNotFoundException;
@@ -34,15 +35,20 @@ public class RedisSignService implements SignService {
   @Override
   public void signUp(SignUpDto dto) {
     validateSignUpInfo(dto);
-
-    accountRepository.save(SignUpDto.toEntity(dto));
+    Account account =
+        new Account(
+            dto.getEmail(),
+            dto.getNickname(),
+            passwordEncoder.encode(dto.getPassword()),
+            RoleType.ROLE_USER);
+    accountRepository.save(account);
   }
 
   @Transactional(readOnly = true)
   @Override
   public TokenDto signIn(SignInDto dto) {
-    Account account = accountRepository.findByEmail(dto.getEmail())
-      .orElseThrow(AccountNotFoundException::new);
+    Account account =
+        accountRepository.findByEmail(dto.getEmail()).orElseThrow(AccountNotFoundException::new);
 
     validatePassword(dto, account);
 
@@ -58,11 +64,11 @@ public class RedisSignService implements SignService {
 
   @Override
   public TokenDto createAccessTokenByRefreshToken(String refreshToken) {
-    PrivateClaims privateClaims = refreshTokenHelper.parse(refreshToken)
-      .orElseThrow(TokenFailureException::new);
+    PrivateClaims privateClaims =
+        refreshTokenHelper.parse(refreshToken).orElseThrow(TokenFailureException::new);
 
-    if (!redisUtils.validToken(refreshToken, "refreshToken",
-      Optional.ofNullable(privateClaims.getAccountId()))) {
+    if (!redisUtils.validToken(
+        refreshToken, "refreshToken", Optional.ofNullable(privateClaims.getAccountId()))) {
       throw new TokenFailureException();
     }
 
@@ -77,9 +83,11 @@ public class RedisSignService implements SignService {
 
   @Override
   public void logout(String accessToken) {
-    Long accountId = accessTokenHelper.parse(accessToken)
-      .map(claims -> Long.valueOf(claims.getAccountId()))
-      .orElseThrow(TokenFailureException::new);
+    Long accountId =
+        accessTokenHelper
+            .parse(accessToken)
+            .map(claims -> Long.valueOf(claims.getAccountId()))
+            .orElseThrow(TokenFailureException::new);
 
     redisUtils.deleteToken("refreshToken", accountId);
     redisUtils.deleteToken("accessToken", accountId);
@@ -102,7 +110,7 @@ public class RedisSignService implements SignService {
 
   private PrivateClaims createPrivateClaims(Account account) {
 
-    return new PrivateClaims(String.valueOf(account.getId()),
-      List.of(account.getRoleType().toString()));
+    return new PrivateClaims(
+        String.valueOf(account.getId()), List.of(account.getRoleType().toString()));
   }
 }

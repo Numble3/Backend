@@ -33,21 +33,26 @@ public class Account {
   @Column(unique = true)
   private String nickname;
 
-  @Column
-  private String password;
+  @Column private String password;
 
-  @Column
-  private String profile;
+  @Column private String profile;
 
   @Enumerated(EnumType.STRING)
   private RoleType roleType = RoleType.ROLE_USER;
 
-  @Column(columnDefinition="tinyint(1)")
+  @Column(columnDefinition = "tinyint(1)")
   private boolean deleted;
 
   public Account(String email, String nickname, String profile) {
     this.email = email;
     this.nickname = nickname;
     this.profile = profile;
+  }
+
+  public Account(String email, String nickname, String password, RoleType roleType) {
+    this.email = email;
+    this.nickname = nickname;
+    this.password = password;
+    this.roleType = roleType;
   }
 }
