@@ -1,5 +1,6 @@
 package com.numble.team3.account.domain;
 
+import com.numble.team3.sign.application.request.SignUpDto;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
@@ -43,16 +45,31 @@ public class Account {
   @Column(columnDefinition = "tinyint(1)")
   private boolean deleted;
 
-  public Account(String email, String nickname, String profile) {
+  public static Account createSignUpOauth2Account(String email, String nickname, String profile) {
+    Account account = new Account();
+    account.initSignUpOauth2AccountField(email, nickname, profile);
+    return account;
+  }
+
+  public static Account createSignUpAccount(String email, String nickname, String password) {
+    Account account = new Account();
+    account.initSignUpAccountField(email, nickname, password);
+    return account;
+  }
+
+  private void initSignUpOauth2AccountField(String email, String nickname, String profile) {
     this.email = email;
     this.nickname = nickname;
     this.profile = profile;
   }
 
-  public Account(String email, String nickname, String password, RoleType roleType) {
+  private void initSignUpAccountField(String email, String nickname, String password) {
     this.email = email;
     this.nickname = nickname;
     this.password = password;
-    this.roleType = roleType;
+  }
+
+  public void changeDeleted(boolean deleted) {
+    this.deleted = deleted;
   }
 }

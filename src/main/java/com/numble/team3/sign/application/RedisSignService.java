@@ -35,13 +35,8 @@ public class RedisSignService implements SignService {
   @Override
   public void signUp(SignUpDto dto) {
     validateSignUpInfo(dto);
-    Account account =
-        new Account(
-            dto.getEmail(),
-            dto.getNickname(),
-            passwordEncoder.encode(dto.getPassword()),
-            RoleType.ROLE_USER);
-    accountRepository.save(account);
+
+    accountRepository.save(SignUpDto.toEntity(dto, passwordEncoder));
   }
 
   @Transactional(readOnly = true)
