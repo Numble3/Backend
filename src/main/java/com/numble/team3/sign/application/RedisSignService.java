@@ -1,10 +1,8 @@
 package com.numble.team3.sign.application;
 
 import com.numble.team3.account.domain.Account;
-import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.exception.account.AccountEmailAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNicknameAlreadyExistsException;
-import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.exception.sign.TokenFailureException;
 import com.numble.team3.jwt.PrivateClaims;
@@ -43,7 +41,7 @@ public class RedisSignService implements SignService {
   @Override
   public TokenDto signIn(SignInDto dto) {
     Account account =
-        accountRepository.findByEmail(dto.getEmail()).orElseThrow(AccountNotFoundException::new);
+      accountRepository.findByEmail(dto.getEmail()).orElseThrow(SignInFailureException::new);
 
     validatePassword(dto, account);
 

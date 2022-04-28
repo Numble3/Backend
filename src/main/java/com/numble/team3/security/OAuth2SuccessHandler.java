@@ -1,11 +1,14 @@
 package com.numble.team3.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.numble.team3.account.domain.Account;
 import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.jwt.PrivateClaims;
 import com.numble.team3.jwt.TokenHelper;
 import com.numble.team3.sign.application.response.TokenDto;
 import com.numble.team3.sign.infra.RedisUtils;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -43,8 +46,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
   private Account convertAccount(OAuth2User oAuth2User) {
     Map<String, Object> attributes = oAuth2User.getAttributes();
 
-    return Account.createSignUpOauth2Account(
-      (String) attributes.get("email"), (String) attributes.get("nickname"), (String) attributes.get("profile"));
+    return Account.createSignUpOauth2Account((String) attributes.get("email"),
+      (String) attributes.get("nickname"), (String) attributes.get("profile"));
   }
 
   private void accountProcess(Account account, HttpServletResponse response) {
@@ -55,25 +58,33 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     redisUtils.saveAccessToken(account.getId(), accessToken);
     redisUtils.saveRefreshToken(account.getId(), refreshToken);
 
-    createTokenCookie(response, new TokenDto(accessToken, refreshToken));
+    createTokenCookie(response, refreshToken);
+    try {
+      writeTokenResponse(response, accessToken, refreshToken);
+    } catch (IOException e) {
+      throw new RuntimeException();
+    }
   }
 
-  private void createTokenCookie(HttpServletResponse response, TokenDto token) {
-    Cookie accessTokenCookie = new Cookie("accessToken",
-      URLEncoder.encode(token.getAccessToken(), StandardCharsets.UTF_8));
-    accessTokenCookie.setSecure(true);
-    accessTokenCookie.setHttpOnly(true);
-    accessTokenCookie.setMaxAge(1800);
-    accessTokenCookie.setPath("/");
+  private void writeTokenResponse(HttpServletResponse response, String accessToken,
+    String refreshToken) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
 
+    response.setContentType("application/json");
+
+    PrintWriter writer = response.getWriter();
+    writer.println(objectMapper.writeValueAsString(new TokenDto(accessToken, refreshToken)));
+    writer.flush();
+  }
+
+  private void createTokenCookie(HttpServletResponse response, String refreshToken) {
     Cookie refreshTokenCookie = new Cookie("refreshToken",
-      URLEncoder.encode(token.getRefreshToken(), StandardCharsets.UTF_8));
+      URLEncoder.encode(refreshToken, StandardCharsets.UTF_8));
     refreshTokenCookie.setSecure(true);
     refreshTokenCookie.setHttpOnly(true);
     refreshTokenCookie.setMaxAge(604800);
     refreshTokenCookie.setPath("/");
 
-    response.addCookie(accessTokenCookie);
     response.addCookie(refreshTokenCookie);
   }
 
