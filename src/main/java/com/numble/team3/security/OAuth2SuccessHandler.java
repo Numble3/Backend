@@ -43,8 +43,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
   private Account convertAccount(OAuth2User oAuth2User) {
     Map<String, Object> attributes = oAuth2User.getAttributes();
 
-    return new Account((String) attributes.get("email"), (String) attributes.get("nickname"),
-      (String) attributes.get("profile"));
+    return Account.createSignUpOauth2Account(
+      (String) attributes.get("email"), (String) attributes.get("nickname"), (String) attributes.get("profile"));
   }
 
   private void accountProcess(Account account, HttpServletResponse response) {
