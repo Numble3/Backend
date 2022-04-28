@@ -40,9 +40,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
   }
 
   private Optional<String> extractToken(ServletRequest request) {
-    return Arrays.stream(
-        Optional.ofNullable(((HttpServletRequest) request).getCookies()).orElse(new Cookie[]{}))
-      .filter(cookie -> cookie.getName().equals("accessToken"))
-      .map(cookie -> URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8)).findFirst();
+    return Optional.ofNullable(((HttpServletRequest)request).getHeader("Authorization"));
   }
 }
