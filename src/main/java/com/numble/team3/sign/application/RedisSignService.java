@@ -4,6 +4,8 @@ import com.numble.team3.account.domain.Account;
 import com.numble.team3.exception.account.AccountEmailAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNicknameAlreadyExistsException;
 import com.numble.team3.account.infra.JpaAccountRepository;
+import com.numble.team3.exception.account.AccountNotFoundException;
+import com.numble.team3.exception.account.AccountWithdrawalException;
 import com.numble.team3.exception.sign.TokenFailureException;
 import com.numble.team3.jwt.PrivateClaims;
 import com.numble.team3.jwt.TokenHelper;
@@ -42,6 +44,10 @@ public class RedisSignService implements SignService {
   public TokenDto signIn(SignInDto dto) {
     Account account =
       accountRepository.findByEmail(dto.getEmail()).orElseThrow(SignInFailureException::new);
+
+    if (account.isDeleted()) {
+      throw new AccountWithdrawalException();
+    }
 
     validatePassword(dto, account);
 
@@ -84,6 +90,20 @@ public class RedisSignService implements SignService {
 
     redisUtils.deleteToken("refreshToken", accountId);
     redisUtils.deleteToken("accessToken", accountId);
+  }
+
+  @Transactional
+  @Override
+  public void withdrawal(String accessToken) {
+    Account account =
+      accountRepository.findById(accessTokenHelper.parse(accessToken)
+      .map(claims -> Long.valueOf(claims.getAccountId()))
+      .orElseThrow(TokenFailureException::new)).orElseThrow(AccountNotFoundException::new);
+
+    account.changeDeleted(true);
+
+    redisUtils.deleteToken("refreshToken", account.getId());
+    redisUtils.deleteToken("accessToken", account.getId());
   }
 
   private void validateSignUpInfo(SignUpDto dto) {

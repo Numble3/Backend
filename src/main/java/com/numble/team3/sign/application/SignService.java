@@ -13,4 +13,6 @@ public interface SignService {
   TokenDto createAccessTokenByRefreshToken(String refreshToken);
 
   void logout(String accessToken);
+
+  void withdrawal(String accessToken);
 }
