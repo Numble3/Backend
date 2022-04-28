@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,10 +29,12 @@ public class VideoController {
 
   private final VideoService videoService;
 
-  @PostMapping("/video")
+  @PostMapping(
+      value = "/video",
+      consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity createVideo(
       @LoginUser UserInfo userInfo,
-      @Valid @RequestPart("dto") CreateVideoDto dto,
+      @Valid @RequestPart(value = "dto") CreateVideoDto dto,
       @RequestPart(value = "videoFile") MultipartFile videoFile) {
     videoService.createVideo(userInfo, dto, videoFile);
     return new ResponseEntity<>(HttpStatus.CREATED);
