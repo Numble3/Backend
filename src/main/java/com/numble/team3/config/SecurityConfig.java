@@ -10,6 +10,7 @@ import com.numble.team3.security.OAuth2SuccessHandler;
 import com.numble.team3.sign.infra.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,6 +27,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
   @Override
+  public void configure(WebSecurity web) {
+    web.ignoring()
+      .antMatchers("/h2-console/**", "/favicon.ico", "/profile");
+  }
+
+  @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
       .httpBasic().disable()
@@ -36,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
       .and()
       .authorizeRequests()
-      .antMatchers("/", "/favicon.ico", "/profile").permitAll()
+      .antMatchers("/api/sign-in", "/api/sign-up").permitAll()
       .anyRequest().authenticated()
 
       .and()
