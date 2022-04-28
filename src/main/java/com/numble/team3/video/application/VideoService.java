@@ -57,7 +57,7 @@ public class VideoService {
 
   @Transactional(readOnly = true)
   public GetVideoListDto getAllVideo(PageRequest pageRequest) {
-    return GetVideoListDto.fromEntities(videoRepository.findAll(pageRequest).getContent());
+    return GetVideoListDto.fromEntities(videoRepository.findAllWithAccount(pageRequest));
   }
 
   @Transactional(readOnly = true)

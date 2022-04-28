@@ -1,6 +1,7 @@
 package com.numble.team3.account.resolver;
 
 import com.numble.team3.account.annotation.LoginUser;
+import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.sign.TokenFailureException;
 import com.numble.team3.jwt.PrivateClaims;
 import com.numble.team3.jwt.TokenHelper;
@@ -18,7 +19,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 @RequiredArgsConstructor
 public class LoginMethodArgumentResolver implements HandlerMethodArgumentResolver {
-  private final TokenHelper refreshTokenHelper;
+  private final TokenHelper accessTokenHelper;
 
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
@@ -33,22 +34,17 @@ public class LoginMethodArgumentResolver implements HandlerMethodArgumentResolve
       NativeWebRequest webRequest,
       WebDataBinderFactory binderFactory)
       throws RuntimeException {
-    HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+    String authorizationHeader = webRequest.getHeader("Authorization");
+    if (authorizationHeader == null) {
+      throw new AccountNotFoundException();
+    }
 
     PrivateClaims privateClaims =
-        refreshTokenHelper
-            .parse(extractTokenWithRequest(request))
+      accessTokenHelper
+            .parse(authorizationHeader)
             .orElseThrow(TokenFailureException::new);
     Long accountId = Long.valueOf(privateClaims.getAccountId());
     List<String> roleTypes = privateClaims.getRoleTypes();
     return new UserInfo(accountId, roleTypes);
-  }
-
-  private String extractTokenWithRequest(HttpServletRequest request) {
-    return Arrays.stream(request.getCookies())
-            .filter(cookie -> cookie.getName().equals("refreshToken"))
-            .findAny()
-            .orElseThrow(TokenFailureException::new)
-            .getValue();
   }
 }
