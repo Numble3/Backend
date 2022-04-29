@@ -6,9 +6,14 @@ spring:
     include:
       - token-secret
       - oauth2
+      - aws
   redis:
     host: 127.0.0.1
     port: 6379
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 220MB
   h2:
     console:
       enabled: true
