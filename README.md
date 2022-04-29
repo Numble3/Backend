@@ -20,3 +20,6 @@
 
 ex ) feat : #1 add chat feature
 ```
+
+## CI & CD
+![image](https://user-images.githubusercontent.com/25299428/165933244-897084cb-aec9-4ce8-b621-ac4012ebad63.png)
