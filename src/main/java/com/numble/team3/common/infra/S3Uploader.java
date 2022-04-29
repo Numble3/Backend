@@ -19,18 +19,18 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class S3Uploader {
   private final AmazonS3Client amazonS3Client;
-  private final String UPLOAD_DIR = "numble-video";
+  private final String IMAGE_UPLOAD_DIR = "numble-image";
 
   @Value("${cloud.aws.s3.bucket}")
   public String bucket;
 
-  public String upload(MultipartFile videoFile) throws IOException {
+  public String imageUpload(MultipartFile imageFile) throws IOException {
     File uploadFile =
-        convert(videoFile) // 파일 변환할 수 없으면 에러
+        convert(imageFile) // 파일 변환할 수 없으면 에러
             .orElseThrow(
                 () -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
 
-    return upload(uploadFile, UPLOAD_DIR);
+    return upload(uploadFile, IMAGE_UPLOAD_DIR);
   }
 
   // S3로 파일 업로드하기
