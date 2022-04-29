@@ -50,12 +50,17 @@ public class Video {
   private String thumbnailUrl;
 
   @Column(columnDefinition = "tinyint(1)")
-  private boolean deleteYn;
+  private boolean deleteYn = false;
+
+  @Column(columnDefinition = "tinyint(1)")
+  private boolean adminDeleteYn = false;
 
   @ManyToOne private Account account;
 
   @Enumerated(EnumType.STRING)
   private VideoCategory category;
+
+  private Long showId = Long.valueOf(Integer.MAX_VALUE);
 
   @Builder
   public Video(
@@ -74,7 +79,6 @@ public class Video {
     this.videoUrl = videoUrl;
     this.thumbnailUrl = thumbnailUrl;
     this.account = account;
-    this.deleteYn = false;
     this.category = category;
   }
 
