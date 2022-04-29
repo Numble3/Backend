@@ -6,7 +6,7 @@ import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.jwt.PrivateClaims;
 import com.numble.team3.jwt.TokenHelper;
 import com.numble.team3.sign.application.response.TokenDto;
-import com.numble.team3.sign.infra.RedisUtils;
+import com.numble.team3.sign.infra.SignRedisUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
@@ -31,7 +31,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
   private final JpaAccountRepository accountRepository;
   private final TokenHelper accessTokenHelper;
   private final TokenHelper refreshTokenHelper;
-  private final RedisUtils redisUtils;
+  private final SignRedisUtils signRedisUtils;
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -55,8 +55,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     String accessToken = accessTokenHelper.createToken(privateClaims);
     String refreshToken = refreshTokenHelper.createToken(privateClaims);
 
-    redisUtils.saveAccessToken(account.getId(), accessToken);
-    redisUtils.saveRefreshToken(account.getId(), refreshToken);
+    signRedisUtils.saveAccessToken(account.getId(), accessToken);
+    signRedisUtils.saveRefreshToken(account.getId(), refreshToken);
 
     createTokenCookie(response, refreshToken);
     try {

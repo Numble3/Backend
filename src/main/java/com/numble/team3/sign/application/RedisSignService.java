@@ -13,7 +13,7 @@ import com.numble.team3.sign.application.request.SignInDto;
 import com.numble.team3.sign.application.request.SignUpDto;
 import com.numble.team3.sign.application.response.TokenDto;
 import com.numble.team3.exception.sign.SignInFailureException;
-import com.numble.team3.sign.infra.RedisUtils;
+import com.numble.team3.sign.infra.SignRedisUtils;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class RedisSignService implements SignService {
   private final PasswordEncoder passwordEncoder;
   private final TokenHelper accessTokenHelper;
   private final TokenHelper refreshTokenHelper;
-  private final RedisUtils redisUtils;
+  private final SignRedisUtils signRedisUtils;
 
   @Transactional
   @Override
@@ -55,8 +55,8 @@ public class RedisSignService implements SignService {
     String accessToken = accessTokenHelper.createToken(privateClaims);
     String refreshToken = refreshTokenHelper.createToken(privateClaims);
 
-    redisUtils.saveAccessToken(account.getId(), accessToken);
-    redisUtils.saveRefreshToken(account.getId(), refreshToken);
+    signRedisUtils.saveAccessToken(account.getId(), accessToken);
+    signRedisUtils.saveRefreshToken(account.getId(), refreshToken);
 
     return new TokenDto(accessToken, refreshToken);
   }
@@ -66,7 +66,7 @@ public class RedisSignService implements SignService {
     PrivateClaims privateClaims =
         refreshTokenHelper.parse(refreshToken).orElseThrow(TokenFailureException::new);
 
-    if (!redisUtils.validToken(
+    if (!signRedisUtils.validToken(
         refreshToken, "refreshToken", Optional.ofNullable(privateClaims.getAccountId()))) {
       throw new TokenFailureException();
     }
@@ -74,8 +74,8 @@ public class RedisSignService implements SignService {
     String accessToken = accessTokenHelper.createToken(privateClaims);
     Long accountId = Long.valueOf(privateClaims.getAccountId());
 
-    redisUtils.deleteToken("accessToken", accountId);
-    redisUtils.saveAccessToken(accountId, accessToken);
+    signRedisUtils.deleteToken("accessToken", accountId);
+    signRedisUtils.saveAccessToken(accountId, accessToken);
 
     return new TokenDto(accessToken, refreshToken);
   }
@@ -88,8 +88,8 @@ public class RedisSignService implements SignService {
             .map(claims -> Long.valueOf(claims.getAccountId()))
             .orElseThrow(TokenFailureException::new);
 
-    redisUtils.deleteToken("refreshToken", accountId);
-    redisUtils.deleteToken("accessToken", accountId);
+    signRedisUtils.deleteToken("refreshToken", accountId);
+    signRedisUtils.deleteToken("accessToken", accountId);
   }
 
   @Transactional
@@ -102,8 +102,8 @@ public class RedisSignService implements SignService {
 
     account.changeDeleted(true);
 
-    redisUtils.deleteToken("refreshToken", account.getId());
-    redisUtils.deleteToken("accessToken", account.getId());
+    signRedisUtils.deleteToken("refreshToken", account.getId());
+    signRedisUtils.deleteToken("accessToken", account.getId());
   }
 
   private void validateSignUpInfo(SignUpDto dto) {
