@@ -33,6 +33,26 @@ public class S3Uploader {
     return upload(uploadFile, IMAGE_UPLOAD_DIR);
   }
 
+  //디렉토리 경로에 있는 모든 파일을 업로드, .m3u8 파일을 반환
+  public String uploadDirectoryWithM3u8(String dirPath){
+    File dir = new File(System.getProperty("user.dir") + File.separator + dirPath);
+    File[] files = dir.listFiles();
+    String accessIndexPath = null, accessFilePath;
+    for(File file : files){
+      String ext = file.getPath().substring(file.getPath().lastIndexOf("."));
+      log.info("Upload File Path: {}, ext: {}", file.getPath(), ext);
+      if(ext.equals(".m3u8")){
+        accessIndexPath = putS3(file, dirPath + "/" + file.getName());
+        log.info("S3 Access Index File Path: {}", accessIndexPath);
+      }
+      else{
+        accessFilePath = putS3(file, dirPath + "/" + file.getName());
+        log.info("S3 Access Video File Path: {}", accessFilePath);
+      }
+    }
+    return accessIndexPath;
+  }
+
   // S3로 파일 업로드하기
   private String upload(File uploadFile, String dirName) {
     String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName(); // S3에 저장된 파일 이름
