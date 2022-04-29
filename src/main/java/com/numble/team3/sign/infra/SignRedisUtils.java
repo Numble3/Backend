@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RedisUtils {
+public class SignRedisUtils {
 
   private final RedisTemplate redisTemplate;
   private final TokenHelper accessTokenHelper;
