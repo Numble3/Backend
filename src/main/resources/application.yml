@@ -30,6 +30,9 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 cloud:
   aws:
