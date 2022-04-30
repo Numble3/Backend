@@ -27,7 +27,7 @@ public class AccountService {
         String lastLoginTime =
           accountRedisUtils.getLastLogin(account.getId()).orElseThrow(RuntimeException::new);
         if (!(account.getLastLogin() != null && account.getLastLogin().equals(lastLoginTime))) {
-          account.changeLastLogin(lastLoginTime);
+          account.changeLastLogin();
         }});
 
     accountIds.stream().forEach(accountId -> accountRedisUtils.deleteLastLogin(accountId));

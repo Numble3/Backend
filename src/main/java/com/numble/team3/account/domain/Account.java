@@ -1,6 +1,8 @@
 package com.numble.team3.account.domain;
 
 import com.numble.team3.sign.application.request.SignUpDto;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -76,7 +78,7 @@ public class Account {
     this.deleted = deleted;
   }
 
-  public void changeLastLogin(String lastLogin) {
-    this.lastLogin = lastLogin;
+  public void changeLastLogin() {
+    this.lastLogin = DateTimeFormatter.ofPattern("yyyy.MM.dd").format(LocalDateTime.now().minusDays(1));
   }
 }
