@@ -45,6 +45,9 @@ public class Account {
   @Column(columnDefinition = "tinyint(1)")
   private boolean deleted;
 
+  @Column
+  private String lastLogin;
+
   public static Account createSignUpOauth2Account(String email, String nickname, String profile) {
     Account account = new Account();
     account.initSignUpOauth2AccountField(email, nickname, profile);
@@ -71,5 +74,9 @@ public class Account {
 
   public void changeDeleted(boolean deleted) {
     this.deleted = deleted;
+  }
+
+  public void changeLastLogin(String lastLogin) {
+    this.lastLogin = lastLogin;
   }
 }
