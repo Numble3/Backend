@@ -26,11 +26,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final CustomOAuth2UserService oAuth2UserService;
   private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
+  private static final String[] PERMIT_URL_ARRAY = {
+    "/v2/api-docs",
+    "/swagger-resources",
+    "/swagger-resources/**",
+    "/configuration/ui",
+    "/configuration/security",
+    "/swagger-ui.html",
+    "/webjars/**",
+    "/v3/api-docs/**",
+    "/swagger-ui/**"
+  };
+
   @Override
   public void configure(WebSecurity web) {
     web.ignoring()
       .antMatchers("/h2-console/**", "/favicon.ico", "/profile")
-      .antMatchers("/swagger-ui.html", "/v2/api-docs", "/swagger-resources/**", "/webjars/**");
+      .antMatchers(PERMIT_URL_ARRAY);
   }
 
   @Override
@@ -44,7 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
       .and()
       .authorizeRequests()
-      .antMatchers("/api/sign-in", "/api/sign-up").permitAll()
+      .antMatchers("/api/sign-in", "/api/sign-up", "/api/refresh-token").permitAll()
+
       .anyRequest().authenticated()
 
       .and()
