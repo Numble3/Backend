@@ -77,9 +77,6 @@ public class VideoFfmpegUtils implements VideoUtils {
 
   // 업로드할 파일의 폴더 경로를 재귀적으로 생성
   private String makeEncodingDirectory(MultipartFile videoFile) {
-    String timeStamp =
-        LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).replace(":", "_");
-
     String encodedDir =
         System.getProperty("user.dir") + File.separator + UUID.randomUUID().toString();
     log.info("encode directory: {}", encodedDir);

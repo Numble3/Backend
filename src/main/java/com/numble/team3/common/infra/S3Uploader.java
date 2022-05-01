@@ -35,21 +35,27 @@ public class S3Uploader {
 
   //디렉토리 경로에 있는 모든 파일을 업로드, .m3u8 파일을 반환
   public String uploadDirectoryWithM3u8(String dirPath){
-    File dir = new File(System.getProperty("user.dir") + File.separator + dirPath);
+    File dir = new File(dirPath);
     File[] files = dir.listFiles();
     String accessIndexPath = null, accessFilePath;
     for(File file : files){
       String ext = file.getPath().substring(file.getPath().lastIndexOf("."));
+      String fileName = file.getName().substring(file.getName().lastIndexOf("/"));
+      if(ext.equals(".mp4")){
+        continue;
+      }
       log.info("Upload File Path: {}, ext: {}", file.getPath(), ext);
       if(ext.equals(".m3u8")){
-        accessIndexPath = putS3(file, dirPath + "/" + file.getName());
+        accessIndexPath = putS3(file, dirPath + "/" + fileName);
         log.info("S3 Access Index File Path: {}", accessIndexPath);
       }
       else{
-        accessFilePath = putS3(file, dirPath + "/" + file.getName());
+        accessFilePath = putS3(file, dirPath + "/" + fileName);
         log.info("S3 Access Video File Path: {}", accessFilePath);
       }
     }
+
+    cleanUpConvertFiles(dirPath);
     return accessIndexPath;
   }
 
@@ -76,6 +82,19 @@ public class S3Uploader {
       return;
     }
     log.info("File delete fail");
+  }
+
+  private void cleanUpConvertFiles(String dirPath){
+    File dir = new File(dirPath);
+    for(File file: dir.listFiles()){
+      file.delete();
+    }
+    if(dir.delete()){
+      log.info("File delete success: {}", dir.getPath());
+    }
+    else{
+      log.info("File delete fail: {}", dir.getPath());
+    }
   }
 
   // 로컬에 파일 업로드 하기
