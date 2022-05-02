@@ -1,9 +1,16 @@
 package com.numble.team3.sign.controller;
 
+import com.numble.team3.sign.annotation.AccountWithdrawalSwagger;
+import com.numble.team3.sign.annotation.CreateAccessTokenSwagger;
+import com.numble.team3.sign.annotation.LogoutSwagger;
+import com.numble.team3.sign.annotation.SignInSwagger;
+import com.numble.team3.sign.annotation.SignUpSwagger;
 import com.numble.team3.sign.application.SignService;
 import com.numble.team3.sign.application.request.SignInDto;
 import com.numble.team3.sign.application.request.SignUpDto;
 import com.numble.team3.sign.application.response.TokenDto;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -27,18 +34,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Api(tags = {"회원 가입, 로그인, 로그아웃, access token 재발급, 회원 탈퇴"})
 public class SignController {
 
   private final SignService signService;
 
-  @PostMapping("/sign-up")
+  @SignUpSwagger
+  @PostMapping(value = "/sign-up", produces = "application/json", consumes = "application/json")
   public ResponseEntity signUp(@Valid @RequestBody SignUpDto dto) {
     signService.signUp(dto);
 
     return new ResponseEntity(HttpStatus.CREATED);
   }
 
-  @PostMapping("/sign-in")
+  @SignInSwagger
+  @PostMapping(value = "/sign-in", produces = "application/json", consumes = "application/json")
   public ResponseEntity<TokenDto> signIn(@Valid @RequestBody SignInDto dto,
     HttpServletResponse response) {
     TokenDto token = signService.signIn(dto);
@@ -47,8 +57,9 @@ public class SignController {
     return new ResponseEntity<>(token, HttpStatus.OK);
   }
 
-  @GetMapping("/logout")
-  public ResponseEntity logout(@RequestHeader(value = "Authorization") String accessToken,
+  @LogoutSwagger
+  @GetMapping(value = "/logout", produces = "application/json", consumes = "application/json")
+  public ResponseEntity logout(@ApiParam(value = "access token", required = true) @RequestHeader(value = "Authorization") String accessToken,
     HttpServletResponse response) {
     signService.logout(accessToken);
     deleteCookie(response);
@@ -56,7 +67,8 @@ public class SignController {
     return new ResponseEntity(HttpStatus.OK);
   }
 
-  @GetMapping("/refresh-token")
+  @CreateAccessTokenSwagger
+  @GetMapping(value = "/refresh-token", produces = "application/json", consumes = "application/json")
   public ResponseEntity createAccessTokenByRefreshToken(HttpServletRequest request) {
     for (Cookie cookie : request.getCookies()) {
       if (cookie.getName().equals("refreshToken")) {
@@ -69,13 +81,15 @@ public class SignController {
     return new ResponseEntity(message, HttpStatus.UNAUTHORIZED);
   }
 
-  @DeleteMapping("/withdrawal")
+  @AccountWithdrawalSwagger
+  @DeleteMapping(value = "/withdrawal", produces = "application/json", consumes = "application/json")
   public ResponseEntity accountWithdrawal(
-    @RequestHeader(value = "Authorization") String accessToken, HttpServletResponse response) {
-    signService.withdrawal(accessToken);
-    deleteCookie(response);
+    @ApiParam(value = "access token", required = true) @RequestHeader(value = "Authorization") String accessToken,
+    HttpServletResponse response) {
+      signService.withdrawal(accessToken);
+      deleteCookie(response);
 
-    return new ResponseEntity(HttpStatus.OK);
+      return new ResponseEntity(HttpStatus.OK);
   }
 
   private void createCookie(String token, int maxAge, HttpServletResponse response) {
