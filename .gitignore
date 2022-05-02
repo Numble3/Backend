@@ -37,3 +37,6 @@ out/
 .vscode/
 src/main/resources/application-aws.yml
 */application-aws.yml
+ffmpeg.exe
+ffplay.exe
+ffprobe.exe
