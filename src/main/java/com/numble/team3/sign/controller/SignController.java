@@ -1,9 +1,15 @@
 package com.numble.team3.sign.controller;
 
+import com.numble.team3.sign.annotation.AccountWithdrawalSwagger;
+import com.numble.team3.sign.annotation.CreateAccessTokenSwagger;
+import com.numble.team3.sign.annotation.LogoutSwagger;
+import com.numble.team3.sign.annotation.SignInSwagger;
+import com.numble.team3.sign.annotation.SignUpSwagger;
 import com.numble.team3.sign.application.SignService;
 import com.numble.team3.sign.application.request.SignInDto;
 import com.numble.team3.sign.application.request.SignUpDto;
 import com.numble.team3.sign.application.response.TokenDto;
+import io.swagger.annotations.Api;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -27,10 +33,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Api(tags = {"회원 가입, 로그인, 로그아웃, access token 재발급, 회원 탈퇴"})
 public class SignController {
 
   private final SignService signService;
 
+  @SignUpSwagger
   @PostMapping("/sign-up")
   public ResponseEntity signUp(@Valid @RequestBody SignUpDto dto) {
     signService.signUp(dto);
@@ -38,6 +46,7 @@ public class SignController {
     return new ResponseEntity(HttpStatus.CREATED);
   }
 
+  @SignInSwagger
   @PostMapping("/sign-in")
   public ResponseEntity<TokenDto> signIn(@Valid @RequestBody SignInDto dto,
     HttpServletResponse response) {
@@ -47,6 +56,7 @@ public class SignController {
     return new ResponseEntity<>(token, HttpStatus.OK);
   }
 
+  @LogoutSwagger
   @GetMapping("/logout")
   public ResponseEntity logout(@RequestHeader(value = "Authorization") String accessToken,
     HttpServletResponse response) {
@@ -56,6 +66,7 @@ public class SignController {
     return new ResponseEntity(HttpStatus.OK);
   }
 
+  @CreateAccessTokenSwagger
   @GetMapping("/refresh-token")
   public ResponseEntity createAccessTokenByRefreshToken(HttpServletRequest request) {
     for (Cookie cookie : request.getCookies()) {
@@ -69,6 +80,7 @@ public class SignController {
     return new ResponseEntity(message, HttpStatus.UNAUTHORIZED);
   }
 
+  @AccountWithdrawalSwagger
   @DeleteMapping("/withdrawal")
   public ResponseEntity accountWithdrawal(
     @RequestHeader(value = "Authorization") String accessToken, HttpServletResponse response) {
