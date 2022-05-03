@@ -4,8 +4,6 @@ import com.numble.team3.video.domain.VideoUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
@@ -15,6 +13,7 @@ import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,10 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class VideoFfmpegUtils implements VideoUtils {
 
-  private final String ffmpegPath = System.getProperty("user.dir") + File.separator + "ffmpeg.exe";
+  @Value("${ffmpeg.ffmpegPath}")
+  private String ffmpegPath;
 
-  private final String ffprobePath =
-      System.getProperty("user.dir") + File.separator + "ffprobe.exe";
+  @Value("${ffmpeg.ffprobePath}")
+  private String ffprobePath;
 
   private FFmpeg ffmpeg;
   private FFprobe ffprobe;
