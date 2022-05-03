@@ -6,6 +6,7 @@ import com.numble.team3.video.application.VideoService;
 import com.numble.team3.video.application.request.CreateVideoDto;
 import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
+import java.io.IOException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -35,8 +36,10 @@ public class VideoController {
   public ResponseEntity createVideo(
       @LoginUser UserInfo userInfo,
       @Valid @RequestPart(value = "dto") CreateVideoDto dto,
-      @RequestPart(value = "videoFile") MultipartFile videoFile) {
-    videoService.createVideo(userInfo, dto, videoFile);
+      @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnailFile,
+      @RequestPart(value = "video") MultipartFile videoFile)
+      throws IOException {
+    videoService.createVideo(userInfo, dto, thumbnailFile, videoFile);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 

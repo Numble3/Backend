@@ -51,6 +51,10 @@ dependencies {
 	//AWS sdk
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	// FFmpeg wrapper (컴퓨터에 다운로드 후에 java 프로그램과 연결해주는 라이브러리)
+	// https://mvnrepository.com/artifact/net.bramp.ffmpeg/ffmpeg
+	implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
+
 	compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.3'
 }
 

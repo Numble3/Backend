@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+ffmpeg:
+  ffmpegPath: '${user.dir}\ffmpeg.exe'
+  ffprobePath: '${user.dir}\ffprobe.exe'
+---
+spring:
+  config:
+    activate:
+      on-profile: prod1, prod2
+ffmpeg:
+  ffmpegPath: /home/ec2-user/app/ffmpeg.exe
+  ffprobePath: /home/ec2-user/app/ffprobe.exe
