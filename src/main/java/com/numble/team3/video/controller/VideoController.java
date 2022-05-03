@@ -3,7 +3,7 @@ package com.numble.team3.video.controller;
 import com.numble.team3.account.annotation.LoginUser;
 import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.video.application.VideoService;
-import com.numble.team3.video.application.request.CreateVideoDto;
+import com.numble.team3.video.application.request.CreateOrUpdateVideoDto;
 import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
 import java.io.IOException;
@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -35,11 +37,10 @@ public class VideoController {
       consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity createVideo(
       @LoginUser UserInfo userInfo,
-      @Valid @RequestPart(value = "dto") CreateVideoDto dto,
-      @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnailFile,
+      @Valid @RequestPart(value = "dto") CreateOrUpdateVideoDto dto,
       @RequestPart(value = "video") MultipartFile videoFile)
       throws IOException {
-    videoService.createVideo(userInfo, dto, thumbnailFile, videoFile);
+    videoService.createVideo(userInfo, dto, videoFile);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -57,6 +58,15 @@ public class VideoController {
   @DeleteMapping("/video/{videoId}")
   public ResponseEntity deleteVideoById(@LoginUser UserInfo userInfo, @PathVariable Long videoId) {
     videoService.deleteVideo(userInfo, videoId);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @PutMapping("/video/{videoId}")
+  public ResponseEntity modifyVideoById(
+      @LoginUser UserInfo userInfo,
+      @PathVariable Long videoId,
+      @RequestBody CreateOrUpdateVideoDto dto) {
+    videoService.modifyVideo(userInfo, videoId, dto);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

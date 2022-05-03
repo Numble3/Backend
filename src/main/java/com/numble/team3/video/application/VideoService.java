@@ -6,7 +6,7 @@ import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.common.infra.S3Uploader;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.video.VideoNotFoundException;
-import com.numble.team3.video.application.request.CreateVideoDto;
+import com.numble.team3.video.application.request.CreateOrUpdateVideoDto;
 import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
 import com.numble.team3.video.domain.Video;
@@ -34,9 +34,12 @@ public class VideoService {
     return accountRepository.findById(accountId).orElseThrow(AccountNotFoundException::new);
   }
 
+  private Video findByAccountIdAndId(UserInfo userInfo, Long videoId){
+    return videoRepository.findByAccountIdAndId(userInfo.getAccountId(), videoId).orElseThrow(VideoNotFoundException::new);
+  }
+
   @Transactional
-  public void createVideo(
-      UserInfo userInfo, CreateVideoDto dto, MultipartFile thumbnailFile, MultipartFile videoFile)
+  public void createVideo(UserInfo userInfo, CreateOrUpdateVideoDto dto, MultipartFile videoFile)
       throws IOException {
     String convertedVideoDir = videoUtils.convertVideo(videoFile);
     log.info("converted Video Directory: {}", convertedVideoDir);
@@ -44,7 +47,6 @@ public class VideoService {
         videoUtils.extractVideoDuration(
             convertedVideoDir + File.separator + videoFile.getOriginalFilename());
     String videoAccessPath = s3Uploader.uploadDirectoryWithM3u8(convertedVideoDir);
-    // todo 썸네일 업로드 로직 추가
     Account account = findByAccountId(userInfo.getAccountId());
     Video video =
         Video.builder()
@@ -54,10 +56,16 @@ public class VideoService {
             .content(dto.getContent())
             .videoDuration(duration)
             .videoUrl(videoAccessPath)
-            .thumbnailUrl("")
+            .thumbnailUrl(dto.getThumbnailUrl())
             .category(dto.getCategory())
             .build();
     videoRepository.save(video);
+  }
+
+  @Transactional
+  public void modifyVideo(UserInfo userInfo, Long videoId, CreateOrUpdateVideoDto dto){
+    Video video = findByAccountIdAndId(userInfo, videoId);
+    video.changeVideo(dto.getTitle(), dto.getContent(), dto.getThumbnailUrl());
   }
 
   @Transactional
