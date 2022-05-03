@@ -1,6 +1,8 @@
 package com.numble.team3.account.domain;
 
 import com.numble.team3.sign.application.request.SignUpDto;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -45,6 +47,9 @@ public class Account {
   @Column(columnDefinition = "tinyint(1)")
   private boolean deleted;
 
+  @Column
+  private String lastLogin;
+
   public static Account createSignUpOauth2Account(String email, String nickname, String profile) {
     Account account = new Account();
     account.initSignUpOauth2AccountField(email, nickname, profile);
@@ -71,5 +76,9 @@ public class Account {
 
   public void changeDeleted(boolean deleted) {
     this.deleted = deleted;
+  }
+
+  public void changeLastLogin() {
+    this.lastLogin = DateTimeFormatter.ofPattern("yyyy.MM.dd").format(LocalDateTime.now().minusDays(1));
   }
 }

@@ -37,11 +37,16 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: dummy-password
-      secret-key: dummy-password
+      access-key: dummy-data
+      secret-key: dummy-data
     region:
       static: ap-northeast-2
     s3:
       bucket: numble-video
     stack:
       auto: false
+    image:
+      s3:
+        name: numble-image
+      api-gateway:
+        url: image-api-gateway-url

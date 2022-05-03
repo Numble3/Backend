@@ -1,6 +1,7 @@
 package com.numble.team3.sign.application;
 
 import com.numble.team3.account.domain.Account;
+import com.numble.team3.account.infra.AccountRedisUtils;
 import com.numble.team3.exception.account.AccountEmailAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNicknameAlreadyExistsException;
 import com.numble.team3.account.infra.JpaAccountRepository;
@@ -30,6 +31,7 @@ public class RedisSignService implements SignService {
   private final TokenHelper accessTokenHelper;
   private final TokenHelper refreshTokenHelper;
   private final SignRedisUtils signRedisUtils;
+  private final AccountRedisUtils accountRedisUtils;
 
   @Transactional
   @Override
@@ -57,6 +59,7 @@ public class RedisSignService implements SignService {
 
     signRedisUtils.saveAccessToken(account.getId(), accessToken);
     signRedisUtils.saveRefreshToken(account.getId(), refreshToken);
+    accountRedisUtils.saveLastLogin(account.getId());
 
     return new TokenDto(accessToken, refreshToken);
   }
