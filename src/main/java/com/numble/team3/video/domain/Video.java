@@ -1,17 +1,22 @@
 package com.numble.team3.video.domain;
 
 import com.numble.team3.account.domain.Account;
+import com.numble.team3.comment.domain.Comment;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,6 +62,9 @@ public class Video {
 
   @ManyToOne private Account account;
 
+  @OneToMany(mappedBy = "video", fetch = FetchType.LAZY)
+  private List<Comment> comments = new ArrayList<>();
+
   @Enumerated(EnumType.STRING)
   private VideoCategory category;
 
@@ -84,5 +92,15 @@ public class Video {
 
   public void deleteVideo() {
     this.deleteYn = true;
+  }
+
+  public void addComment(Comment comment) {
+    this.comments.add(comment);
+  }
+
+  public void changeVideo(String title, String content, String thumbnailUrl){
+    this.title = title;
+    this.content = content;
+    this.thumbnailUrl = thumbnailUrl;
   }
 }
