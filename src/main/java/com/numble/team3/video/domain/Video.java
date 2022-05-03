@@ -97,4 +97,10 @@ public class Video {
   public void addComment(Comment comment) {
     this.comments.add(comment);
   }
+
+  public void changeVideo(String title, String content, String thumbnailUrl){
+    this.title = title;
+    this.content = content;
+    this.thumbnailUrl = thumbnailUrl;
+  }
 }
