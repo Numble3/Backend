@@ -4,6 +4,7 @@ import com.numble.team3.account.domain.Account;
 import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.comment.application.request.CreateOrUpdateCommentDto;
+import com.numble.team3.comment.application.response.GetCommentListDto;
 import com.numble.team3.comment.domain.Comment;
 import com.numble.team3.comment.infra.JpaCommentRepository;
 import com.numble.team3.exception.account.AccountNotFoundException;
@@ -12,6 +13,7 @@ import com.numble.team3.exception.video.VideoNotFoundException;
 import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.infra.JpaVideoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,5 +58,11 @@ public class CommentService {
   public void deleteComment(UserInfo userInfo, Long commentId) {
     Comment comment = findCommentByAccountIdWithId(userInfo, commentId);
     comment.commentDelete();
+  }
+
+  @Transactional(readOnly = true)
+  public GetCommentListDto getAllCommentByVideoId(Long videoId, PageRequest pageRequest) {
+    return GetCommentListDto.fromEntities(
+        commentRepository.findAllByVideoId(videoId, pageRequest).getContent());
   }
 }
