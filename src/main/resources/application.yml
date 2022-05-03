@@ -7,7 +7,6 @@ spring:
       - token-secret
       - oauth2
       - aws
-      - ffmpeg
   redis:
     host: 127.0.0.1
     port: 6379
@@ -51,3 +50,8 @@ cloud:
         name: numble-image
       api-gateway:
         url: image-api-gateway-url
+    video:
+      s3:
+        name: numble-video
+      api-gateway:
+        url: video-api-gateway-url

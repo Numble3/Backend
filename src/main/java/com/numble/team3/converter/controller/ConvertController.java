@@ -1,9 +1,11 @@
-package com.numble.team3.image.controller;
+package com.numble.team3.converter.controller;
 
-import com.numble.team3.exception.image.ImageResizeTypeUnSupportException;
-import com.numble.team3.image.annotation.ImageResizeSwagger;
-import com.numble.team3.image.application.ImageService;
-import com.numble.team3.image.application.request.CreateImageDto;
+import com.numble.team3.converter.application.request.CreateVideoDto;
+import com.numble.team3.converter.application.response.GetConvertUrlDto;
+import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
+import com.numble.team3.converter.annotation.ImageResizeSwagger;
+import com.numble.team3.converter.application.ConvertService;
+import com.numble.team3.converter.application.request.CreateImageDto;
 import io.swagger.annotations.Api;
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@Api(tags = {"이미지 리사이즈"})
-public class ImageController {
+@Api(tags = {"파일 변환 (이미지 리사이징, 동영상 변환)"})
+public class ConvertController {
 
-  private final ImageService imageService;
+  private final ConvertService convertService;
 
   @ImageResizeSwagger
   @PostMapping(value = "/images/resize", produces = "application/json")
@@ -33,8 +35,13 @@ public class ImageController {
 
     return new ResponseEntity(new HashMap<String, String>() {
       {
-        put("url", imageService.uploadResizeImage(dto));
+        put("url", convertService.uploadResizeImage(dto));
       }
     }, HttpStatus.CREATED);
+  }
+
+  @PostMapping(value = "/videos/storage")
+  public ResponseEntity<GetConvertUrlDto> videoConvert(@ModelAttribute CreateVideoDto dto) throws IOException{
+    return ResponseEntity.status(HttpStatus.CREATED).body(convertService.uploadConvertVideo(dto));
   }
 }

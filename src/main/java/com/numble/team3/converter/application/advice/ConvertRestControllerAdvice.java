@@ -1,9 +1,9 @@
-package com.numble.team3.image.application.advice;
+package com.numble.team3.converter.application.advice;
 
-import com.numble.team3.exception.image.ImageConvertFailureException;
-import com.numble.team3.exception.image.ImageResizeTypeUnSupportException;
-import com.numble.team3.exception.image.ImageTypeUnSupportException;
-import com.numble.team3.image.controller.ImageController;
+import com.numble.team3.exception.convert.ImageConvertFailureException;
+import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
+import com.numble.team3.exception.convert.ImageTypeUnSupportException;
+import com.numble.team3.converter.controller.ConvertController;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(assignableTypes = {ImageController.class})
-public class ImageRestControllerAdvice {
+@RestControllerAdvice(assignableTypes = {ConvertController.class})
+public class ConvertRestControllerAdvice {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
