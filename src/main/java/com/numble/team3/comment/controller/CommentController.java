@@ -1,0 +1,50 @@
+package com.numble.team3.comment.controller;
+
+import com.numble.team3.account.annotation.LoginUser;
+import com.numble.team3.account.resolver.UserInfo;
+import com.numble.team3.comment.application.CommentService;
+import com.numble.team3.comment.application.request.CreateOrUpdateCommentDto;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
+public class CommentController {
+  private final CommentService commentService;
+
+  @PostMapping("/video/{videoId}/comment")
+  public ResponseEntity createComment(
+      @LoginUser UserInfo userInfo,
+      @Valid @RequestBody CreateOrUpdateCommentDto dto,
+      @PathVariable Long videoId) {
+    commentService.createComment(userInfo, videoId, dto);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
+  @PutMapping("/video/{videoId}/comment/{commentId}")
+  public ResponseEntity modifyComment(
+      @LoginUser UserInfo userInfo,
+      @Valid @RequestBody CreateOrUpdateCommentDto dto,
+      @PathVariable Long videoId,
+      @PathVariable Long commentId) {
+    commentService.modifyComment(userInfo, commentId, dto);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @DeleteMapping("/video/{videoId}/comment/{commentId}")
+  public ResponseEntity deleteComment(
+      @LoginUser UserInfo userInfo, @PathVariable Long videoId, @PathVariable Long commentId) {
+    commentService.deleteComment(userInfo, commentId);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+}
