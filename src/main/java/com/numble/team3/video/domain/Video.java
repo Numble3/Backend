@@ -2,14 +2,13 @@ package com.numble.team3.video.domain;
 
 import com.numble.team3.account.domain.Account;
 import com.numble.team3.comment.domain.Comment;
+import com.numble.team3.common.entity.BaseTimeEntity;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import com.numble.team3.video.domain.enums.VideoType;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -18,21 +17,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert // 객체 생성 시 null값은 쿼리에 넣지 않기 위함
-@EntityListeners(AuditingEntityListener.class)
-public class Video {
+@Table(name = "tb_video")
+public class Video extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,8 +47,6 @@ public class Video {
   @ColumnDefault(value = "0")
   @Column(name = "like_count")
   private Long like;
-
-  @CreatedDate private LocalDateTime createAt;
 
   @Column(name = "video_url")
   private String videoUrl;

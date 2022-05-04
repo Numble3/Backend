@@ -47,7 +47,7 @@ public class GetVideoDto {
       .nickname(video.getAccount().getNickname())
       .view(video.getView())
       .like(video.getLike())
-      .createdAt(video.getCreateAt())
+      .createdAt(video.getCreatedAt())
       .build();
   }
 }
