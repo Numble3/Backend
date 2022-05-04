@@ -37,24 +37,24 @@ public class VideoController {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping("/video")
+  @GetMapping("/videos")
   public ResponseEntity<GetVideoListDto> getAllVideo(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
     return ResponseEntity.ok(videoService.getAllVideo(PageRequest.of(page, size)));
   }
 
-  @GetMapping("/video/{videoId}")
+  @GetMapping("/videos/{videoId}")
   public ResponseEntity<GetVideoDetailDto> getVideoById(@PathVariable Long videoId) {
     return ResponseEntity.ok(videoService.getVideoById(videoId));
   }
 
-  @DeleteMapping("/video/{videoId}")
+  @DeleteMapping("/videos/{videoId}")
   public ResponseEntity deleteVideoById(@LoginUser UserInfo userInfo, @PathVariable Long videoId) {
     videoService.deleteVideo(userInfo, videoId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-  @PutMapping("/video/{videoId}")
+  @PutMapping("/videos/{videoId}")
   public ResponseEntity modifyVideoById(
       @LoginUser UserInfo userInfo,
       @PathVariable Long videoId,

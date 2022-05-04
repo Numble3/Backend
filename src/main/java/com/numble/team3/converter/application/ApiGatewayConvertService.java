@@ -26,7 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class ApiGatewayConvertService implements ConvertService {
 
   private static final List<String> IMAGE_TYPE = List.of("jpeg", "png", "jpg");
-  private static final List<String> VIDEO_TYPE = List.of("mp4");
+  private static final List<String> VIDEO_TYPE = List.of("mp4", ".avi", ".wmv", ".mpg", ".mpeg", "webm");
 
   @Value("${cloud.aws.image.s3.name}")
   private String imageBucket;
