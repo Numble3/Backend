@@ -3,6 +3,7 @@ package com.numble.team3.image.application.advice;
 import com.numble.team3.exception.image.ImageConvertFailureException;
 import com.numble.team3.exception.image.ImageResizeTypeUnSupportException;
 import com.numble.team3.exception.image.ImageTypeUnSupportException;
+import com.numble.team3.exception.image.ImageWrongRatioException;
 import com.numble.team3.image.controller.ImageController;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,12 @@ public class ImageRestControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   Map<String, String> imageTypeUnSupportExceptionHandler() {
     return createResponse("지원하지 않는 이미지 파일입니다.");
+  }
+
+  @ExceptionHandler(ImageWrongRatioException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  Map<String, String> imageWrongRatioExceptionHandler() {
+    return createResponse("잘못된 이미지 비율입니다.");
   }
 
   @ExceptionHandler(ImageConvertFailureException.class)

@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
     ),
     @ApiResponse(
       code = 400,
-      message = "이미지 리사이즈 실패 \t\n 1. 지원하지 않는 이미지 타입 \t\n 2. 지원하지 않는 리사이즈 방식",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value= "{\n\"message\" : \"지원하지 않는 이미지 파일입니다.\"\n\"message\" : \"지원하지 않는 리사이즈 방식입니다.\"\n}"))
+      message = "이미지 리사이즈 실패 \t\n 1. 지원하지 않는 이미지 타입 \t\n 2. 지원하지 않는 리사이즈 방식 \t\n 3. 이미지 비율이 올바르지 않음",
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value= "{\n\"message\" : \"지원하지 않는 이미지 파일입니다.\"\n\"message\" : \"지원하지 않는 리사이즈 방식입니다.\"\n\"message\" : \"잘못된 이미지 비율입니다.\"\n}"))
     ),
     @ApiResponse(
       code = 401,
