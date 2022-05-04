@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class AccountRedisUtils {
 
   private final RedisTemplate redisTemplate;
-  private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+  private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   private static final String SEPARATOR = "::";
 
