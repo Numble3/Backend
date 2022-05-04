@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-class GetVideoDto {
+public class GetVideoDto {
   private long videoId;
   private String thumbnailPath;
   private String title;
@@ -39,7 +39,7 @@ class GetVideoDto {
     this.createdAt = createdAt;
   }
 
-  static GetVideoDto fromEntity(Video video) {
+  public static GetVideoDto fromEntity(Video video) {
     return GetVideoDto.builder()
       .videoId(video.getId())
       .thumbnailPath(video.getThumbnailUrl())
