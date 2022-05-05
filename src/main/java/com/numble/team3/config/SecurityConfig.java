@@ -7,7 +7,8 @@ import com.numble.team3.security.CustomOAuth2UserService;
 import com.numble.team3.security.CustomUserDetailsService;
 import com.numble.team3.security.JwtAuthenticationFilter;
 import com.numble.team3.security.OAuth2SuccessHandler;
-import com.numble.team3.sign.infra.SignRedisUtils;
+import com.numble.team3.security.SecurityUtils;
+import com.numble.team3.sign.infra.SignRedisHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -21,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final CustomUserDetailsService userDetailsService;
-  private final SignRedisUtils signRedisUtils;
+  private final SecurityUtils securityUtils;
   private final TokenHelper accessTokenHelper;
   private final CustomOAuth2UserService oAuth2UserService;
   private final OAuth2SuccessHandler oAuth2SuccessHandler;
@@ -67,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
       .and()
       .addFilterBefore(
-        new JwtAuthenticationFilter(userDetailsService, signRedisUtils, accessTokenHelper),
+        new JwtAuthenticationFilter(userDetailsService, securityUtils, accessTokenHelper),
         UsernamePasswordAuthenticationFilter.class)
 
       .oauth2Login()

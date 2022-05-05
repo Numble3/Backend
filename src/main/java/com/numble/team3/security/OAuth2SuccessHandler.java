@@ -6,7 +6,7 @@ import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.jwt.PrivateClaims;
 import com.numble.team3.jwt.TokenHelper;
 import com.numble.team3.sign.application.response.TokenDto;
-import com.numble.team3.sign.infra.SignRedisUtils;
+import com.numble.team3.sign.infra.SignRedisHelper;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
@@ -31,7 +31,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
   private final JpaAccountRepository accountRepository;
   private final TokenHelper accessTokenHelper;
   private final TokenHelper refreshTokenHelper;
-  private final SignRedisUtils signRedisUtils;
+  private final SecurityUtils securityUtils;
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -39,8 +39,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
     accountRepository.findByEmail((String) oAuth2User.getAttributes().get("email"))
-      .ifPresentOrElse(account -> accountProcess(account, response),
-        () -> accountProcess(accountRepository.save(convertAccount(oAuth2User)), response));
+      .ifPresentOrElse(account -> processAccount(account, response),
+        () -> processAccount(accountRepository.save(convertAccount(oAuth2User)), response));
   }
 
   private Account convertAccount(OAuth2User oAuth2User) {
@@ -50,13 +50,12 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
       (String) attributes.get("nickname"), (String) attributes.get("profile"));
   }
 
-  private void accountProcess(Account account, HttpServletResponse response) {
+  private void processAccount(Account account, HttpServletResponse response) {
     PrivateClaims privateClaims = createPrivateClaims(account);
     String accessToken = accessTokenHelper.createToken(privateClaims);
     String refreshToken = refreshTokenHelper.createToken(privateClaims);
 
-    signRedisUtils.saveAccessToken(account.getId(), accessToken);
-    signRedisUtils.saveRefreshToken(account.getId(), refreshToken);
+    securityUtils.oauth2ProcessAccount(account.getId(), accessToken, refreshToken);
 
     createTokenCookie(response, refreshToken);
     try {

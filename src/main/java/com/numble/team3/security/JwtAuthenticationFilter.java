@@ -1,7 +1,7 @@
 package com.numble.team3.security;
 
 import com.numble.team3.jwt.TokenHelper;
-import com.numble.team3.sign.infra.SignRedisUtils;
+import com.numble.team3.sign.infra.SignRedisHelper;
 import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.FilterChain;
@@ -17,13 +17,13 @@ import org.springframework.web.filter.GenericFilterBean;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
   private final CustomUserDetailsService userDetailsService;
-  private final SignRedisUtils signRedisUtils;
+  private final SecurityUtils securityUtils;
   private final TokenHelper accessTokenHelper;
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     throws IOException, ServletException {
-    extractToken(request).filter(token -> signRedisUtils.validToken(token, "accessToken",
+    extractToken(request).filter(token -> securityUtils.validToken(token, "accessToken",
         Optional.ofNullable(
           accessTokenHelper.parse(token).map(claims -> claims.getAccountId()).orElse(null))))
       .map(userDetailsService::loadUserByUsername).ifPresent(this::setAuthentication);

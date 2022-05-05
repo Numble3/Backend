@@ -1,7 +1,7 @@
 package com.numble.team3.account.application;
 
 import com.numble.team3.account.domain.Account;
-import com.numble.team3.account.infra.AccountRedisUtils;
+import com.numble.team3.account.infra.AccountRedisHelper;
 import com.numble.team3.account.infra.JpaAccountRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,22 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
   private final JpaAccountRepository accountRepository;
-  private final AccountRedisUtils accountRedisUtils;
+  private final AccountRedisHelper accountRedisHelper;
 
   public void changeAccountLastLoginByScheduler() {
     List<Account> accounts = accountRepository.findAll();
 
-    List<Long> accountIds = accountRedisUtils.getAllLastLoginKey();
+    List<Long> accountIds = accountRedisHelper.getAllLastLoginKey();
 
     accounts
       .stream().filter(account -> accountIds.contains(account.getId()))
       .forEach(account -> {
         String lastLoginTime =
-          accountRedisUtils.getLastLogin(account.getId()).orElseThrow(RuntimeException::new);
+          accountRedisHelper.getLastLogin(account.getId()).orElseThrow(RuntimeException::new);
         if (!(account.getLastLogin() != null && account.getLastLogin().equals(lastLoginTime))) {
           account.changeLastLogin();
         }});
 
-    accountIds.stream().forEach(accountId -> accountRedisUtils.deleteLastLogin(accountId));
+    accountIds.stream().forEach(accountId -> accountRedisHelper.deleteLastLogin(accountId));
   }
 }
