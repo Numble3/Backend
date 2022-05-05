@@ -1,42 +1,34 @@
 package com.numble.team3.account.infra;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import com.numble.team3.account.domain.AccountUtils;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class AccountRedisUtils {
+public class AccountRedisUtils implements AccountUtils {
 
-  private final RedisTemplate redisTemplate;
-  private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private final AccountRedisHelper accountRedisHelper;
 
-  private static final String SEPARATOR = "::";
-
-  public void saveLastLogin(Long id) {
-    redisTemplate.opsForValue()
-      .set("lastLogin" + SEPARATOR + id, formatter.format(LocalDateTime.now()));
+  @Override
+  public List<Long> getAllLastLoginAccountId() {
+    return accountRedisHelper.getAllLastLoginKey();
   }
 
-  public void deleteLastLogin(Long id) {
-    redisTemplate.delete("lastLogin" + SEPARATOR + id);
+  @Override
+  public String getAccountLastLoginTime(Long accountId) {
+    return accountRedisHelper.getLastLogin(accountId);
   }
 
-  public Optional<String> getLastLogin(Long id) {
-    return Optional.ofNullable(
-      (String) redisTemplate.opsForValue().get("lastLogin" + SEPARATOR + id));
+  @Override
+  public Optional<String> optionalGetAccountLastLoginTIme(Long accountId) {
+    return Optional.ofNullable(accountRedisHelper.getLastLogin(accountId));
   }
 
-  public List<Long> getAllLastLoginKey() {
-    Set<String> keys = redisTemplate.keys("lastLogin::*");
-
-    return keys.stream().map(key -> Long.valueOf(key.split("::")[1])).collect(Collectors.toList());
+  @Override
+  public void deleteAllLastLoginTime(Long accountId) {
+    accountRedisHelper.deleteLastLogin(accountId);
   }
-
 }
