@@ -6,12 +6,10 @@ import com.numble.team3.video.application.VideoService;
 import com.numble.team3.video.application.request.CreateOrUpdateVideoDto;
 import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
-import java.io.IOException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,36 +29,32 @@ public class VideoController {
 
   private final VideoService videoService;
 
-  @PostMapping(
-      value = "/video",
-      consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+  @PostMapping(value = "/video")
   public ResponseEntity createVideo(
       @LoginUser UserInfo userInfo,
-      @Valid @RequestPart(value = "dto") CreateOrUpdateVideoDto dto,
-      @RequestPart(value = "video") MultipartFile videoFile)
-      throws IOException {
-    videoService.createVideo(userInfo, dto, videoFile);
+      @Valid @RequestPart(value = "dto") CreateOrUpdateVideoDto dto) {
+    videoService.createVideo(userInfo, dto);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping("/video")
+  @GetMapping("/videos")
   public ResponseEntity<GetVideoListDto> getAllVideo(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
     return ResponseEntity.ok(videoService.getAllVideo(PageRequest.of(page, size)));
   }
 
-  @GetMapping("/video/{videoId}")
+  @GetMapping("/videos/{videoId}")
   public ResponseEntity<GetVideoDetailDto> getVideoById(@PathVariable Long videoId) {
     return ResponseEntity.ok(videoService.getVideoById(videoId));
   }
 
-  @DeleteMapping("/video/{videoId}")
+  @DeleteMapping("/videos/{videoId}")
   public ResponseEntity deleteVideoById(@LoginUser UserInfo userInfo, @PathVariable Long videoId) {
     videoService.deleteVideo(userInfo, videoId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-  @PutMapping("/video/{videoId}")
+  @PutMapping("/videos/{videoId}")
   public ResponseEntity modifyVideoById(
       @LoginUser UserInfo userInfo,
       @PathVariable Long videoId,

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
   private final CommentService commentService;
 
-  @PostMapping("/video/{videoId}/comment")
+  @PostMapping("/videos/{videoId}/comments")
   public ResponseEntity createComment(
       @LoginUser UserInfo userInfo,
       @Valid @RequestBody CreateOrUpdateCommentDto dto,
@@ -35,7 +35,7 @@ public class CommentController {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
-  @PutMapping("/video/{videoId}/comment/{commentId}")
+  @PutMapping("/videos/{videoId}/comments/{commentId}")
   public ResponseEntity modifyComment(
       @LoginUser UserInfo userInfo,
       @Valid @RequestBody CreateOrUpdateCommentDto dto,
@@ -45,14 +45,14 @@ public class CommentController {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  @DeleteMapping("/video/{videoId}/comment/{commentId}")
+  @DeleteMapping("/videos/{videoId}/comments/{commentId}")
   public ResponseEntity deleteComment(
       @LoginUser UserInfo userInfo, @PathVariable Long videoId, @PathVariable Long commentId) {
     commentService.deleteComment(userInfo, commentId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  @GetMapping("/video/{videoId}/comment")
+  @GetMapping("/videos/{videoId}/comments")
   public ResponseEntity<GetCommentListDto> getAllCommentByVideoId(
       @PathVariable Long videoId,
       @RequestParam(defaultValue = "0") int page,

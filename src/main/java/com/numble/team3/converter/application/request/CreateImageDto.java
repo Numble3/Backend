@@ -1,4 +1,4 @@
-package com.numble.team3.image.application.request;
+package com.numble.team3.converter.application.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotBlank;

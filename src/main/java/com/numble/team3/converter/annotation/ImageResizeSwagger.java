@@ -1,4 +1,4 @@
-package com.numble.team3.image.annotation;
+package com.numble.team3.converter.annotation;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

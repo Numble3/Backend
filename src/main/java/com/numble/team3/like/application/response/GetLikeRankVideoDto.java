@@ -35,7 +35,7 @@ public class GetLikeRankVideoDto {
       .nickname(video.getAccount().getNickname())
       .view(video.getView())
       .like(video.getLike())
-      .createdAt(video.getCreateAt().toLocalDate())
+      .createdAt(video.getCreatedAt().toLocalDate())
       .build();
   }
 }

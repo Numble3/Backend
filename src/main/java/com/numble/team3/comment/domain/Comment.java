@@ -1,6 +1,7 @@
 package com.numble.team3.comment.domain;
 
 import com.numble.team3.account.domain.Account;
+import com.numble.team3.common.entity.BaseTimeEntity;
 import com.numble.team3.video.domain.Video;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -22,15 +23,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Entity
 @Table(name = "tb_comment")
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
-public class Comment {
+public class Comment extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @CreatedDate private LocalDateTime createdAt;
   private String content;
 
   @Column(columnDefinition = "tinyint(1)")
