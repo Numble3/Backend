@@ -6,6 +6,7 @@ import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
 import com.numble.team3.converter.annotation.ImageResizeSwagger;
 import com.numble.team3.converter.application.ConvertService;
 import com.numble.team3.converter.application.request.CreateImageDto;
+import com.numble.team3.exception.image.ImageWrongRatioException;
 import io.swagger.annotations.Api;
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,9 +30,8 @@ public class ConvertController {
   @ImageResizeSwagger
   @PostMapping(value = "/images/resize", produces = "application/json")
   public ResponseEntity<Map> imageResize(@ModelAttribute CreateImageDto dto) throws IOException {
-    if (!(dto.getType().equals("profile") || dto.getType().equals("thumbnail"))) {
-      throw new ImageResizeTypeUnSupportException();
-    }
+    checkResizeType(dto.getType());
+    checkResizeRatio(dto.getType(), Integer.parseInt(dto.getWidth()), Integer.parseInt(dto.getHeight()));
 
     return new ResponseEntity(new HashMap<String, String>() {
       {
@@ -43,5 +43,24 @@ public class ConvertController {
   @PostMapping(value = "/videos/storage")
   public ResponseEntity<GetConvertUrlDto> videoConvert(@ModelAttribute CreateVideoDto dto) throws IOException{
     return ResponseEntity.status(HttpStatus.CREATED).body(convertService.uploadConvertVideo(dto));
+  }
+
+  private void checkResizeType(String type) {
+    if (!(type.equals("profile") || type.equals("thumbnail"))) {
+      throw new ImageResizeTypeUnSupportException();
+    }
+  }
+
+  private void checkResizeRatio(String type, int width, int height) {
+    if (type.equals("profile")) {
+      if (width != height) {
+        throw new ImageWrongRatioException();
+      }
+    }
+    else {
+      if ((height * 16) != (width * 9)) {
+        throw new ImageWrongRatioException();
+      }
+    }
   }
 }

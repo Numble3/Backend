@@ -4,6 +4,7 @@ import com.numble.team3.exception.convert.ImageConvertFailureException;
 import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
 import com.numble.team3.exception.convert.ImageTypeUnSupportException;
 import com.numble.team3.converter.controller.ConvertController;
+import com.numble.team3.exception.image.ImageWrongRatioException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,12 @@ public class ConvertRestControllerAdvice {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   Map<String, String> imageConvertFailureExceptionHandler(BindException e) {
     return createResponse("이미지 변환에 실패했습니다.");
+  }
+
+  @ExceptionHandler(ImageWrongRatioException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  Map<String, String> imageWrongRatioExceptionHandler() {
+    return createResponse("잘못된 이미지 비율입니다.");
   }
 
   private Map<String, String> createResponse(String message) {
