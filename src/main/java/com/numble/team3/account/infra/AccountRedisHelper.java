@@ -28,9 +28,8 @@ public class AccountRedisHelper {
     redisTemplate.delete("lastLogin" + SEPARATOR + id);
   }
 
-  public Optional<String> getLastLogin(Long id) {
-    return Optional.ofNullable(
-      (String) redisTemplate.opsForValue().get("lastLogin" + SEPARATOR + id));
+  public String getLastLogin(Long id) {
+    return (String) redisTemplate.opsForValue().get("lastLogin" + SEPARATOR + id);
   }
 
   public List<Long> getAllLastLoginKey() {
