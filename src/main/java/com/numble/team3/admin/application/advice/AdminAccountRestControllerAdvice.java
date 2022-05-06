@@ -1,6 +1,7 @@
 package com.numble.team3.admin.application.advice;
 
 import com.numble.team3.admin.controller.AdminAccountController;
+import com.numble.team3.exception.account.AccountNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,13 @@ public class AdminAccountRestControllerAdvice {
   @ExceptionHandler(IllegalArgumentException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   Map<String, String> illegalArgumentExceptionHandler() {
-    return createResponse("잘못된 페이지 요청입니다.");
+    return createResponse("올바르지 않은 페이지 번호 요청입니다.");
+  }
+
+  @ExceptionHandler(AccountNotFoundException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  Map<String, String> accountNotFoundExceptionHandler() {
+    return createResponse("존재하지 않는 회원입니다.");
   }
 
   private Map<String, String> createResponse(String message) {
