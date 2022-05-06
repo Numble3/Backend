@@ -4,13 +4,13 @@ import com.numble.team3.jwt.PrivateClaims;
 
 public interface SignUtils {
 
-  void processSignInRedis(Long accountId, String accessToken, String refreshToken);
+  void processSignIn(Long accountId, String accessToken, String refreshToken);
 
-  void processRefreshValidationRedis(PrivateClaims privateClaims, String refreshToken);
+  void validationRefreshToken(PrivateClaims privateClaims, String refreshToken);
 
-  void processChangeAccessTokenRedis(PrivateClaims privateClaims, String accessToken);
+  void changeAccessToken(PrivateClaims privateClaims, String accessToken);
 
-  void processLogoutRedis(Long accountId);
+  void deleteToken(Long accountId);
 
   void processWithdrawal(Long accountId);
 }

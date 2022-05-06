@@ -1,7 +1,6 @@
 package com.numble.team3.sign.application;
 
 import com.numble.team3.account.domain.Account;
-import com.numble.team3.account.infra.AccountRedisHelper;
 import com.numble.team3.exception.account.AccountEmailAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNicknameAlreadyExistsException;
 import com.numble.team3.account.infra.JpaAccountRepository;
@@ -15,9 +14,7 @@ import com.numble.team3.sign.application.request.SignUpDto;
 import com.numble.team3.sign.application.response.TokenDto;
 import com.numble.team3.exception.sign.SignInFailureException;
 import com.numble.team3.sign.domain.SignUtils;
-import com.numble.team3.sign.infra.SignRedisHelper;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,7 +52,7 @@ public class SignService {
     String accessToken = accessTokenHelper.createToken(privateClaims);
     String refreshToken = refreshTokenHelper.createToken(privateClaims);
 
-    signUtils.processSignInRedis(account.getId(), accessToken, refreshToken);
+    signUtils.processSignIn(account.getId(), accessToken, refreshToken);
 
     return new TokenDto(accessToken, refreshToken);
   }
@@ -64,12 +61,11 @@ public class SignService {
     PrivateClaims privateClaims =
         refreshTokenHelper.parse(refreshToken).orElseThrow(TokenFailureException::new);
 
-    signUtils.processRefreshValidationRedis(privateClaims, refreshToken);
+    signUtils.validationRefreshToken(privateClaims, refreshToken);
 
     String accessToken = accessTokenHelper.createToken(privateClaims);
-    Long accountId = Long.valueOf(privateClaims.getAccountId());
 
-    signUtils.processChangeAccessTokenRedis(privateClaims, accessToken);
+    signUtils.changeAccessToken(privateClaims, accessToken);
 
     return new TokenDto(accessToken, refreshToken);
   }
@@ -81,7 +77,7 @@ public class SignService {
             .map(claims -> Long.valueOf(claims.getAccountId()))
             .orElseThrow(TokenFailureException::new);
 
-    signUtils.processLogoutRedis(accountId);
+    signUtils.deleteToken(accountId);
   }
 
   @Transactional
@@ -94,6 +90,9 @@ public class SignService {
     account.changeDeleted(true);
 
     signUtils.processWithdrawal(account.getId());
+  }
+  public void deleteToken(Long accountId) {
+    signUtils.deleteToken(accountId);
   }
 
   private void validateSignUpInfo(SignUpDto dto) {
