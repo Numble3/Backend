@@ -1,13 +1,17 @@
 package com.numble.team3.account.application;
 
+import com.numble.team3.account.application.request.UpdateMyAccountDto;
+import com.numble.team3.account.application.response.GetMyAccountDto;
 import com.numble.team3.account.domain.Account;
 import com.numble.team3.account.domain.AccountUtils;
 import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.account.infra.JpaAccountRepository;
+import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.admin.application.response.GetAccountDetailDto;
 import com.numble.team3.admin.application.response.GetAccountListDto;
 import com.numble.team3.admin.application.response.GetAccountSimpleDto;
 import com.numble.team3.exception.account.AccountNotFoundException;
+import com.numble.team3.exception.account.AccountWithdrawalException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -76,5 +80,28 @@ public class AccountService {
       accountRepository.findById(accountId).orElseThrow(AccountNotFoundException::new);
 
     account.changeDeleted(true);
+  }
+
+  @Transactional(readOnly = true)
+  public GetMyAccountDto getMyAccount(UserInfo userInfo) {
+    Account account =
+      accountRepository.findById(userInfo.getAccountId()).orElseThrow(AccountNotFoundException::new);
+
+    if (account.isDeleted()) {
+      throw new AccountWithdrawalException();
+    }
+
+    return new GetMyAccountDto(account.getEmail(), account.getProfile(), account.getNickname());
+  }
+
+  public void updateMyAccount(UserInfo userInfo, UpdateMyAccountDto dto) {
+    Account account =
+      accountRepository.findById(userInfo.getAccountId()).orElseThrow(AccountNotFoundException::new);
+
+    if (account.isDeleted()) {
+      throw new AccountWithdrawalException();
+    }
+
+    account.changeMyAccount(dto.getNickname(), dto.getProfile());
   }
 }

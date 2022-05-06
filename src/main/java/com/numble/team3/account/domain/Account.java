@@ -74,6 +74,11 @@ public class Account extends BaseTimeEntity {
   }
 
   public void changeLastLogin() {
-    this.lastLogin = DateTimeFormatter.ofPattern("yyyy.MM.dd").format(LocalDateTime.now().minusDays(1));
+    this.lastLogin = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now().minusDays(1));
+  }
+
+  public void changeMyAccount(String nickname, String profile) {
+    this.nickname = nickname;
+    this.profile = profile;
   }
 }
