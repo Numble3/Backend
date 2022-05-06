@@ -9,7 +9,7 @@ public interface AccountUtils {
 
   String getAccountLastLoginTime(Long accountId);
 
-  Optional<String> optionalGetAccountLastLoginTIme(Long accountId);
+  Optional<String> optionalGetAccountLastLoginTime(Long accountId);
 
   void deleteAllLastLoginTime(Long accountId);
 
