@@ -1,7 +1,7 @@
 package com.numble.team3.converter.controller;
 
 import com.numble.team3.converter.application.request.CreateVideoDto;
-import com.numble.team3.converter.application.response.GetConvertUrlDto;
+import com.numble.team3.converter.application.response.GetConvertVideoDto;
 import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
 import com.numble.team3.converter.annotation.ImageResizeSwagger;
 import com.numble.team3.converter.application.ConvertService;
@@ -41,7 +41,7 @@ public class ConvertController {
   }
 
   @PostMapping(value = "/videos/storage")
-  public ResponseEntity<GetConvertUrlDto> videoConvert(@ModelAttribute CreateVideoDto dto) throws IOException{
+  public ResponseEntity<GetConvertVideoDto> videoConvert(@ModelAttribute CreateVideoDto dto) throws IOException{
     return ResponseEntity.status(HttpStatus.CREATED).body(convertService.uploadConvertVideo(dto));
   }
 
