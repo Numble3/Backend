@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetConvertVideoDto {
+public class GetConvertUrlDto {
   private String url;
-  private long duration;
 }

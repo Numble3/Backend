@@ -4,11 +4,11 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.numble.team3.converter.application.request.CreateVideoDto;
-import com.numble.team3.converter.application.response.GetConvertVideoDto;
+import com.numble.team3.converter.application.response.GetConvertUrlDto;
+import com.numble.team3.converter.domain.ConvertImageUtils;
 import com.numble.team3.exception.convert.ImageConvertFailureException;
 import com.numble.team3.exception.convert.ImageTypeUnSupportException;
 import com.numble.team3.converter.application.request.CreateImageDto;
-import com.numble.team3.exception.convert.VideoTypeUnSupportException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -54,11 +54,10 @@ public class ApiGatewayConvertService implements ConvertService {
   }
 
   @Override
-  public GetConvertVideoDto uploadConvertVideo(CreateVideoDto dto) throws IOException {
+  public GetConvertUrlDto uploadConvertVideo(CreateVideoDto dto) throws IOException {
     String filename = createVideoFilename(dto.getFile().getOriginalFilename());
-    ObjectMetadata objectMetadata = generateObjectMetaData(dto.getFile());
-    amazonS3Client.putObject(videoBucket, filename, dto.getFile().getInputStream(), objectMetadata);
-    return processVideoApiGateway(filename);
+    amazonS3Client.putObject(videoBucket, filename, dto.getFile().getOriginalFilename());
+    return new GetConvertUrlDto(processVideoApiGateway(filename));
   }
 
   private String createImageFilename(String originalFilename) {
@@ -75,13 +74,13 @@ public class ApiGatewayConvertService implements ConvertService {
     String ext = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
 
     if (!(VIDEO_TYPE.contains(ext))) {
-      throw new VideoTypeUnSupportException();
+      throw new ImageTypeUnSupportException();
     }
 
     return UUID.randomUUID().toString().substring(0, 10) + "." + ext;
   }
 
-  private GetConvertVideoDto processVideoApiGateway(String filename) {
+  private String processVideoApiGateway(String filename) {
     WebClient webClient =
         WebClient.builder()
             .baseUrl(videoApiGateway)
@@ -105,7 +104,7 @@ public class ApiGatewayConvertService implements ConvertService {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       Map<String, String> resultMap = objectMapper.readValue(result, Map.class);
-      return new GetConvertVideoDto(resultMap.get("url"), Long.valueOf(resultMap.get("duration")));
+      return resultMap.get("url");
     } catch (Exception e) {
       throw new ImageConvertFailureException();
     }
