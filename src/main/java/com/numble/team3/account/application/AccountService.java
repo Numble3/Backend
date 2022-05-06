@@ -54,8 +54,6 @@ public class AccountService {
             return dto;
           }).collect(Collectors.toList()))
       .totalCount(accounts.getTotalElements())
-      .hasNext(accounts.hasNext())
-      .hasPrev(accounts.hasPrevious())
       .nowPage(accounts.getNumber() + 1)
       .totalPage(accounts.getTotalPages())
       .size(accounts.getSize())

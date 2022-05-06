@@ -13,8 +13,6 @@ public class GetAccountListDto {
 
   private List<GetAccountSimpleDto> accountDtos;
   private Long totalCount;
-  private boolean hasNext;
-  private boolean hasPrev;
   private int nowPage;
   private int totalPage;
   private int size;
