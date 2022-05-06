@@ -7,6 +7,6 @@ import java.io.IOException;
 
 public interface ConvertService {
 
-  String uploadResizeImage(CreateImageDto dto) throws IOException;
+  String uploadResizeImage(CreateImageDto dto);
   GetConvertUrlDto uploadConvertVideo(CreateVideoDto dto) throws IOException;
 }

@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.numble.team3.converter.application.request.CreateVideoDto;
 import com.numble.team3.converter.application.response.GetConvertUrlDto;
+import com.numble.team3.converter.domain.ConvertImageUtils;
 import com.numble.team3.exception.convert.ImageConvertFailureException;
 import com.numble.team3.exception.convert.ImageTypeUnSupportException;
 import com.numble.team3.converter.application.request.CreateImageDto;
@@ -28,14 +29,8 @@ public class ApiGatewayConvertService implements ConvertService {
   private static final List<String> IMAGE_TYPE = List.of("jpeg", "png", "jpg");
   private static final List<String> VIDEO_TYPE = List.of("mp4", ".avi", ".wmv", ".mpg", ".mpeg", "webm");
 
-  @Value("${cloud.aws.image.s3.name}")
-  private String imageBucket;
-
   @Value("${cloud.aws.video.s3.name}")
   private String videoBucket;
-
-  @Value("${cloud.aws.image.api-gateway.url}")
-  private String imageApiGateway;
 
   @Value("${cloud.aws.video.api-gateway.url}")
   private String videoApiGateway;
@@ -43,15 +38,19 @@ public class ApiGatewayConvertService implements ConvertService {
   private final Long VIDEO_CHUNK_UNIT = 10L; // 10초 단위로 분리
 
   private final AmazonS3Client amazonS3Client;
+  private final ConvertImageUtils imageUtils;
 
   @Override
-  public String uploadResizeImage(CreateImageDto dto) throws IOException {
+  public String uploadResizeImage(CreateImageDto dto) {
     String filename = createImageFilename(dto.getFile().getOriginalFilename());
-    ObjectMetadata objectMetadata = generateObjectMetaData(dto.getFile());
 
-    amazonS3Client.putObject(imageBucket, filename, dto.getFile().getInputStream(), objectMetadata);
+    try {
+      imageUtils.saveTempImageFileForMetadata(filename, dto);
+    } catch (IOException e) {
+      throw new ImageConvertFailureException();
+    }
 
-    return processImageApiGateway(filename, dto.getWidth(), dto.getHeight(), dto.getType());
+    return imageUtils.processImageResize(filename, dto);
   }
 
   @Override
@@ -109,45 +108,5 @@ public class ApiGatewayConvertService implements ConvertService {
     } catch (Exception e) {
       throw new ImageConvertFailureException();
     }
-  }
-
-  private String processImageApiGateway(String filename, String width, String height, String type) {
-    WebClient webClient =
-        WebClient.builder()
-            .baseUrl(imageApiGateway)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .build();
-
-    String result =
-        webClient
-            .post()
-            .uri("/images")
-            .bodyValue(
-                new HashMap<String, String>() {
-                  {
-                    put("filename", filename);
-                    put("width", width);
-                    put("height", height);
-                    put("type", type);
-                  }
-                })
-            .retrieve()
-            .bodyToMono(String.class)
-            .block();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      Map<String, String> resultMap = objectMapper.readValue(result, Map.class);
-      return resultMap.get("url");
-    } catch (Exception e) {
-      throw new ImageConvertFailureException();
-    }
-  }
-
-  private ObjectMetadata generateObjectMetaData(MultipartFile file) {
-    ObjectMetadata objectMetadata = new ObjectMetadata();
-    objectMetadata.setContentLength(file.getSize());
-    objectMetadata.setContentType(file.getContentType());
-    return objectMetadata;
   }
 }
