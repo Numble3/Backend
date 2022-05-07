@@ -10,6 +10,7 @@ import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
 import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.infra.JpaVideoRepository;
+import com.numble.team3.video.infra.VideoRedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoService {
   private final JpaAccountRepository accountRepository;
   private final JpaVideoRepository videoRepository;
+  private final VideoRedisUtils videoRedisUtils;
 
   private Account findByAccountId(Long accountId) {
     return accountRepository.findById(accountId).orElseThrow(AccountNotFoundException::new);
@@ -74,6 +76,8 @@ public class VideoService {
 
   @Transactional(readOnly = true)
   public GetVideoDetailDto getVideoById(Long videoId) {
+    Long viewCount = videoRedisUtils.getViewCountByVideoId(videoId);
+    videoRedisUtils.countView(viewCount + 1, videoId);
     return GetVideoDetailDto.fromEntity(
         videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new));
   }
