@@ -10,6 +10,7 @@ import com.numble.team3.security.OAuth2SuccessHandler;
 import com.numble.team3.security.SecurityUtils;
 import com.numble.team3.sign.infra.SignRedisHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,14 +28,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final CustomOAuth2UserService oAuth2UserService;
   private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
-  private static final String[] PERMIT_URL_ARRAY = {
+  private static final String[] SWAGGER_IGNORE_PATH = {
     "/v2/api-docs",
     "/swagger-resources",
     "/swagger-resources/**",
     "/configuration/ui",
     "/configuration/security",
     "/swagger-ui.html",
-    "/webjars/**",
     "/v3/api-docs/**",
     "/swagger-ui/**"
   };
@@ -42,9 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) {
     web.ignoring()
-      .antMatchers("/h2-console/**", "/favicon.ico", "/profile")
-      .antMatchers(PERMIT_URL_ARRAY);
+      .antMatchers("/h2-console/**", "/profile")
+      .antMatchers(SWAGGER_IGNORE_PATH)
+      .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
   }
+
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {

@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
       name = "Cookie",
       value = "refresh token 쿠키",
       required = true,
-      dataType = "String",
+      dataTypeClass = String.class,
       paramType = "body"
     ),
   }
