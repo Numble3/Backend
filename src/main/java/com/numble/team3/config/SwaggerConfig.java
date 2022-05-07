@@ -20,6 +20,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
   @Bean
   public Docket pawsApi() {
     return new Docket(DocumentationType.SWAGGER_2)
+      .useDefaultResponseMessages(false)
       .groupName("Paws API")
       .select()
       .apis(RequestHandlerSelectors.any())
