@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
       name = "Authorization",
       value = "access token",
       required = true,
-      dataType = "String",
+      dataTypeClass = String.class,
       paramType = "header"
     ),
   }

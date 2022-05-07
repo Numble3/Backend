@@ -23,7 +23,7 @@ public class AccountRedisUtils implements AccountUtils {
   }
 
   @Override
-  public Optional<String> optionalGetAccountLastLoginTIme(Long accountId) {
+  public Optional<String> optionalGetAccountLastLoginTime(Long accountId) {
     return Optional.ofNullable(accountRedisHelper.getLastLogin(accountId));
   }
 

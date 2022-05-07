@@ -1,6 +1,6 @@
 package com.numble.team3.account.domain;
 
-import com.numble.team3.sign.application.request.SignUpDto;
+import com.numble.team3.common.entity.BaseTimeEntity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
@@ -12,19 +12,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "tb_account")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Account {
+public class Account extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,6 +74,11 @@ public class Account {
   }
 
   public void changeLastLogin() {
-    this.lastLogin = DateTimeFormatter.ofPattern("yyyy.MM.dd").format(LocalDateTime.now().minusDays(1));
+    this.lastLogin = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now().minusDays(1));
+  }
+
+  public void changeMyAccount(String nickname, String profile) {
+    this.nickname = nickname;
+    this.profile = profile;
   }
 }

@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
       name = "Authorization",
       value = "access token",
       required = true,
-      dataType = "String",
+      dataTypeClass = String.class,
       paramType = "header"
     ),
   }
