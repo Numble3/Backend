@@ -49,7 +49,8 @@ public class SignController {
 
   @SignInSwagger
   @PostMapping(value = "/sign-in", produces = "application/json", consumes = "application/json")
-  public ResponseEntity<TokenDto> signIn(@Valid @RequestBody SignInDto dto,
+  public ResponseEntity<TokenDto> signIn(
+    @Valid @RequestBody SignInDto dto,
     HttpServletResponse response) {
     TokenDto token = signService.signIn(dto);
     createCookie(token.getRefreshToken(), 604800, response);
@@ -58,8 +59,9 @@ public class SignController {
   }
 
   @LogoutSwagger
-  @GetMapping(value = "/logout", produces = "application/json", consumes = "application/json")
-  public ResponseEntity logout(@ApiParam(value = "access token", required = true) @RequestHeader(value = "Authorization") String accessToken,
+  @GetMapping(value = "/logout", produces = "application/json")
+  public ResponseEntity logout(
+    @ApiParam(value = "access token", required = true) @RequestHeader(value = "Authorization") String accessToken,
     HttpServletResponse response) {
     signService.logout(accessToken);
     deleteCookie(response);
@@ -68,7 +70,7 @@ public class SignController {
   }
 
   @CreateAccessTokenSwagger
-  @GetMapping(value = "/refresh-token", produces = "application/json", consumes = "application/json")
+  @GetMapping(value = "/refresh-token", produces = "application/json")
   public ResponseEntity createAccessTokenByRefreshToken(HttpServletRequest request) {
     for (Cookie cookie : request.getCookies()) {
       if (cookie.getName().equals("refreshToken")) {
@@ -82,14 +84,14 @@ public class SignController {
   }
 
   @AccountWithdrawalSwagger
-  @DeleteMapping(value = "/withdrawal", produces = "application/json", consumes = "application/json")
+  @DeleteMapping(value = "/withdrawal", produces = "application/json")
   public ResponseEntity accountWithdrawal(
     @ApiParam(value = "access token", required = true) @RequestHeader(value = "Authorization") String accessToken,
     HttpServletResponse response) {
-      signService.withdrawal(accessToken);
-      deleteCookie(response);
+    signService.withdrawal(accessToken);
+    deleteCookie(response);
 
-      return new ResponseEntity(HttpStatus.OK);
+    return new ResponseEntity(HttpStatus.OK);
   }
 
   private void createCookie(String token, int maxAge, HttpServletResponse response) {
