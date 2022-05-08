@@ -10,6 +10,7 @@ import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.admin.application.response.GetAccountDetailDto;
 import com.numble.team3.admin.application.response.GetAccountListDto;
 import com.numble.team3.admin.application.response.GetAccountSimpleDto;
+import com.numble.team3.exception.account.AccountNicknameAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.account.AccountWithdrawalException;
 import java.util.List;
@@ -40,21 +41,24 @@ public class AccountService {
           accountUtils.getAccountLastLoginTime(account.getId());
         if (!(account.getLastLogin() != null && account.getLastLogin().equals(lastLoginTime))) {
           account.changeLastLogin();
-        }});
+        }
+      });
 
     accountIds.stream().forEach(accountId -> accountUtils.deleteAllLastLoginTime(accountId));
   }
 
   @Transactional(readOnly = true)
   public GetAccountListDto getAccounts(PageRequest pageRequest) {
-    Page<Account> accounts = accountRepository.findAllWithAdmin(RoleType.ROLE_USER, false, pageRequest);
+    Page<Account> accounts = accountRepository.findAllWithAdmin(RoleType.ROLE_USER, false,
+      pageRequest);
 
     return GetAccountListDto.builder()
       .accountDtos(
         accounts.stream().map(
           account -> {
             GetAccountSimpleDto dto = GetAccountSimpleDto.fromEntity(account);
-            accountUtils.optionalGetAccountLastLoginTime(account.getId()).ifPresent(lastLogin -> dto.changeLastLogin(lastLogin));
+            accountUtils.optionalGetAccountLastLoginTime(account.getId())
+              .ifPresent(lastLogin -> dto.changeLastLogin(lastLogin));
             return dto;
           }).collect(Collectors.toList()))
       .totalCount(accounts.getTotalElements())
@@ -65,12 +69,13 @@ public class AccountService {
   }
 
   @Transactional(readOnly = true)
-  public GetAccountDetailDto getAccountByAdmin(Long accountId) {
+  public GetAccountDetailDto getAccountByAccountId(Long accountId) {
     GetAccountDetailDto dto =
       GetAccountDetailDto.fromEntity(accountRepository.findById(accountId)
         .orElseThrow(AccountNotFoundException::new));
 
-    accountUtils.optionalGetAccountLastLoginTime(dto.getId()).ifPresent(lastLogin -> dto.changeLastLogin(lastLogin));
+    accountUtils.optionalGetAccountLastLoginTime(dto.getId())
+      .ifPresent(lastLogin -> dto.changeLastLogin(lastLogin));
 
     return dto;
   }
@@ -83,7 +88,7 @@ public class AccountService {
   }
 
   @Transactional(readOnly = true)
-  public GetMyAccountDto getMyAccount(UserInfo userInfo) {
+  public GetMyAccountDto getAccountByUserInfo(UserInfo userInfo) {
     Account account =
       accountRepository.findById(userInfo.getAccountId()).orElseThrow(AccountNotFoundException::new);
 
@@ -94,13 +99,19 @@ public class AccountService {
     return new GetMyAccountDto(account.getEmail(), account.getProfile(), account.getNickname());
   }
 
-  public void updateMyAccount(UserInfo userInfo, UpdateMyAccountDto dto) {
+  public void updateAccount(UserInfo userInfo, UpdateMyAccountDto dto) {
     Account account =
       accountRepository.findById(userInfo.getAccountId()).orElseThrow(AccountNotFoundException::new);
 
     if (account.isDeleted()) {
       throw new AccountWithdrawalException();
     }
+
+    accountRepository.findByNickname(dto.getNickname())
+      .ifPresent(a -> {
+        throw new AccountNicknameAlreadyExistsException();
+      }
+    );
 
     account.changeMyAccount(dto.getNickname(), dto.getProfile());
   }

@@ -30,7 +30,7 @@ public class AccountController {
   @GetMyAccountSwagger
   @GetMapping(value = "/accounts", produces = "application/json")
   public ResponseEntity getMyAccount(@ApiIgnore @LoginUser UserInfo userInfo) {
-    return ResponseEntity.ok(accountService.getMyAccount(userInfo));
+    return ResponseEntity.ok(accountService.getAccountByUserInfo(userInfo));
   }
 
   @UpdateMyAccountSwagger
@@ -38,7 +38,7 @@ public class AccountController {
   public ResponseEntity updateMyAccount(
     @ApiIgnore @LoginUser UserInfo userInfo,
     @RequestBody UpdateMyAccountDto dto) {
-    accountService.updateMyAccount(userInfo, dto);
+    accountService.updateAccount(userInfo, dto);
     return new ResponseEntity(HttpStatus.OK);
   }
 
