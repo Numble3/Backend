@@ -1,6 +1,7 @@
 package com.numble.team3.account.application.advice;
 
 import com.numble.team3.account.controller.AccountController;
+import com.numble.team3.exception.account.AccountNicknameAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.account.AccountWithdrawalException;
 import java.util.HashMap;
@@ -31,6 +32,12 @@ public class AccountRestControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   Map<String, String> accountWithdrawalExceptionHandler() {
     return createResponse("이미 탈퇴처리 된 회원입니다.");
+  }
+
+  @ExceptionHandler(AccountNicknameAlreadyExistsException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  Map<String, String> accountNicknameAlreadyExistsExceptionHandler() {
+    return createResponse("이미 존재하는 닉네임입니다.");
   }
 
   private Map<String, String> createResponse(String message) {
