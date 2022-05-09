@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Slice;
 
 @Getter
 @NoArgsConstructor
@@ -19,10 +20,10 @@ public class GetCommentListDto {
     this.hasNext = hasNext;
   }
 
-  public static GetCommentListDto fromEntities(List<Comment> comments) {
+  public static GetCommentListDto fromEntities(Slice<Comment> comments) {
     return GetCommentListDto.builder()
         .contents(comments.stream().map(GetCommentDto::fromEntity).collect(Collectors.toList()))
-        .hasNext(comments.size() > 0)
+        .hasNext(comments.hasNext())
         .build();
   }
 }

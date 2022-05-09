@@ -2,8 +2,8 @@ package com.numble.team3.comment.infra;
 
 import com.numble.team3.comment.domain.Comment;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +16,5 @@ public interface JpaCommentRepository extends JpaRepository<Comment, Long> {
       @Param("accountId") Long accountId, @Param("commentId") Long commentId);
 
   @Query("SELECT c FROM Comment c WHERE c.deleteYn = false and c.video.id = :videoId")
-  Page<Comment> findAllByVideoId(@Param("videoId") Long videoId, Pageable pageable);
+  Slice<Comment> findAllByVideoId(@Param("videoId") Long videoId, Pageable pageable);
 }

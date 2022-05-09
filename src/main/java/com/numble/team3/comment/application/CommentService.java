@@ -62,7 +62,6 @@ public class CommentService {
 
   @Transactional(readOnly = true)
   public GetCommentListDto getAllCommentByVideoId(Long videoId, PageRequest pageRequest) {
-    return GetCommentListDto.fromEntities(
-        commentRepository.findAllByVideoId(videoId, pageRequest).getContent());
+    return GetCommentListDto.fromEntities(commentRepository.findAllByVideoId(videoId, pageRequest));
   }
 }
