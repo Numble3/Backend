@@ -9,7 +9,9 @@ import com.numble.team3.video.application.request.CreateOrUpdateVideoDto;
 import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
 import com.numble.team3.video.domain.Video;
+import com.numble.team3.video.domain.VideoUtils;
 import com.numble.team3.video.infra.JpaVideoRepository;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoService {
   private final JpaAccountRepository accountRepository;
   private final JpaVideoRepository videoRepository;
+  private final VideoUtils videoUtils;
 
   private Account findByAccountId(Long accountId) {
     return accountRepository.findById(accountId).orElseThrow(AccountNotFoundException::new);
@@ -59,6 +62,14 @@ public class VideoService {
   }
 
   @Transactional
+  public void updateViewCountWithRedis() {
+    Map<Long, Long> viewCounts = videoUtils.getAllVideoViewCount();
+    viewCounts
+        .keySet()
+        .forEach(videoId -> videoRepository.updateVideoViewCount(viewCounts.get(videoId), videoId));
+  }
+
+  @Transactional
   public void deleteVideo(UserInfo userInfo, Long videoId) {
     Video video =
         videoRepository
@@ -74,6 +85,7 @@ public class VideoService {
 
   @Transactional(readOnly = true)
   public GetVideoDetailDto getVideoById(Long videoId) {
+    videoUtils.updateViewCount(videoId);
     return GetVideoDetailDto.fromEntity(
         videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new));
   }

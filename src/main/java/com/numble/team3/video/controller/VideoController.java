@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,10 +28,9 @@ public class VideoController {
 
   private final VideoService videoService;
 
-  @PostMapping(value = "/video")
+  @PostMapping(value = "/videos")
   public ResponseEntity createVideo(
-      @LoginUser UserInfo userInfo,
-      @Valid @RequestPart(value = "dto") CreateOrUpdateVideoDto dto) {
+      @LoginUser UserInfo userInfo, @Valid @RequestBody CreateOrUpdateVideoDto dto) {
     videoService.createVideo(userInfo, dto);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
