@@ -6,6 +6,7 @@ import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.comment.application.request.CreateOrUpdateCommentDto;
 import com.numble.team3.comment.application.response.GetCommentListDto;
 import com.numble.team3.comment.domain.Comment;
+import com.numble.team3.comment.domain.CommentSortCondition;
 import com.numble.team3.comment.infra.JpaCommentRepository;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.comment.CommentNotFoundException;
@@ -61,7 +62,9 @@ public class CommentService {
   }
 
   @Transactional(readOnly = true)
-  public GetCommentListDto getAllCommentByVideoId(Long videoId, PageRequest pageRequest) {
-    return GetCommentListDto.fromEntities(commentRepository.findAllByVideoId(videoId, pageRequest));
+  public GetCommentListDto getAllCommentByVideoIdWithCondition(
+      Long videoId, CommentSortCondition commentSortCondition, PageRequest pageRequest) {
+    return GetCommentListDto.fromEntities(
+        commentRepository.findAllByVideoIdWithCondition(videoId, commentSortCondition, pageRequest));
   }
 }

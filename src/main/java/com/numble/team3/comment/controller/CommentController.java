@@ -5,6 +5,7 @@ import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.comment.application.CommentService;
 import com.numble.team3.comment.application.request.CreateOrUpdateCommentDto;
 import com.numble.team3.comment.application.response.GetCommentListDto;
+import com.numble.team3.comment.domain.CommentSortCondition;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -56,8 +57,10 @@ public class CommentController {
   public ResponseEntity<GetCommentListDto> getAllCommentByVideoId(
       @PathVariable Long videoId,
       @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "5") int size) {
+      @RequestParam(defaultValue = "5") int size,
+      @RequestParam(name = "sort", defaultValue = CommentSortCondition.DEFAULT) CommentSortCondition commentSortCondition) {
     return ResponseEntity.ok(
-        commentService.getAllCommentByVideoId(videoId, PageRequest.of(page, size)));
+        commentService.getAllCommentByVideoIdWithCondition(
+            videoId, commentSortCondition, PageRequest.of(page, size)));
   }
 }
