@@ -2,8 +2,10 @@ package com.numble.team3.video.controller;
 
 import com.numble.team3.account.annotation.LoginUser;
 import com.numble.team3.account.resolver.UserInfo;
+import com.numble.team3.video.annotation.SearchFilter;
 import com.numble.team3.video.application.VideoService;
 import com.numble.team3.video.application.request.CreateOrUpdateVideoDto;
+import com.numble.team3.video.resolver.SearchCondition;
 import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
 import javax.validation.Valid;
@@ -37,8 +39,11 @@ public class VideoController {
 
   @GetMapping("/videos")
   public ResponseEntity<GetVideoListDto> getAllVideo(
-      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
-    return ResponseEntity.ok(videoService.getAllVideo(PageRequest.of(page, size)));
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "5") int size,
+      @SearchFilter SearchCondition filter) {
+    return ResponseEntity.ok(
+        videoService.getAllVideoByCondition(filter, PageRequest.of(page, size)));
   }
 
   @GetMapping("/videos/{videoId}")

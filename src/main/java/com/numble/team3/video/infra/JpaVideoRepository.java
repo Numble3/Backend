@@ -11,11 +11,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JpaVideoRepository extends JpaRepository<Video, Long> {
+public interface JpaVideoRepository extends JpaRepository<Video, Long>, JpaVideoSearchRepository {
   Optional<Video> findByAccountIdAndId(Long accountId, Long videoId);
-
-  @Query("SELECT v FROM Video v JOIN FETCH v.account WHERE v.deleteYn = false")
-  List<Video> findAllWithAccount(Pageable pageable);
 
   @Modifying
   @Query("UPDATE Video v SET v.view = v.view + :viewCount WHERE v.id = :videoId")

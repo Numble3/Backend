@@ -11,6 +11,7 @@ import com.numble.team3.video.application.response.GetVideoListDto;
 import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.domain.VideoUtils;
 import com.numble.team3.video.infra.JpaVideoRepository;
+import com.numble.team3.video.resolver.SearchCondition;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,8 +80,9 @@ public class VideoService {
   }
 
   @Transactional(readOnly = true)
-  public GetVideoListDto getAllVideo(PageRequest pageRequest) {
-    return GetVideoListDto.fromEntities(videoRepository.findAllWithAccount(pageRequest));
+  public GetVideoListDto getAllVideoByCondition(SearchCondition condition, PageRequest pageRequest) {
+    return GetVideoListDto.fromEntities(
+        videoRepository.searchVideoByCondition(condition, pageRequest));
   }
 
   @Transactional(readOnly = true)
