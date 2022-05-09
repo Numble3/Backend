@@ -42,7 +42,7 @@ public class AdminAccountController {
   @GetMapping(value = "/accounts/{id}", produces = "application/json")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity getAccount(@PathVariable Long id) {
-    return ResponseEntity.ok(accountService.getAccountByAdmin(id));
+    return ResponseEntity.ok(accountService.getAccountByAccountId(id));
   }
 
   @WithdrawalSwagger

@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
     ),
     @ApiResponse(
       code = 400,
-      message = "회원 정보 수정 실패 \t\n 1. nickname 누락",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\"message\" : \"닉네임을 입력해주세요.\"}"))
+      message = "회원 정보 수정 실패 \t\n 1. nickname 누락 \t\n 2. nickname 중복",
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"message\" : \"닉네임을 입력해주세요.\"\n\"message\" : \"이미 존재하는 닉네임입니다.\"\n}"))
     ),
     @ApiResponse(
       code = 401,

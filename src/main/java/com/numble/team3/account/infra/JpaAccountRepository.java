@@ -18,6 +18,8 @@ public interface JpaAccountRepository extends JpaRepository<Account, Long> {
 
   boolean existsByNickname(String nickname);
 
+  Optional<Account> findByNickname(String nickname);
+
   @Query("SELECT a FROM Account a WHERE a.roleType = :roleType AND a.deleted = :deleted")
   Page<Account> findAllWithAdmin(@Param("roleType") RoleType roleType, @Param("deleted") boolean deleted, Pageable pageable);
 }
