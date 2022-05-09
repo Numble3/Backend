@@ -4,6 +4,7 @@ import com.numble.team3.video.domain.Video;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import org.springframework.data.domain.Slice;
 
 @Getter
 public class GetVideoListDto {
@@ -15,9 +16,9 @@ public class GetVideoListDto {
     this.hasNext = hasNext;
   }
 
-  public static GetVideoListDto fromEntities(List<Video> contents) {
+  public static GetVideoListDto fromEntities(Slice<Video> contents) {
     return new GetVideoListDto(
         contents.stream().map(GetVideoDto::fromEntity).collect(Collectors.toList()),
-        contents.size() != 0);
+        contents.hasNext());
   }
 }

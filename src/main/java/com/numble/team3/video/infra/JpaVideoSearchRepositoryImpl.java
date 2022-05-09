@@ -10,6 +10,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
@@ -18,20 +20,27 @@ public class JpaVideoSearchRepositoryImpl implements JpaVideoSearchRepository {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public List<Video> searchVideoByCondition(SearchCondition filter, Pageable pageable) {
-    return queryFactory
-        .selectFrom(video)
-        .leftJoin(video.account, account)
-        .fetchJoin()
-        .where(
-            video.deleteYn.isFalse(),
-            video.adminDeleteYn.isFalse(),
-            isTitleEq(filter),
-            isCategoryEq(filter))
-        .orderBy(video.createdAt.desc())
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-        .fetch();
+  public Slice<Video> searchVideoByCondition(SearchCondition filter, Pageable pageable) {
+    List<Video> contents =
+        queryFactory
+            .selectFrom(video)
+            .leftJoin(video.account, account)
+            .fetchJoin()
+            .where(
+                video.deleteYn.isFalse(),
+                video.adminDeleteYn.isFalse(),
+                isTitleEq(filter),
+                isCategoryEq(filter))
+            .orderBy(video.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize() + 1)
+            .fetch();
+    boolean hasNext = false;
+    if (contents.size() > pageable.getPageSize()) {
+      contents.remove(pageable.getPageSize());
+      hasNext = true;
+    }
+    return new SliceImpl<>(contents, pageable, hasNext);
   }
 
   private BooleanExpression isTitleEq(SearchCondition filter) {
