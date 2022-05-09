@@ -1,7 +1,10 @@
 package com.numble.team3.video.infra;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.numble.team3.video.domain.VideoUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -10,19 +13,22 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VideoRedisUtils implements VideoUtils {
   private final RedisTemplate redisTemplate;
-  private final ObjectMapper objectMapper;
   private final String PREFIX_VIDEO_VIEW = "VIDEO::VIEW::";
 
   @Override
-  public Long getViewCountByVideoId(Long videoId) {
-    if(!redisTemplate.hasKey(PREFIX_VIDEO_VIEW + String.valueOf(videoId))){
-      return 0L;
-    }
-    return Long.valueOf((String) redisTemplate.opsForValue().get(PREFIX_VIDEO_VIEW + String.valueOf(videoId)));
+  public void updateViewCount(Long videoId) {
+    redisTemplate.opsForValue().increment(PREFIX_VIDEO_VIEW + String.valueOf(videoId));
   }
 
-  @Override
-  public void countView(Long curViewCount, Long videoId) {
-    redisTemplate.opsForValue().set(PREFIX_VIDEO_VIEW + String.valueOf(videoId), String.valueOf(curViewCount));
+  public Map<Long, Long> getAllVideoViewCount(){
+    List<String> keys = (List<String>) redisTemplate.keys(PREFIX_VIDEO_VIEW + "*").stream().collect(Collectors.toList());
+    List<String> viewCounts = redisTemplate.opsForValue().multiGet(keys);
+    redisTemplate.delete(keys);
+
+    Map<Long, Long> result = new HashMap<>();
+    for(int i = 0; i < keys.size(); i++){
+      result.put(Long.valueOf(keys.get(i).substring(PREFIX_VIDEO_VIEW.length())), Long.valueOf(viewCounts.get(i)));
+    }
+    return result;
   }
 }
