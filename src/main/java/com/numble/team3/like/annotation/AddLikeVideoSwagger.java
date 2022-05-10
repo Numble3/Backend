@@ -11,20 +11,27 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ApiOperation(value = "관심영상 전체 조회")
+@ApiOperation(value = "좋아요 추가")
 @ApiResponses(
   value = {
     @ApiResponse(
-      code = 200,
-      message = "관심영상 조회 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"getLikeDtoList\" : {\n\t \"카테고리 명\" : \n\t \"getLikeDtos\" : [ \n\t\t { \n\t\t \"createdAt\" : \"yyyy-MM-dd HH:mm\", \n\t\t \"getVideoDto\" : { \n\t\t\t \"videoId\" : 비디오 번호, \n\t\t\t \"thumbnailPath\" : \"썸네일 url\", \n\t\t\t \"title\" : \"비디오 이름\", \n\t\t\t \"nickname\" : \"비디오 업로더 닉네임\", \n\t\t\t \"view\" : \"조회수\", \n\t\t\t \"like\" : \"좋아요 수\", \n\t\t\t \"createAd\" : \"yyyy-MM-dd\" \n\t\t } \n\t ], \n\t \"lastLikeId\" : 다음 페이지 요청을 위한 likeId \n}\n}"))
+      code = 201,
+      message = "좋아요 추가 성공",
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{}"))
+    ),
+    @ApiResponse(
+      code = 400,
+      message = "좋아요 추가 실패 \t\n 1. 존재하지 않는 비디오 \t\n 2. 쿼리 파라미터가 존재하지 않음 \t\n 3. 쿼리 파라미터의 타입이 올바르지 않음",
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"message\" : \"존재하지 않는 비디오입니다.\"\n\"message\" : \"쿼리 파라미터를 확인해주세요.\"\n\"message\" : \"쿼리 파라미터의 타입을 확인해주세요.\"\n}"))
     ),
     @ApiResponse(
       code = 401,
-      message = "관심영상 조회 실패 \t\n 1. access token이 유효하지 않음",
+      message = "좋아요 추가 실패 \t\n 1. access token이 유효하지 않음",
       examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{}"))
     )
   }
@@ -40,6 +47,7 @@ import java.lang.annotation.Target;
     ),
   }
 )
-public @interface GetAllLikesSwagger {
+@ResponseStatus(HttpStatus.CREATED)
+public @interface AddLikeVideoSwagger {
 
 }

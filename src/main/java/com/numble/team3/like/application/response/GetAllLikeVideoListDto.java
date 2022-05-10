@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GetAllLikeListDto {
+public class GetAllLikeVideoListDto {
 
-  private Map<String, GetLikeCategoryListLimitDto> likes;
+  private Map<String, GetLikeVideoCategoryListLimitDto> likes;
 }

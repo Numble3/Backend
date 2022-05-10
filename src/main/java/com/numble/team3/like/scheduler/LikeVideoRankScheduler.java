@@ -1,18 +1,18 @@
 package com.numble.team3.like.scheduler;
 
-import com.numble.team3.like.application.LikeService;
+import com.numble.team3.like.application.LikeVideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class LikeRankScheduler {
+public class LikeVideoRankScheduler {
 
-  private final LikeService likeService;
+  private final LikeVideoService likeVideoService;
 
   @Scheduled(cron = "0 30 0 * * *")
   protected void rankByDayScheduler() {
-    likeService.rankByDayScheduler("day");
+    likeVideoService.rankByDayScheduler("day");
   }
 }

@@ -22,6 +22,6 @@ import java.lang.annotation.Target;
     )
   }
 )
-public @interface GetRankByDaySwagger {
+public @interface GetVideoRankByDayLikeSwagger {
 
 }

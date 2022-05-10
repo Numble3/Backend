@@ -13,8 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.account.resolver.LoginMethodArgumentResolver;
 import com.numble.team3.account.resolver.UserInfo;
-import com.numble.team3.like.application.LikeService;
-import com.numble.team3.like.application.advice.LikeRestControllerAdvice;
+import com.numble.team3.like.application.LikeVideoService;
+import com.numble.team3.like.application.advice.LikeVideoRestControllerAdvice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -33,25 +33,25 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("LikeRestControllerAdvice 테스트")
-public class LikeControllerAdviceTest {
+public class LikeVideoVideoControllerAdviceTest {
 
   @Mock
-  LikeService likeService;
+  LikeVideoService likeVideoService;
 
   @Mock
   LoginMethodArgumentResolver loginMethodArgumentResolver;
 
   @InjectMocks
-  LikeController likeController;
+  LikeVideoController likeVideoController;
 
   MockMvc mockMvc;
 
   @BeforeEach
   void beforeEach() {
     mockMvc = MockMvcBuilders
-      .standaloneSetup(likeController)
+      .standaloneSetup(likeVideoController)
       .setCustomArgumentResolvers(loginMethodArgumentResolver)
-      .setControllerAdvice(new LikeRestControllerAdvice())
+      .setControllerAdvice(new LikeVideoRestControllerAdvice())
       .addFilter(new CharacterEncodingFilter("UTF-8", true))
       .alwaysDo(print())
       .build();

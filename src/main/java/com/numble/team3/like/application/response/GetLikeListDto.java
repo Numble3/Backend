@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GetLikeListDto {
 
-  private List<GetLikeDto> likes;
+  private List<GetLikeVideoDto> likes;
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private Long lastLikeId;

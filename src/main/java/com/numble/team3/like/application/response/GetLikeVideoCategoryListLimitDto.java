@@ -7,9 +7,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GetLikeCategoryListLimitDto {
+public class GetLikeVideoCategoryListLimitDto {
 
-  private List<GetLikeDto> getLikeDtos;
+  private List<GetLikeVideoDto> getLikeVideoDtos;
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private Long lastLikeId;

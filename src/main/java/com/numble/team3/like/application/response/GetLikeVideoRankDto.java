@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class GetLikeRankVideoDto {
+public class GetLikeVideoRankDto {
   private Long videoId;
   private String thumbnailPath;
   private String title;
@@ -27,8 +27,8 @@ public class GetLikeRankVideoDto {
   @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate createdAt;
 
-  public static GetLikeRankVideoDto fromEntity(Video video) {
-    return GetLikeRankVideoDto.builder()
+  public static GetLikeVideoRankDto fromEntity(Video video) {
+    return GetLikeVideoRankDto.builder()
       .videoId(video.getId())
       .thumbnailPath(video.getThumbnailUrl())
       .title(video.getTitle())
