@@ -47,12 +47,12 @@ public class LikeVideoService {
   }
 
   @Transactional
-  public void deleteLike(Long likeId) {
-    if (!likeRepository.existsById(likeId)) {
-      throw new LikeVideoNotFoundException();
-    }
+  public void deleteLike(UserInfo userInfo, Long videoId) {
+    LikeVideo like =
+      likeRepository.getLikeByAccountIdAndVideoId(userInfo.getAccountId(), videoId)
+        .orElseThrow(LikeVideoNotFoundException::new);
 
-    likeRepository.deleteById(likeId);
+    likeRepository.delete(like);
   }
 
   @Transactional(readOnly = true)

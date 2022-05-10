@@ -3,6 +3,7 @@ package com.numble.team3.like.infra;
 import com.numble.team3.like.domain.LikeVideo;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,7 +14,8 @@ import org.springframework.data.repository.query.Param;
 public interface JpaLikeVideoRepository extends JpaRepository<LikeVideo, Long>,
   CustomJpaLikeVideoRepository {
 
-  boolean existsById(Long likeId);
+  @Query("SELECT l FROM LikeVideo l WHERE l.accountId = :accountId AND l.video.id = :videoId")
+  Optional<LikeVideo> getLikeByAccountIdAndVideoId(Long accountId, Long videoId);
 
   @Query("SELECT l FROM LikeVideo l JOIN FETCH l.video WHERE l.accountId = :accountId AND l.video.category = :category")
   List<LikeVideo> getAllLikesByAccountIdAndCategory(@Param("accountId") Long accountId,

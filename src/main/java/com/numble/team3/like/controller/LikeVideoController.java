@@ -45,8 +45,10 @@ public class LikeVideoController {
 
   @DeleteLikeVideoSwagger
   @DeleteMapping(value = "/likes/delete", produces = "application/json")
-  public ResponseEntity deleteLike(@ApiParam(value = "좋아요 id", required = true) @RequestParam(name = "id") Long likeId) {
-    likeVideoService.deleteLike(likeId);
+  public ResponseEntity deleteLike(
+    @ApiIgnore @LoginUser UserInfo userInfo,
+    @ApiParam(value = "비디오 id", required = true) @RequestParam(name = "id") Long videoId) {
+    likeVideoService.deleteLike(userInfo, videoId);
     return new ResponseEntity(HttpStatus.OK);
   }
 

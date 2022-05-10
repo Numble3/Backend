@@ -2,6 +2,7 @@ package com.numble.team3.like.application;
 
 import static com.numble.team3.factory.UserInfoFactory.createUserInfo;
 import static com.numble.team3.factory.dto.LikeVideoDtoFactory.createGetLikeDto;
+import static com.numble.team3.factory.entity.LikeVideoEntityFactory.*;
 import static com.numble.team3.factory.entity.LikeVideoEntityFactory.createLike;
 import static com.numble.team3.factory.entity.VideoEntityFactory.createVideo;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +19,7 @@ import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.exception.like.LikeVideoNotFoundException;
 import com.numble.team3.exception.video.VideoNotFoundException;
+import com.numble.team3.factory.entity.LikeVideoEntityFactory;
 import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
 import com.numble.team3.like.application.response.GetLikeVideoDto;
 import com.numble.team3.like.application.response.GetLikeListDto;
@@ -88,24 +90,29 @@ class LikeVideoServiceTest {
   }
 
   @Test
-  void deleteLike_성공_테스트() {
+  void deleteLike_성공_테스트() throws Exception {
     // given
-    given(likeRepository.existsById(anyLong())).willReturn(true);
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
+    LikeVideo likeVideo = createLike();
+
+    given(likeRepository.getLikeByAccountIdAndVideoId(anyLong(), anyLong())).willReturn(Optional.ofNullable(likeVideo));
 
     // when
-    likeVideoService.deleteLike(1L);
+    likeVideoService.deleteLike(userInfo, 1L);
 
     // then
-    verify(likeRepository).deleteById(anyLong());
+    verify(likeRepository).delete(any(LikeVideo.class));
   }
 
   @Test
   void deleteLike_없는_좋아요_id_실패_테스트() {
     // given
-    given(likeRepository.existsById(anyLong())).willThrow(new LikeVideoNotFoundException());
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
+
+    given(likeRepository.getLikeByAccountIdAndVideoId(anyLong(), anyLong())).willReturn(Optional.empty());
 
     // when, then
-    assertThrows(LikeVideoNotFoundException.class, () -> likeVideoService.deleteLike(1L));
+    assertThrows(LikeVideoNotFoundException.class, () -> likeVideoService.deleteLike(userInfo, 1L));
   }
 
   @Test

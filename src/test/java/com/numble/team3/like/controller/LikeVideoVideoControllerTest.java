@@ -1,5 +1,6 @@
 package com.numble.team3.like.controller;
 
+import static com.numble.team3.factory.UserInfoFactory.*;
 import static com.numble.team3.factory.dto.LikeVideoDtoFactory.createGetAllLikeListDto;
 import static com.numble.team3.factory.dto.LikeVideoDtoFactory.createGetLikeListDto;
 import static com.numble.team3.factory.dto.LikeVideoDtoFactory.createGetVideoRankDtoList;
@@ -69,7 +70,7 @@ class LikeVideoVideoControllerTest {
   @Test
   void addLike_테스트() throws Exception {
     // given
-    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
 
     given(loginMethodArgumentResolver.supportsParameter(any())).willReturn(true);
     given(loginMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
@@ -91,7 +92,9 @@ class LikeVideoVideoControllerTest {
   @Test
   void deleteLike_테스트() throws Exception {
     // given
-    willDoNothing().given(likeVideoService).deleteLike(anyLong());
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
+
+    willDoNothing().given(likeVideoService).deleteLike(any(UserInfo.class), anyLong());
 
     // when
     ResultActions result = mockMvc.perform(
@@ -103,13 +106,13 @@ class LikeVideoVideoControllerTest {
     result
       .andExpect(status().isOk());
 
-    verify(likeVideoService).deleteLike(anyLong());
+    verify(likeVideoService).deleteLike(any(UserInfo.class), anyLong());
   }
 
   @Test
   void getLikesHierarchy_테스트() throws Exception {
     // given
-    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
 
     GetAllLikeVideoListDto dto = createGetAllLikeListDto();
 
@@ -148,7 +151,7 @@ class LikeVideoVideoControllerTest {
   @Test
   void getLikesByCategory_테스트() throws Exception {
     // given
-    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
 
     GetLikeListDto dto = createGetLikeListDto();
 
