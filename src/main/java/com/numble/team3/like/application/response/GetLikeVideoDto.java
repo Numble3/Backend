@@ -3,7 +3,7 @@ package com.numble.team3.like.application.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.numble.team3.like.domain.Like;
+import com.numble.team3.like.domain.LikeVideo;
 import com.numble.team3.video.application.response.GetVideoDto;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class GetLikeDto {
+public class GetLikeVideoDto {
 
   private Long id;
 
@@ -24,11 +24,11 @@ public class GetLikeDto {
 
   private GetVideoDto getVideoDto;
 
-  public static GetLikeDto fromEntity(Like like) {
-    return GetLikeDto.builder()
-      .id(like.getId())
-      .createdAt(like.getCreatedAt())
-      .getVideoDto(GetVideoDto.fromEntity(like.getVideo()))
+  public static GetLikeVideoDto fromEntity(LikeVideo likeVideo) {
+    return GetLikeVideoDto.builder()
+      .id(likeVideo.getId())
+      .createdAt(likeVideo.getCreatedAt())
+      .getVideoDto(GetVideoDto.fromEntity(likeVideo.getVideo()))
       .build();
   }
 }

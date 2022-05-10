@@ -11,27 +11,25 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ApiOperation(value = "좋아요 추가")
+@ApiOperation(value = "좋아요 삭제")
 @ApiResponses(
   value = {
     @ApiResponse(
-      code = 201,
-      message = "좋아요 추가 성공",
+      code = 200,
+      message = "좋아요 삭제 성공",
       examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{}"))
     ),
     @ApiResponse(
       code = 400,
-      message = "좋아요 추가 실패 \t\n 1. 존재하지 않는 비디오 \t\n 2. 쿼리 파라미터가 존재하지 않음 \t\n 3. 쿼리 파라미터의 타입이 올바르지 않음",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"message\" : \"존재하지 않는 비디오입니다.\"\n\"message\" : \"쿼리 파라미터를 확인해주세요.\"\n\"message\" : \"쿼리 파라미터의 타입을 확인해주세요.\"\n}"))
+      message = "좋아요 삭제 실패 \t\n 1. 존재하지 않는 좋아요",
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\"message\" : \"존재하지 않는 좋아요입니다.\"}"))
     ),
     @ApiResponse(
       code = 401,
-      message = "좋아요 추가 실패 \t\n 1. access token이 유효하지 않음",
+      message = "좋아요 삭제 실패 \t\n 1. access token이 유효하지 않음",
       examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{}"))
     )
   }
@@ -47,7 +45,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
     ),
   }
 )
-@ResponseStatus(HttpStatus.CREATED)
-public @interface AddLikeSwagger {
+public @interface DeleteLikeVideoSwagger {
 
 }

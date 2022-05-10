@@ -1,8 +1,9 @@
 package com.numble.team3.like.controller;
 
-import static com.numble.team3.factory.dto.LikeDtoFactory.createGetAllLikeListDto;
-import static com.numble.team3.factory.dto.LikeDtoFactory.createGetLikeListDto;
-import static com.numble.team3.factory.dto.LikeDtoFactory.createGetVideoRankDtoList;
+import static com.numble.team3.factory.UserInfoFactory.*;
+import static com.numble.team3.factory.dto.LikeVideoDtoFactory.createGetAllLikeListDto;
+import static com.numble.team3.factory.dto.LikeVideoDtoFactory.createGetLikeListDto;
+import static com.numble.team3.factory.dto.LikeVideoDtoFactory.createGetVideoRankDtoList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -21,8 +22,8 @@ import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.account.resolver.LoginMethodArgumentResolver;
 import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.factory.UserInfoFactory;
-import com.numble.team3.like.application.LikeService;
-import com.numble.team3.like.application.response.GetAllLikeListDto;
+import com.numble.team3.like.application.LikeVideoService;
+import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
 import com.numble.team3.like.application.response.GetLikeListDto;
 import com.numble.team3.like.application.response.GetVideoRankDto;
 import java.util.List;
@@ -43,16 +44,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("LikeController 테스트")
-class LikeControllerTest {
+class LikeVideoVideoControllerTest {
 
   @Mock
-  LikeService likeService;
+  LikeVideoService likeVideoService;
 
   @Mock
   LoginMethodArgumentResolver loginMethodArgumentResolver;
 
   @InjectMocks
-  LikeController likeController;
+  LikeVideoController likeVideoController;
 
   MockMvc mockMvc;
 
@@ -60,7 +61,7 @@ class LikeControllerTest {
   void beforeEach() {
 
     mockMvc = MockMvcBuilders
-      .standaloneSetup(likeController)
+      .standaloneSetup(likeVideoController)
       .setCustomArgumentResolvers(loginMethodArgumentResolver)
       .alwaysDo(print())
       .build();
@@ -69,11 +70,11 @@ class LikeControllerTest {
   @Test
   void addLike_테스트() throws Exception {
     // given
-    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
 
     given(loginMethodArgumentResolver.supportsParameter(any())).willReturn(true);
     given(loginMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
-    willDoNothing().given(likeService).addLike(any(UserInfo.class), anyLong());
+    willDoNothing().given(likeVideoService).addLike(any(UserInfo.class), anyLong());
 
     // when
     ResultActions result = mockMvc.perform(
@@ -85,13 +86,15 @@ class LikeControllerTest {
     result
       .andExpect(status().isCreated());
 
-    verify(likeService).addLike(any(UserInfo.class), anyLong());
+    verify(likeVideoService).addLike(any(UserInfo.class), anyLong());
   }
 
   @Test
   void deleteLike_테스트() throws Exception {
     // given
-    willDoNothing().given(likeService).deleteLike(anyLong());
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
+
+    willDoNothing().given(likeVideoService).deleteLike(any(UserInfo.class), anyLong());
 
     // when
     ResultActions result = mockMvc.perform(
@@ -103,19 +106,19 @@ class LikeControllerTest {
     result
       .andExpect(status().isOk());
 
-    verify(likeService).deleteLike(anyLong());
+    verify(likeVideoService).deleteLike(any(UserInfo.class), anyLong());
   }
 
   @Test
   void getLikesHierarchy_테스트() throws Exception {
     // given
-    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
 
-    GetAllLikeListDto dto = createGetAllLikeListDto();
+    GetAllLikeVideoListDto dto = createGetAllLikeListDto();
 
     given(loginMethodArgumentResolver.supportsParameter(any())).willReturn(true);
     given(loginMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
-    given(likeService.getLikesHierarchy(any(UserInfo.class))).willReturn(dto);
+    given(likeVideoService.getLikesHierarchy(any(UserInfo.class))).willReturn(dto);
 
     // when
     ResultActions result = mockMvc.perform(
@@ -129,32 +132,32 @@ class LikeControllerTest {
       .andExpect(jsonPath("$.likes").exists())
       .andExpect(jsonPath("$.likes.고양이").exists())
       .andExpect(jsonPath("$.likes.고양이.lastLikeId").value(1))
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos").exists())
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0]").exists())
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].id").value(1))
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].createdAt").exists())
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].getVideoDto").exists())
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].getVideoDto.videoId").value(1))
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].getVideoDto.thumbnailPath").value("https://thumbnail-url"))
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].getVideoDto.title").value("title"))
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].getVideoDto.nickname").value("nickname"))
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].getVideoDto.view").value(1))
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].getVideoDto.like").value(1))
-      .andExpect(jsonPath("$.likes.고양이.getLikeDtos[0].getVideoDto.createdAt").exists());
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos").exists())
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0]").exists())
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].id").value(1))
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].createdAt").exists())
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].getVideoDto").exists())
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].getVideoDto.videoId").value(1))
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].getVideoDto.thumbnailPath").value("https://thumbnail-url"))
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].getVideoDto.title").value("title"))
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].getVideoDto.nickname").value("nickname"))
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].getVideoDto.view").value(1))
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].getVideoDto.like").value(1))
+      .andExpect(jsonPath("$.likes.고양이.getLikeVideoDtos[0].getVideoDto.createdAt").exists());
 
-    verify(likeService).getLikesHierarchy(any(UserInfo.class));
+    verify(likeVideoService).getLikesHierarchy(any(UserInfo.class));
   }
 
   @Test
   void getLikesByCategory_테스트() throws Exception {
     // given
-    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
 
     GetLikeListDto dto = createGetLikeListDto();
 
     given(loginMethodArgumentResolver.supportsParameter(any())).willReturn(true);
     given(loginMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
-    given(likeService.getLikesByCategory(any(UserInfo.class), anyString(), any(), anyInt()))
+    given(likeVideoService.getLikesByCategory(any(UserInfo.class), anyString(), any(), anyInt()))
       .willReturn(dto);
 
     // when
@@ -181,7 +184,7 @@ class LikeControllerTest {
       .andExpect(jsonPath("$.likes[0].getVideoDto.like").value(1))
       .andExpect(jsonPath("$.likes[0].getVideoDto.createdAt").exists());
 
-    verify(likeService).getLikesByCategory(any(UserInfo.class), anyString(), any(), anyInt());
+    verify(likeVideoService).getLikesByCategory(any(UserInfo.class), anyString(), any(), anyInt());
   }
 
   @Test
@@ -189,7 +192,7 @@ class LikeControllerTest {
     // given
     List<GetVideoRankDto> dto = createGetVideoRankDtoList();
 
-    given(likeService.getRank(anyString())).willReturn(dto);
+    given(likeVideoService.getRank(anyString())).willReturn(dto);
 
     // when
     ResultActions result = mockMvc.perform(

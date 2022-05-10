@@ -4,7 +4,7 @@ import com.numble.team3.video.domain.Video;
 import lombok.Getter;
 
 @Getter
-public class GetVideoQuerydsl {
+public class GetLikeVideoQuerydsl {
 
   private Video video;
   private long likes;

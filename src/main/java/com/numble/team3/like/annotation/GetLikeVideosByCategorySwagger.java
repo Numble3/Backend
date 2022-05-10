@@ -14,22 +14,17 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ApiOperation(value = "좋아요 삭제")
+@ApiOperation(value = "관심영상 카테고리 별 조회")
 @ApiResponses(
   value = {
     @ApiResponse(
       code = 200,
-      message = "좋아요 삭제 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{}"))
-    ),
-    @ApiResponse(
-      code = 400,
-      message = "좋아요 삭제 실패 \t\n 1. 존재하지 않는 좋아요",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\"message\" : \"존재하지 않는 좋아요입니다.\"}"))
+      message = "관심영상 카테고리 별 조회 성공",
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"likes\" : [ \n\t { \n\t\t \"createdAt\" : \"yyyy-MM-dd HH:mm\", \n\t\t \"getVideoDto\" : { \n\t\t\t \"videoId\" : videoId, \n\t\t\t \"thumbnailPath\" : \"썸네일 url\", \n\t\t\t \"title\" : \"title\", \n\t\t\t \"nickname\" : \"비디오 업로더 닉네임\", \n\t\t\t \"view\" : 조회수, \n\t\t\t \"like\" : 좋아요, \n\t\t\t \"createdAt\", \"yyyy-MM-dd\" \n\t\t } \n\t } \n\t], \n \"lastLikeId\" : 다음 페이지 요청을 위한 likeId \n}"))
     ),
     @ApiResponse(
       code = 401,
-      message = "좋아요 삭제 실패 \t\n 1. access token이 유효하지 않음",
+      message = "관심영상 조회 실패 \t\n 1. access token이 유효하지 않음",
       examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{}"))
     )
   }
@@ -45,6 +40,6 @@ import java.lang.annotation.Target;
     ),
   }
 )
-public @interface DeleteLikeSwagger {
+public @interface GetLikeVideosByCategorySwagger {
 
 }

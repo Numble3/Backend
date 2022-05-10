@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class LikeRedisHelper {
+public class LikeVideoRedisHelper {
 
   private final RedisTemplate redisTemplate;
   private final ObjectMapper objectMapper;

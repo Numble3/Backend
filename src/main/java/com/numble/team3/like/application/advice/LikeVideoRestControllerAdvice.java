@@ -1,8 +1,8 @@
 package com.numble.team3.like.application.advice;
 
-import com.numble.team3.exception.like.LikeNotFoundException;
+import com.numble.team3.exception.like.LikeVideoNotFoundException;
 import com.numble.team3.exception.video.VideoNotFoundException;
-import com.numble.team3.like.controller.LikeController;
+import com.numble.team3.like.controller.LikeVideoController;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@RestControllerAdvice(assignableTypes = {LikeController.class})
-public class LikeRestControllerAdvice {
+@RestControllerAdvice(assignableTypes = {LikeVideoController.class})
+public class LikeVideoRestControllerAdvice {
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -27,7 +27,7 @@ public class LikeRestControllerAdvice {
     return createResponse("쿼리 파라미터의 타입을 확인해주세요.");
   }
 
-  @ExceptionHandler(LikeNotFoundException.class)
+  @ExceptionHandler(LikeVideoNotFoundException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   Map<String, String> likeNotFoundExceptionHandler() {
     return createResponse("존재하지 않는 좋아요입니다.");

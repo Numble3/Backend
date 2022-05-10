@@ -11,6 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class GetVideoRankDto {
 
-  private GetLikeRankVideoDto videoDto;
+  private GetLikeVideoRankDto videoDto;
   private long likes;
 }

@@ -5,17 +5,16 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
 import com.numble.team3.account.resolver.UserInfo;
-import com.numble.team3.exception.like.LikeNotFoundException;
+import com.numble.team3.exception.like.LikeVideoNotFoundException;
 import com.numble.team3.exception.video.VideoNotFoundException;
-import com.numble.team3.like.application.response.GetAllLikeListDto;
-import com.numble.team3.like.application.response.GetLikeCategoryListLimitDto;
-import com.numble.team3.like.application.response.GetLikeDto;
+import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
+import com.numble.team3.like.application.response.GetLikeVideoCategoryListLimitDto;
+import com.numble.team3.like.application.response.GetLikeVideoDto;
 import com.numble.team3.like.application.response.GetLikeListDto;
 import com.numble.team3.like.application.response.GetVideoRankDto;
-import com.numble.team3.like.domain.Like;
-import com.numble.team3.like.domain.LikeUtils;
-import com.numble.team3.like.infra.JpaLikeRepository;
-import com.numble.team3.like.infra.LikeRedisHelper;
+import com.numble.team3.like.domain.LikeVideo;
+import com.numble.team3.like.domain.LikeVideoUtils;
+import com.numble.team3.like.infra.JpaLikeVideoRepository;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import com.numble.team3.video.infra.JpaVideoRepository;
 import java.util.ArrayList;
@@ -31,29 +30,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class LikeService {
+public class LikeVideoService {
 
   @Value("${like.category.limit}")
   private int limit;
 
-  private final JpaLikeRepository likeRepository;
+  private final JpaLikeVideoRepository likeRepository;
   private final JpaVideoRepository videoRepository;
-  private final LikeUtils likeUtils;
+  private final LikeVideoUtils likeVideoUtils;
 
   @Transactional
   public void addLike(UserInfo userInfo, Long videoId) {
     likeRepository.save(
-      new Like(videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new),
+      new LikeVideo(videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new),
         userInfo.getAccountId()));
   }
 
   @Transactional
-  public void deleteLike(Long likeId) {
-    if (!likeRepository.existsById(likeId)) {
-      throw new LikeNotFoundException();
-    }
+  public void deleteLike(UserInfo userInfo, Long videoId) {
+    LikeVideo like =
+      likeRepository.getLikeByAccountIdAndVideoId(userInfo.getAccountId(), videoId)
+        .orElseThrow(LikeVideoNotFoundException::new);
 
-    likeRepository.deleteById(likeId);
+    likeRepository.delete(like);
   }
 
   @Transactional(readOnly = true)
@@ -63,7 +62,7 @@ public class LikeService {
     Long likeId,
     int size) {
 
-    List<GetLikeDto> likes = likeRepository.getLikesByCategory(userInfo, categoryName, likeId, size);
+    List<GetLikeVideoDto> likes = likeRepository.getLikesByCategory(userInfo, categoryName, likeId, size);
 
     if (likes.size() == 0) {
       return new GetLikeListDto(likes, null);
@@ -74,39 +73,39 @@ public class LikeService {
   }
 
   @Transactional(readOnly = true)
-  public GetAllLikeListDto getLikesHierarchy(UserInfo userInfo) {
-    Map<String, List<GetLikeDto>> rankHierarchy = Arrays.stream(VideoCategory.values()).collect(
+  public GetAllLikeVideoListDto getLikesHierarchy(UserInfo userInfo) {
+    Map<String, List<GetLikeVideoDto>> rankHierarchy = Arrays.stream(VideoCategory.values()).collect(
       groupingBy(value -> value.getName(), mapping(
         value -> likeRepository.getAllLikesWithLimit(userInfo.getAccountId(), value, limit)
-          .stream().map(like -> GetLikeDto.fromEntity(like)).collect(toList()),
+          .stream().map(like -> GetLikeVideoDto.fromEntity(like)).collect(toList()),
         Collector.of(ArrayList::new, List::addAll, (likes, getLikeDto) -> {
           likes.addAll(getLikeDto);
           return likes;
         })
       )));
 
-    Map<String, GetLikeCategoryListLimitDto> result = rankHierarchy.entrySet().stream()
+    Map<String, GetLikeVideoCategoryListLimitDto> result = rankHierarchy.entrySet().stream()
       .collect(Collectors.toMap(
         entry -> entry.getKey(),
         entry -> {
-          List<GetLikeDto> list = rankHierarchy.get(entry.getKey());
+          List<GetLikeVideoDto> list = rankHierarchy.get(entry.getKey());
           if (list.size() == 0) {
-            return new GetLikeCategoryListLimitDto(list, null);
+            return new GetLikeVideoCategoryListLimitDto(list, null);
           } else {
-            return new GetLikeCategoryListLimitDto(list, list.get(list.size() - 1).getId());
+            return new GetLikeVideoCategoryListLimitDto(list, list.get(list.size() - 1).getId());
           }
         }
       ));
 
-    return new GetAllLikeListDto(result);
+    return new GetAllLikeVideoListDto(result);
   }
 
   @Transactional(readOnly = true)
   public void rankByDayScheduler(String standard) {
-    likeUtils.processChangeDayRanking(standard, likeRepository.getRankingByLikes());
+    likeVideoUtils.processChangeDayRanking(standard, likeRepository.getRankingByLikes());
   }
 
   public List<GetVideoRankDto> getRank(String standard) {
-    return likeUtils.getDayRanking(standard);
+    return likeVideoUtils.getDayRanking(standard);
   }
 }
