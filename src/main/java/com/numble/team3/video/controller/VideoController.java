@@ -13,6 +13,7 @@ import com.numble.team3.video.application.request.CreateOrUpdateVideoDto;
 import com.numble.team3.video.resolver.SearchCondition;
 import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Api(tags = "영상 생성, 수정, 삭제, 조회 api")
 public class VideoController {
 
   private final VideoService videoService;
