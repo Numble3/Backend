@@ -2,6 +2,7 @@ package com.numble.team3.video.resolver;
 
 import com.numble.team3.video.annotation.SearchFilter;
 import com.numble.team3.video.domain.enums.VideoCategory;
+import com.numble.team3.video.domain.enums.VideoSortCondition;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -40,14 +41,17 @@ public class VideoQueryStringArgumentResolver implements HandlerMethodArgumentRe
     }
     String title = null;
     VideoCategory category = null;
+    VideoSortCondition sortCondition = null;
 
     for (NameValuePair query : queryString) {
       if (query.getName().equals("title")) {
         title = query.getValue();
       } else if (query.getName().equals("category")) {
         category = VideoCategory.from(query.getValue());
+      } else if (query.getName().equals("sort")) {
+        sortCondition = VideoSortCondition.from(query.getValue());
       }
     }
-    return new SearchCondition(title, category);
+    return new SearchCondition(title, category, sortCondition);
   }
 }
