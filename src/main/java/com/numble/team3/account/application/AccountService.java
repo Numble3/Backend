@@ -108,6 +108,7 @@ public class AccountService {
     }
 
     accountRepository.findByNickname(dto.getNickname())
+      .filter(a -> !a.equals(userInfo.getAccountId()))
       .ifPresent(a -> {
         throw new AccountNicknameAlreadyExistsException();
       }
