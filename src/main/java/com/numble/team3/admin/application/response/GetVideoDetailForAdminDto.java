@@ -1,5 +1,8 @@
 package com.numble.team3.admin.application.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.domain.enums.VideoType;
 import java.time.LocalDateTime;
@@ -12,7 +15,14 @@ public class GetVideoDetailForAdminDto {
   private String title;
   private String content;
   private String nickname;
+
+  @JsonFormat(
+      shape = JsonFormat.Shape.STRING,
+      pattern = "yyyy-MM-dd hh-MM-ss",
+      timezone = "Asia/Seoul")
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime createdAt;
+
   private Long like;
   private Long view;
   private VideoType type;
