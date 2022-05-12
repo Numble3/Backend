@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.numble.team3.converter.application.ConvertService;
+import com.numble.team3.converter.application.ImageConvertService;
 import com.numble.team3.converter.application.advice.ConvertRestControllerAdvice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class ConvertControllerAdviceTest {
 
   @Mock
-  ConvertService convertService;
+  ImageConvertService imageConvertService;
 
   @InjectMocks
   ConvertController convertController;

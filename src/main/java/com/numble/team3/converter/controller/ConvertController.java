@@ -4,7 +4,7 @@ import com.numble.team3.converter.application.request.CreateVideoDto;
 import com.numble.team3.converter.application.response.GetConvertVideoDto;
 import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
 import com.numble.team3.converter.annotation.ImageResizeSwagger;
-import com.numble.team3.converter.application.ConvertService;
+import com.numble.team3.converter.application.ImageConvertService;
 import com.numble.team3.converter.application.request.CreateImageDto;
 import com.numble.team3.exception.image.ImageWrongRatioException;
 import io.swagger.annotations.Api;
@@ -25,24 +25,28 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = {"파일 변환 (이미지 리사이징, 동영상 변환)"})
 public class ConvertController {
 
-  private final ConvertService convertService;
+  private final ImageConvertService imageConvertService;
 
   @ImageResizeSwagger
   @PostMapping(value = "/images/resize", produces = "application/json")
   public ResponseEntity<Map> imageResize(@ModelAttribute CreateImageDto dto) throws IOException {
     checkResizeType(dto.getType());
-    checkResizeRatio(dto.getType(), Integer.parseInt(dto.getWidth()), Integer.parseInt(dto.getHeight()));
+    checkResizeRatio(
+        dto.getType(), Integer.parseInt(dto.getWidth()), Integer.parseInt(dto.getHeight()));
 
-    return new ResponseEntity(new HashMap<String, String>() {
-      {
-        put("url", convertService.uploadResizeImage(dto));
-      }
-    }, HttpStatus.CREATED);
+    return new ResponseEntity(
+        new HashMap<String, String>() {
+          {
+            put("url", imageConvertService.uploadResizeImage(dto));
+          }
+        },
+        HttpStatus.CREATED);
   }
 
   @PostMapping(value = "/videos/storage")
-  public ResponseEntity<GetConvertVideoDto> videoConvert(@ModelAttribute CreateVideoDto dto) throws IOException{
-    return ResponseEntity.status(HttpStatus.CREATED).body(convertService.uploadConvertVideo(dto));
+  public ResponseEntity<GetConvertVideoDto> videoConvert(@ModelAttribute CreateVideoDto dto)
+      throws IOException {
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   private void checkResizeType(String type) {
@@ -56,8 +60,7 @@ public class ConvertController {
       if (width != height) {
         throw new ImageWrongRatioException();
       }
-    }
-    else {
+    } else {
       if ((height * 16) != (width * 9)) {
         throw new ImageWrongRatioException();
       }
