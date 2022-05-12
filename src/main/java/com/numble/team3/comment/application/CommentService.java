@@ -5,16 +5,21 @@ import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.comment.application.request.CreateOrUpdateCommentDto;
 import com.numble.team3.comment.application.response.GetCommentListDto;
+import com.numble.team3.comment.domain.AccountLikeComment;
 import com.numble.team3.comment.domain.Comment;
 import com.numble.team3.comment.domain.CommentSortCondition;
+import com.numble.team3.comment.infra.JpaCommentLikeRepository;
 import com.numble.team3.comment.infra.JpaCommentRepository;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.comment.CommentNotFoundException;
 import com.numble.team3.exception.video.VideoNotFoundException;
 import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.infra.JpaVideoRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +29,7 @@ public class CommentService {
   private final JpaCommentRepository commentRepository;
   private final JpaAccountRepository accountRepository;
   private final JpaVideoRepository videoRepository;
+  private final JpaCommentLikeRepository commentLikeRepository;
 
   private Video findByVideoId(Long videoId) {
     return videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
@@ -63,8 +69,45 @@ public class CommentService {
 
   @Transactional(readOnly = true)
   public GetCommentListDto getAllCommentByVideoIdWithCondition(
-      Long videoId, CommentSortCondition commentSortCondition, PageRequest pageRequest) {
-    return GetCommentListDto.fromEntities(
-        commentRepository.findAllByVideoIdWithCondition(videoId, commentSortCondition, pageRequest));
+      UserInfo userInfo,
+      Long videoId,
+      CommentSortCondition commentSortCondition,
+      PageRequest pageRequest) {
+
+    if (userInfo == null || userInfo.getAccountId() == null) {
+      return GetCommentListDto.fromEntities(
+          commentRepository.findAllByVideoIdWithCondition(
+              videoId, commentSortCondition, pageRequest));
+    }
+    Slice<Comment> contents =
+        commentRepository.findAllByVideoIdWithCondition(videoId, commentSortCondition, pageRequest);
+    List<Long> likeCommentIds =
+        commentLikeRepository
+            .findAllByAccountIdAndVideoId(
+                userInfo.getAccountId(),
+                videoId,
+                contents.getContent().stream().map(Comment::getId).collect(Collectors.toList()))
+            .stream()
+            .map(AccountLikeComment::getId)
+            .collect(Collectors.toList());
+    return GetCommentListDto.fromEntities(contents, likeCommentIds);
+  }
+
+  @Transactional
+  public void createCommentLikeById(UserInfo userInfo, Long videoId, Long commentId) {
+    Comment comment =
+        commentRepository
+            .findCommentFetchJoinByIdAndAccountId(commentId, userInfo.getAccountId())
+            .orElseThrow(CommentNotFoundException::new);
+    comment.addCommentLike(comment, videoId, userInfo.getAccountId());
+  }
+
+  @Transactional
+  public void deleteCommentLikeById(UserInfo userInfo, Long videoId, Long commentId) {
+    Comment comment =
+        commentRepository
+            .findCommentFetchJoinByIdAndAccountId(commentId, userInfo.getAccountId())
+            .orElseThrow(CommentNotFoundException::new);
+    comment.deleteCommentLike(userInfo.getAccountId(), commentId);
   }
 }

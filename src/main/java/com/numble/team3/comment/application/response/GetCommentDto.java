@@ -18,7 +18,10 @@ public class GetCommentDto {
   private String content;
   private long like;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh-MM-ss", timezone = "Asia/Seoul")
+  @JsonFormat(
+      shape = JsonFormat.Shape.STRING,
+      pattern = "yyyy-MM-dd hh-MM-ss",
+      timezone = "Asia/Seoul")
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime createdAt;
 
