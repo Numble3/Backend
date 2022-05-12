@@ -2,7 +2,6 @@ package com.numble.team3.converter.controller;
 
 import com.numble.team3.converter.annotation.VideoConvertSwagger;
 import com.numble.team3.converter.application.VideoConvertService;
-import com.numble.team3.converter.application.request.CreateVideoDto;
 import com.numble.team3.converter.application.response.GetConvertVideoDto;
 import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
 import com.numble.team3.converter.annotation.ImageResizeSwagger;
@@ -10,7 +9,6 @@ import com.numble.team3.converter.application.ImageConvertService;
 import com.numble.team3.converter.application.request.CreateImageDto;
 import com.numble.team3.exception.image.ImageWrongRatioException;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
