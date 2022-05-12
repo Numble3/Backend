@@ -1,5 +1,6 @@
 package com.numble.team3.converter.controller;
 
+import com.numble.team3.converter.application.VideoConvertService;
 import com.numble.team3.converter.application.request.CreateVideoDto;
 import com.numble.team3.converter.application.response.GetConvertVideoDto;
 import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
@@ -8,16 +9,20 @@ import com.numble.team3.converter.application.ImageConvertService;
 import com.numble.team3.converter.application.request.CreateImageDto;
 import com.numble.team3.exception.image.ImageWrongRatioException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConvertController {
 
   private final ImageConvertService imageConvertService;
+  private final VideoConvertService videoConvertService;
 
   @ImageResizeSwagger
   @PostMapping(value = "/images/resize", produces = "application/json")
@@ -43,10 +49,14 @@ public class ConvertController {
         HttpStatus.CREATED);
   }
 
-  @PostMapping(value = "/videos/storage")
-  public ResponseEntity<GetConvertVideoDto> videoConvert(@ModelAttribute CreateVideoDto dto)
-      throws IOException {
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+  @PostMapping(
+      value = "/videos/storage",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<GetConvertVideoDto> videoConvert(
+      @RequestPart(value = "videoFile") MultipartFile videoFile) throws IOException {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(videoConvertService.uploadConvertVideo(videoFile));
   }
 
   private void checkResizeType(String type) {
