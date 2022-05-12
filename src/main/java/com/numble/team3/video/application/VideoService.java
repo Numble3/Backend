@@ -3,6 +3,8 @@ package com.numble.team3.video.application;
 import com.numble.team3.account.domain.Account;
 import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.account.resolver.UserInfo;
+import com.numble.team3.admin.application.response.GetVideoDetailForAdminDto;
+import com.numble.team3.admin.application.response.GetVideoListForAdminDto;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.video.VideoNotFoundException;
 import com.numble.team3.video.application.request.CreateOrUpdateVideoDto;
@@ -80,7 +82,8 @@ public class VideoService {
   }
 
   @Transactional(readOnly = true)
-  public GetVideoListDto getAllVideoByCondition(SearchCondition condition, PageRequest pageRequest) {
+  public GetVideoListDto getAllVideoByCondition(
+      SearchCondition condition, PageRequest pageRequest) {
     return GetVideoListDto.fromEntities(
         videoRepository.searchVideoByCondition(condition, pageRequest));
   }
@@ -90,5 +93,22 @@ public class VideoService {
     videoUtils.updateViewCount(videoId);
     return GetVideoDetailDto.fromEntity(
         videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new));
+  }
+
+  @Transactional(readOnly = true)
+  public GetVideoListForAdminDto getAllVideoForAdmin(PageRequest pageRequest) {
+    return GetVideoListForAdminDto.fromEntities(videoRepository.findAll(pageRequest));
+  }
+
+  @Transactional(readOnly = true)
+  public GetVideoDetailForAdminDto getVideoByIdForAdmin(Long videoId) {
+    return GetVideoDetailForAdminDto.fromEntity(
+        videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new));
+  }
+
+  @Transactional
+  public void deleteVideoByIdForAdmin(Long videoId) {
+    Video video = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
+    video.adminDeleteVideo();
   }
 }

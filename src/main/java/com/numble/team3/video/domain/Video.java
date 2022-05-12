@@ -102,6 +102,10 @@ public class Video extends BaseTimeEntity {
     this.deleteYn = true;
   }
 
+  public void adminDeleteVideo() {
+    this.adminDeleteYn = true;
+  }
+
   public void addComment(Comment comment) {
     this.comments.add(comment);
   }
