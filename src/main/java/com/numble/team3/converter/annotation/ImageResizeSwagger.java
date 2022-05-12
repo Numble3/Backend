@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
     @ApiResponse(
       code = 201,
       message = "이미지 리사이즈 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\"url\" : \"https://image_url\"}"))
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\"url\" : \"리사이즈 된 이미지 경로\"}"))
     ),
     @ApiResponse(
       code = 400,

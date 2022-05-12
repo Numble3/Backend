@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
     @ApiResponse(
       code = 200,
       message = "회원 목록 조회 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{ \n\"accountDtos\" : [ \n\t { \n\t\t \"id\" : account id, \n\t\t \"email\" : \"email\", \n\t\t \"nickname\" : \"nickname\", \n\t\t \"lastLogin\" : \"yyyy-MM-dd\", \n\t\t \"createdAt\" : \"yyyy-MM-dd\" \n\t } \n\t ], \n\t \"totalCount\" : 전체 회원 수, \n\t \"nowPage\" : 현재 페이지, \n\t \"totalPage\" : 전체 페이지 , \n\t \"size\" : 페이지 크기 \n}"))
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{ \n\"accountDtos\" : [ \n\t { \n\t\t \"id\" : 회원 ID, \n\t\t \"email\" : \"회원 이메일\", \n\t\t \"nickname\" : \"회원 닉네임\", \n\t\t \"lastLogin\" : \"마지막 로그인 날짜(yyyy-MM-dd)\", \n\t\t \"createdAt\" : \"회원가입일(yyyy-MM-dd)\" \n\t } \n\t ], \n\t \"totalCount\" : 전체 회원 수, \n\t \"nowPage\" : 현재 페이지, \n\t \"totalPage\" : 전체 페이지 , \n\t \"size\" : 페이지 크기 \n}"))
     ),
     @ApiResponse(
       code = 400,

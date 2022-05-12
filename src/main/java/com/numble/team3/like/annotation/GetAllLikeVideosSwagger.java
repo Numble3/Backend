@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
     @ApiResponse(
       code = 200,
       message = "관심영상 조회 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"getLikeDtoList\" : {\n\t \"카테고리 명\" : \n\t \"getLikeDtos\" : [ \n\t\t { \n\t\t \"createdAt\" : \"yyyy-MM-dd HH:mm\", \n\t\t \"getVideoDto\" : { \n\t\t\t \"videoId\" : 비디오 번호, \n\t\t\t \"thumbnailPath\" : \"썸네일 url\", \n\t\t\t \"title\" : \"비디오 이름\", \n\t\t\t \"nickname\" : \"비디오 업로더 닉네임\", \n\t\t\t \"view\" : \"조회수\", \n\t\t\t \"like\" : \"좋아요 수\", \n\t\t\t \"createAd\" : \"yyyy-MM-dd\" \n\t\t } \n\t ], \n\t \"lastLikeId\" : 다음 페이지 요청을 위한 likeId \n}\n}"))
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"getLikeDtoList\" : {\n\t \"카테고리 명\" : \n\t \"getLikeDtos\" : [ \n\t\t { \n\t\t \"createdAt\" : \"좋아요 누른 날짜(yyyy-MM-dd HH:mm)\", \n\t\t \"getVideoDto\" : { \n\t\t\t \"videoId\" : 비디오 번호, \n\t\t\t \"thumbnailPath\" : \"썸네일 경로\", \n\t\t\t \"title\" : \"비디오 이름\", \n\t\t\t \"nickname\" : \"비디오 업로더 닉네임\", \n\t\t\t \"view\" : \"조회수\", \n\t\t\t \"like\" : \"좋아요 수\", \n\t\t\t \"createAd\" : \"yyyy-MM-dd\" \n\t\t } \n\t ], \n\t \"lastLikeId\" : 다음 페이지 요청을 위한 likeId \n}\n}"))
     ),
     @ApiResponse(
       code = 401,
