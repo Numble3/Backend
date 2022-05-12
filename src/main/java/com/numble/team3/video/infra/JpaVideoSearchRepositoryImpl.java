@@ -4,7 +4,10 @@ import static com.numble.team3.video.domain.QVideo.video;
 import static com.numble.team3.account.domain.QAccount.account;
 
 import com.numble.team3.video.domain.Video;
+import com.numble.team3.video.domain.enums.VideoSortCondition;
 import com.numble.team3.video.resolver.SearchCondition;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -31,7 +34,7 @@ public class JpaVideoSearchRepositoryImpl implements JpaVideoSearchRepository {
                 video.adminDeleteYn.isFalse(),
                 isTitleEq(filter),
                 isCategoryEq(filter))
-            .orderBy(video.createdAt.desc())
+            .orderBy(videoSort(filter))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize() + 1)
             .fetch();
@@ -41,6 +44,14 @@ public class JpaVideoSearchRepositoryImpl implements JpaVideoSearchRepository {
       hasNext = true;
     }
     return new SliceImpl<>(contents, pageable, hasNext);
+  }
+
+  private OrderSpecifier videoSort(SearchCondition filter) {
+    if (filter.getSortCondition() == VideoSortCondition.POPULARITY) {
+      return new OrderSpecifier<>(Order.DESC, video.like);
+    } else {
+      return new OrderSpecifier<>(Order.DESC, video.createdAt);
+    }
   }
 
   private BooleanExpression isTitleEq(SearchCondition filter) {
