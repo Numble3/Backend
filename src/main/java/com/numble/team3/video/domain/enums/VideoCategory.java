@@ -7,7 +7,12 @@ import lombok.Getter;
 @Getter
 public enum VideoCategory {
   CAT("고양이"),
-  DOG("강아지");
+  DOG("강아지"),
+  BAIRD("새"),
+  RABBIT("토끼"),
+  HAMSTER("햄스터"),
+  LIZARD("도마뱀"),
+  OTHERS("기타");
 
   private String name;
 
