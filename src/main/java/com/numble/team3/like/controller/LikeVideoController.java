@@ -10,6 +10,7 @@ import com.numble.team3.like.annotation.GetVideoRankByDayLikeSwagger;
 import com.numble.team3.like.application.LikeVideoService;
 import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
 import com.numble.team3.like.application.response.GetVideoRankDto;
+import com.numble.team3.video.domain.enums.VideoCategory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import java.util.HashMap;
@@ -38,9 +39,10 @@ public class LikeVideoController {
   @PostMapping(value = "/likes/add", produces = "application/json")
   public ResponseEntity addLike(
     @ApiIgnore @LoginUser UserInfo userInfo,
-    @ApiParam(value = "비디오 id", required = true) @RequestParam(name = "id") Long videoId) {
-      likeVideoService.addLike(userInfo, videoId);
-      return new ResponseEntity(HttpStatus.CREATED);
+    @ApiParam(value = "비디오 id", required = true) @RequestParam(name = "id") Long videoId,
+    @ApiParam(value = "카테고리", required = true) @RequestParam(name = "category") String categoryName) {
+    likeVideoService.addLike(userInfo, videoId, VideoCategory.from(categoryName));
+    return new ResponseEntity(HttpStatus.CREATED);
   }
 
   @DeleteLikeVideoSwagger
@@ -65,8 +67,8 @@ public class LikeVideoController {
     @ApiParam(value = "카테고리 이름", required = true) @RequestParam(name = "category") String categoryName,
     @ApiParam(value = "like id, 2페이지 이후 조회를 위한 값", required = false) @RequestParam(required = false, name = "id") Long likeId,
     @ApiParam(value = "페이지 크기", required = true) @RequestParam(name = "size") int size) {
-      return ResponseEntity.ok(
-        likeVideoService.getLikesByCategory(userInfo, categoryName, likeId, size));
+    return ResponseEntity.ok(
+      likeVideoService.getLikesByCategory(userInfo, categoryName, likeId, size));
   }
 
   @GetVideoRankByDayLikeSwagger

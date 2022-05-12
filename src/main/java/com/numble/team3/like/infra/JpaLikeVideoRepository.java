@@ -17,7 +17,7 @@ public interface JpaLikeVideoRepository extends JpaRepository<LikeVideo, Long>,
   @Query("SELECT l FROM LikeVideo l WHERE l.accountId = :accountId AND l.video.id = :videoId")
   Optional<LikeVideo> getLikeByAccountIdAndVideoId(Long accountId, Long videoId);
 
-  @Query("SELECT l FROM LikeVideo l JOIN FETCH l.video WHERE l.accountId = :accountId AND l.video.category = :category")
+  @Query("SELECT l FROM LikeVideo l JOIN FETCH l.video WHERE l.accountId = :accountId AND l.category = :category")
   List<LikeVideo> getAllLikesByAccountIdAndCategory(@Param("accountId") Long accountId,
     @Param("category") VideoCategory category, Pageable pageable);
 

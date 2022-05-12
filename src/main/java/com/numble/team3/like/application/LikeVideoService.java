@@ -40,10 +40,12 @@ public class LikeVideoService {
   private final LikeVideoUtils likeVideoUtils;
 
   @Transactional
-  public void addLike(UserInfo userInfo, Long videoId) {
+  public void addLike(UserInfo userInfo, Long videoId, VideoCategory category) {
     likeRepository.save(
-      new LikeVideo(videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new),
-        userInfo.getAccountId()));
+      new LikeVideo(
+        videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new),
+        userInfo.getAccountId(),
+        category));
   }
 
   @Transactional

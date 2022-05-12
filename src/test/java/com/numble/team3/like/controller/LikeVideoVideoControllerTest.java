@@ -26,6 +26,7 @@ import com.numble.team3.like.application.LikeVideoService;
 import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
 import com.numble.team3.like.application.response.GetLikeListDto;
 import com.numble.team3.like.application.response.GetVideoRankDto;
+import com.numble.team3.video.domain.enums.VideoCategory;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,11 +75,12 @@ class LikeVideoVideoControllerTest {
 
     given(loginMethodArgumentResolver.supportsParameter(any())).willReturn(true);
     given(loginMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
-    willDoNothing().given(likeVideoService).addLike(any(UserInfo.class), anyLong());
+    willDoNothing().given(likeVideoService)
+      .addLike(any(UserInfo.class), anyLong(), any(VideoCategory.class));
 
     // when
     ResultActions result = mockMvc.perform(
-      post("/api/likes/add").param("id", "1")
+      post("/api/likes/add").param("id", "1").param("category", "cat")
         .header("Authorization", "Bearer access token")
         .accept(MediaType.APPLICATION_JSON_VALUE));
 
@@ -86,7 +88,7 @@ class LikeVideoVideoControllerTest {
     result
       .andExpect(status().isCreated());
 
-    verify(likeVideoService).addLike(any(UserInfo.class), anyLong());
+    verify(likeVideoService).addLike(any(UserInfo.class), anyLong(), any(VideoCategory.class));
   }
 
   @Test
