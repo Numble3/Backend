@@ -13,4 +13,10 @@ public interface JpaCommentRepository
   @Query("SELECT c FROM Comment c WHERE c.account.id = :accountId and c.id = :commentId")
   Optional<Comment> findCommentByAccountIdWithId(
       @Param("accountId") Long accountId, @Param("commentId") Long commentId);
+
+  @Query(
+      "SELECT c FROM Comment c LEFT JOIN FETCH c.accountLikeCommentList"
+        + " JOIN FETCH c.account JOIN FETCH c.video WHERE c.id = :commentId AND c.account.id = :accountId")
+  Optional<Comment> findCommentFetchJoinByIdAndAccountId(
+      @Param("commentId") Long commentId, @Param("accountId") Long accountId);
 }

@@ -16,6 +16,7 @@ public class GetCommentDto {
   private String nickname;
   private String profilePath;
   private String content;
+  private boolean isLiked = false;
   private long like;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh-MM-ss", timezone = "Asia/Seoul")

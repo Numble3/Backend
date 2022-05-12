@@ -55,12 +55,14 @@ public class CommentController {
 
   @GetMapping("/videos/{videoId}/comments")
   public ResponseEntity<GetCommentListDto> getAllCommentByVideoId(
+      @LoginUser UserInfo userInfo,
       @PathVariable Long videoId,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
-      @RequestParam(name = "sort", defaultValue = CommentSortCondition.DEFAULT) CommentSortCondition commentSortCondition) {
+      @RequestParam(name = "sort", defaultValue = CommentSortCondition.DEFAULT)
+          CommentSortCondition commentSortCondition) {
     return ResponseEntity.ok(
         commentService.getAllCommentByVideoIdWithCondition(
-            videoId, commentSortCondition, PageRequest.of(page, size)));
+            userInfo, videoId, commentSortCondition, PageRequest.of(page, size)));
   }
 }
