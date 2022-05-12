@@ -42,7 +42,7 @@ public class CustomJpaLikeVideoRepositoryImpl implements CustomJpaLikeVideoRepos
       .where(
         likeVideo.accountId.eq(userInfo.getAccountId()),
         ltLikeId(likeId),
-        likeVideo.video.category.eq(VideoCategory.from(categoryName))
+        likeVideo.category.eq(VideoCategory.from(categoryName))
       )
       .orderBy(likeVideo.id.desc())
       .limit(size)

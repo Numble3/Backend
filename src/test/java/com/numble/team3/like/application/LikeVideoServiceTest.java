@@ -72,7 +72,7 @@ class LikeVideoServiceTest {
     given(likeRepository.save(any(LikeVideo.class))).willReturn(null);
 
     // when
-    likeVideoService.addLike(userInfo, 1L);
+    likeVideoService.addLike(userInfo, 1L, VideoCategory.CAT);
 
     // then
     verify(likeRepository).save(any(LikeVideo.class));
@@ -86,7 +86,7 @@ class LikeVideoServiceTest {
     given(videoRepository.findById(anyLong())).willReturn(Optional.empty());
 
     // when, then
-    assertThrows(VideoNotFoundException.class, () -> likeVideoService.addLike(userInfo, 1L));
+    assertThrows(VideoNotFoundException.class, () -> likeVideoService.addLike(userInfo, 1L, VideoCategory.CAT));
   }
 
   @Test
