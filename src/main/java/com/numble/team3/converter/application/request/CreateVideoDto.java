@@ -11,5 +11,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class CreateVideoDto {
   @ApiModelProperty(value = "비디오 파일", required = true)
   @NotBlank(message = "업로드할 비디오 파일을 선택해주세요.")
-  private MultipartFile file;
+  private MultipartFile videoFile;
 }

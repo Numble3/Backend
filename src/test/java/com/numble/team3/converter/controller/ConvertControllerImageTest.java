@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.numble.team3.converter.application.ConvertService;
+import com.numble.team3.converter.application.ImageConvertService;
 import com.numble.team3.converter.application.request.CreateImageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 class ConvertControllerImageTest {
 
   @Mock
-  ConvertService convertService;
+  ImageConvertService imageConvertService;
 
   @InjectMocks
   ConvertController convertController;
@@ -50,7 +50,7 @@ class ConvertControllerImageTest {
     // given
     MockMultipartFile file = new MockMultipartFile("file", "file.jpeg", "image/jpeg", new byte[]{1});
 
-    given(convertService.uploadResizeImage(any(CreateImageDto.class))).willReturn("profile url");
+    given(imageConvertService.uploadResizeImage(any(CreateImageDto.class))).willReturn("profile url");
 
     // when
     ResultActions result = mockMvc.perform(
@@ -72,7 +72,7 @@ class ConvertControllerImageTest {
     // given
     MockMultipartFile file = new MockMultipartFile("file", "file.jpeg", "image/jpeg", new byte[]{1});
 
-    given(convertService.uploadResizeImage(any(CreateImageDto.class))).willReturn("thumbnail url");
+    given(imageConvertService.uploadResizeImage(any(CreateImageDto.class))).willReturn("thumbnail url");
 
     // when
     ResultActions result = mockMvc.perform(

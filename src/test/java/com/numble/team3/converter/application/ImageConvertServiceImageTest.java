@@ -10,7 +10,6 @@ import static org.mockito.BDDMockito.willDoNothing;
 
 import com.numble.team3.converter.application.request.CreateImageDto;
 import com.numble.team3.converter.infra.AwsConvertImageUtils;
-import com.numble.team3.converter.infra.AwsConvertVideoUtils;
 import com.numble.team3.exception.convert.ImageTypeUnSupportException;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,32 +25,33 @@ import org.springframework.mock.web.MockMultipartFile;
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("ConvertService 이미지 기능 테스트")
-class ConvertServiceImageTest {
+class ImageConvertServiceImageTest {
 
   @Mock
   AwsConvertImageUtils imageUtils;
 
-  @Mock
-  AwsConvertVideoUtils videoUtils;
-
-  ConvertService convertService;
+  ImageConvertService imageConvertService;
 
   @BeforeEach
   void beforeEach() {
-    convertService = new ApiGatewayConvertService(imageUtils, videoUtils);
+    imageConvertService = new ApiGatewayImageConvertService(imageUtils);
   }
 
   @Test
   void uploadResizeImage_성공_테스트() throws IOException {
     // given
-    MockMultipartFile file = new MockMultipartFile("file", "file.jpeg", "image/jpeg", new byte[]{1});
+    MockMultipartFile file =
+        new MockMultipartFile("file", "file.jpeg", "image/jpeg", new byte[] {1});
     CreateImageDto dto = createImageDto(file, "360", "360", "profile");
 
-    willDoNothing().given(imageUtils).saveTempImageFileForMetadata(anyString(), any(CreateImageDto.class));
-    given(imageUtils.processImageResize(anyString(), any(CreateImageDto.class))).willReturn("파일 url");
+    willDoNothing()
+        .given(imageUtils)
+        .saveTempImageFileForMetadata(anyString(), any(CreateImageDto.class));
+    given(imageUtils.processImageResize(anyString(), any(CreateImageDto.class)))
+        .willReturn("파일 url");
 
     // when
-    String url = convertService.uploadResizeImage(dto);
+    String url = imageConvertService.uploadResizeImage(dto);
 
     // then
     assertEquals("파일 url", url);
@@ -60,20 +60,22 @@ class ConvertServiceImageTest {
   @Test
   void uploadResizeImage_file_타입_미지원_실패_테스트() {
     // given
-    MockMultipartFile file = new MockMultipartFile("file", "file.gif", "image/gif", new byte[]{1});
+    MockMultipartFile file = new MockMultipartFile("file", "file.gif", "image/gif", new byte[] {1});
     CreateImageDto dto = createImageDto(file, "360", "360", "profile");
 
     // when, then
-    assertThrows(ImageTypeUnSupportException.class, () -> convertService.uploadResizeImage(dto));
+    assertThrows(
+        ImageTypeUnSupportException.class, () -> imageConvertService.uploadResizeImage(dto));
   }
 
   @Test
   void uploadResizeImage_saveTempVideoForConvert_실패_테스트() throws IOException {
     // given
-    MockMultipartFile file = new MockMultipartFile("file", "file.gif", "image/gif", new byte[]{1});
+    MockMultipartFile file = new MockMultipartFile("file", "file.gif", "image/gif", new byte[] {1});
     CreateImageDto dto = createImageDto(file, "360", "360", "profile");
 
     // when, then
-    assertThrows(ImageTypeUnSupportException.class, () -> convertService.uploadResizeImage(dto));
+    assertThrows(
+        ImageTypeUnSupportException.class, () -> imageConvertService.uploadResizeImage(dto));
   }
 }
