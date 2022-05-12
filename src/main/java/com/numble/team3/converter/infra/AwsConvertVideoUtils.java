@@ -48,7 +48,7 @@ public class AwsConvertVideoUtils implements ConvertVideoUtils {
     String result =
         webClient
             .post()
-            .uri("/videos")
+            .uri("/videos/storage")
             .bodyValue(
                 new HashMap<String, String>() {
                   {
