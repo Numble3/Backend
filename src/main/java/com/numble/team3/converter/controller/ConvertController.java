@@ -1,5 +1,6 @@
 package com.numble.team3.converter.controller;
 
+import com.numble.team3.converter.annotation.VideoConvertSwagger;
 import com.numble.team3.converter.application.VideoConvertService;
 import com.numble.team3.converter.application.request.CreateVideoDto;
 import com.numble.team3.converter.application.response.GetConvertVideoDto;
@@ -49,6 +50,7 @@ public class ConvertController {
         HttpStatus.CREATED);
   }
 
+  @VideoConvertSwagger
   @PostMapping(
       value = "/videos/storage",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
