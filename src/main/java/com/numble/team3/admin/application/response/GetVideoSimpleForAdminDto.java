@@ -1,15 +1,23 @@
 package com.numble.team3.admin.application.response;
 
 import com.numble.team3.video.domain.Video;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
 public class GetVideoSimpleForAdminDto {
+  @Schema(description = "닉네임")
   private String nickname;
+
+  @Schema(description = "영상 제목")
   private String title;
+
+  @Schema(description = "썸네일 경로")
   private String thumbnailUrl;
+
+  @Schema(description = "영상 번호")
   private Long videoId;
 
   private GetVideoSimpleForAdminDto(

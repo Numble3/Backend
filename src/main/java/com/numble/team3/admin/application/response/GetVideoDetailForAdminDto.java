@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.domain.enums.VideoType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,10 +13,16 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GetVideoDetailForAdminDto {
+  @Schema(description = "영상 제목")
   private String title;
+
+  @Schema(description = "영상 내용")
   private String content;
+
+  @Schema(description = "닉네임")
   private String nickname;
 
+  @Schema(description = "업로드 날짜")
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,
       pattern = "yyyy-MM-dd hh-MM-ss",
@@ -23,10 +30,19 @@ public class GetVideoDetailForAdminDto {
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime createdAt;
 
+  @Schema(description = "좋아요 수")
   private Long like;
+
+  @Schema(description = "조회수")
   private Long view;
+
+  @Schema(description = "영상 종류")
   private VideoType type;
+
+  @Schema(description = "썸네일 경로")
   private String thumbnailUrl;
+
+  @Schema(description = "영상 경로")
   private String videoUrl;
 
   private GetVideoDetailForAdminDto(
