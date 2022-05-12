@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
     @ApiResponse(
       code = 200,
       message = "회원 단일 조회 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"id\" : account id, \n\"email\" : \"email\", \n\"nickname\" : \"nickname\", \n\"lastLogin\" : \"yyyy-MM-dd\", \n\"createdAt\" : \"yyyy-MM-dd\" \n}"))
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"id\" : 회원 ID, \n\"email\" : \"회원 이메일\", \n\"nickname\" : \"회원 닉네임\", \n\"lastLogin\" : \"마지막 로그인 날짜(yyyy-MM-dd)\", \n\"createdAt\" : \"회원가입일(yyyy-MM-dd)\" \n}"))
     ),
     @ApiResponse(
       code = 400,

@@ -18,7 +18,12 @@ import java.lang.annotation.Target;
     @ApiResponse(
       code = 200,
       message = "회원 조회 성공",
-      examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{\n\"email\" : \"email\", \n\"profile\" : \"https://profile-url\", \n\"nickname\" : \"nickname\" \n}"))
+      examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{\n\"email\" : \"회원 이메일\", \n\"profile\" : \"프로필 경로\", \n\"nickname\" : \"회원 닉네임\" \n}"))
+    ),
+    @ApiResponse(
+      code = 400,
+      message = "회원 조회 실패 \t\n 1. 존재하지 않는 회원 id \t\n 2. 이미 탈퇴된 회원" ,
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"message\" : \"존재하지 않는 회원입니다.\"\n\"message\" : \"이미 탈퇴처리 된 회원입니다.\"\n}"))
     ),
     @ApiResponse(
       code = 401,
