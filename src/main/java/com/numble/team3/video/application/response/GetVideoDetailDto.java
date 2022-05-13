@@ -77,7 +77,7 @@ public class GetVideoDetailDto {
   public static GetVideoDetailDto fromEntity(Video video) {
     return GetVideoDetailDto.builder()
         .videoId(video.getId())
-        .videoUrl(video.getVideoUrlByVideoType())
+        .videoUrl(video.getVideoUrl())
         .thumbnailPath(video.getThumbnailUrl())
         .title(video.getTitle())
         .content(video.getContent())
