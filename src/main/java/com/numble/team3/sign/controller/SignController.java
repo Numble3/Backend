@@ -54,7 +54,6 @@ public class SignController {
     @Valid @RequestBody SignInDto dto,
     HttpServletResponse response) {
     TokenDto token = signService.signIn(dto);
-    createCookie(token.getRefreshToken(), 604800, response);
 
     return new ResponseEntity<>(token, HttpStatus.OK);
   }
@@ -65,23 +64,15 @@ public class SignController {
     @ApiParam(value = "access token", required = true) @RequestHeader(value = "Authorization") String accessToken,
     HttpServletResponse response) {
     signService.logout(accessToken);
-    deleteCookie(response);
 
     return new ResponseEntity(HttpStatus.OK);
   }
 
   @CreateAccessTokenSwagger
   @GetMapping(value = "/refresh-token", produces = "application/json")
-  public ResponseEntity createAccessTokenByRefreshToken(HttpServletRequest request) {
-    for (Cookie cookie : request.getCookies()) {
-      if (cookie.getName().equals("refreshToken")) {
-        return new ResponseEntity(signService.createAccessTokenByRefreshToken(
-          URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8)), HttpStatus.OK);
-      }
-    }
-    Map<String, String> message = new HashMap<>();
-    message.put("message", "refreshToken 쿠키가 누락되었습니다.");
-    return new ResponseEntity(message, HttpStatus.UNAUTHORIZED);
+  public ResponseEntity createAccessTokenByRefreshToken(
+    @ApiParam(value = "refresh token", required = true) @RequestHeader(value = "Authorization") String refreshToken) {
+    return new ResponseEntity(signService.createAccessTokenByRefreshToken(refreshToken), HttpStatus.OK);
   }
 
   @AccountWithdrawalSwagger
@@ -90,25 +81,7 @@ public class SignController {
     @ApiParam(value = "access token", required = true) @RequestHeader(value = "Authorization") String accessToken,
     HttpServletResponse response) {
     signService.withdrawal(accessToken);
-    deleteCookie(response);
 
     return new ResponseEntity(HttpStatus.OK);
-  }
-
-  private void createCookie(String token, int maxAge, HttpServletResponse response) {
-    Cookie cookie = new Cookie("refreshToken", URLEncoder.encode(token, StandardCharsets.UTF_8));
-    cookie.setHttpOnly(true);
-    cookie.setMaxAge(maxAge);
-    cookie.setPath("/");
-
-    response.addCookie(cookie);
-  }
-
-  private void deleteCookie(HttpServletResponse response) {
-    Cookie cookie = new Cookie("refreshToken", null);
-    cookie.setMaxAge(0);
-    cookie.setPath("/");
-
-    response.addCookie(cookie);
   }
 }

@@ -93,11 +93,7 @@ class SignControllerTest {
     result
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.accessToken").value("accessToken"))
-      .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
-      .andExpect(cookie().value("refreshToken", "refreshToken"))
-      .andExpect(cookie().maxAge("refreshToken", 604800))
-      .andExpect(cookie().path("refreshToken", "/"))
-      .andExpect(cookie().httpOnly("refreshToken", true));
+      .andExpect(jsonPath("$.refreshToken").value("refreshToken"));
   }
 
   @Test
@@ -112,22 +108,19 @@ class SignControllerTest {
 
     // then
     result
-      .andExpect(status().isOk())
-      .andExpect(cookie().path("refreshToken", "/"))
-      .andExpect(cookie().maxAge("refreshToken", 0));
+      .andExpect(status().isOk());
   }
 
   @Test
   void createAccessTokenByRefreshToken_테스트() throws Exception {
     // given
-    Cookie mockCookie = Mockito.mock(Cookie.class);
     TokenDto token = new TokenDto("new-accessToken", "refreshToken");
-    given(mockCookie.getName()).willReturn("refreshToken");
-    given(mockCookie.getValue()).willReturn(URLEncoder.encode("refreshToken", StandardCharsets.UTF_8));
     given(signService.createAccessTokenByRefreshToken(anyString())).willReturn(token);
 
     // when
-    ResultActions result = mockMvc.perform(get("/api/refresh-token").cookie(mockCookie));
+    ResultActions result = mockMvc.perform(
+      get("/api/refresh-token")
+        .header("Authorization", "Bearer refresh token"));
 
     // then
     result
@@ -148,8 +141,6 @@ class SignControllerTest {
 
     // then
     result
-      .andExpect(status().isOk())
-      .andExpect(cookie().path("refreshToken", "/"))
-      .andExpect(cookie().maxAge("refreshToken", 0));
+      .andExpect(status().isOk());
   }
 }
