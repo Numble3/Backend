@@ -96,26 +96,19 @@ public class SignController {
   }
 
   private void createCookie(String token, int maxAge, HttpServletResponse response) {
-    ResponseCookie cookie = ResponseCookie.from("refreshToken", URLEncoder.encode(token, StandardCharsets.UTF_8))
-      .secure(true)
-      .httpOnly(true)
-      .path("/")
-      .maxAge(maxAge)
-      .sameSite("None")
-      .build();
+    Cookie cookie = new Cookie("refreshToken", URLEncoder.encode(token, StandardCharsets.UTF_8));
+    cookie.setHttpOnly(true);
+    cookie.setMaxAge(maxAge);
+    cookie.setPath("/");
 
-    response.addHeader("Set-Cookie", cookie.toString());
+    response.addCookie(cookie);
   }
 
   private void deleteCookie(HttpServletResponse response) {
-    ResponseCookie cookie = ResponseCookie.from("refreshToken", null)
-      .secure(true)
-      .httpOnly(true)
-      .path("/")
-      .maxAge(0)
-      .sameSite("None")
-      .build();
+    Cookie cookie = new Cookie("refreshToken", null);
+    cookie.setMaxAge(0);
+    cookie.setPath("/");
 
-    response.addHeader("Set-Cookie", cookie.toString());
+    response.addCookie(cookie);
   }
 }

@@ -97,7 +97,6 @@ class SignControllerTest {
       .andExpect(cookie().value("refreshToken", "refreshToken"))
       .andExpect(cookie().maxAge("refreshToken", 604800))
       .andExpect(cookie().path("refreshToken", "/"))
-      .andExpect(cookie().secure("refreshToken", true))
       .andExpect(cookie().httpOnly("refreshToken", true));
   }
 
