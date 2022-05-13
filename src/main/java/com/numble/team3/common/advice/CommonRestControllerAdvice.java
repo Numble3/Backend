@@ -17,13 +17,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 @Slf4j
 public class CommonRestControllerAdvice {
 
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  Map<String, String> exceptionHandler(Exception e) {
-    log.info("", e);
-    return createResponse("예상치 못한 오류가 발생했습니다.");
-  }
-
   @ExceptionHandler(HttpMessageNotReadableException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   Map<String, String> httpMessageNotReadableException() {
