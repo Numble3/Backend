@@ -62,3 +62,8 @@ like:
     limit: 3
     rank:
       limit: 50
+account:
+  video:
+    limit: 3
+  detail:
+    limit: 6
