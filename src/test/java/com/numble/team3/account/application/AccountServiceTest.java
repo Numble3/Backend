@@ -5,12 +5,14 @@ import static com.numble.team3.factory.entity.AccountEntityFactory.createAccount
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.numble.team3.account.application.request.UpdateMyAccountDto;
+import com.numble.team3.account.application.response.GetMyAccountDetailDto;
 import com.numble.team3.account.application.response.GetMyAccountDto;
 import com.numble.team3.account.domain.Account;
 import com.numble.team3.account.domain.AccountUtils;
@@ -22,6 +24,7 @@ import com.numble.team3.admin.application.response.GetAccountListDto;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.account.AccountWithdrawalException;
 import com.numble.team3.factory.UserInfoFactory;
+import com.numble.team3.video.infra.JpaVideoRepository;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,13 +48,16 @@ class AccountServiceTest {
   JpaAccountRepository accountRepository;
 
   @Mock
+  JpaVideoRepository videoRepository;
+
+  @Mock
   AccountUtils accountUtils;
 
   AccountService accountService;
 
   @BeforeEach
   void beforeEach() {
-    accountService = new AccountService(accountRepository, accountUtils);
+    accountService = new AccountService(accountRepository, videoRepository, accountUtils);
   }
 
   @Test
@@ -230,5 +236,50 @@ class AccountServiceTest {
     // when, then
     assertThrows(AccountWithdrawalException.class, () -> accountService.updateAccount(userInfo, dto));
 
+  }
+
+  @Test
+  void getDetailAccountByUserInfo_성공_테스트() throws Exception {
+    // given
+    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+    Account account =
+      createAccount(1L, "test@email.com", "password", "nickname", RoleType.ROLE_USER);
+
+    given(accountRepository.findById(anyLong())).willReturn(Optional.ofNullable(account));
+    given(videoRepository.findAllByAccountIdAndLimit(anyLong(), anyInt())).willReturn(List.of());
+
+    // when
+    GetMyAccountDetailDto result =
+      accountService.getDetailAccountByUserInfo(userInfo);
+
+    // then
+    assertEquals("test@email.com", result.getAccountDto().getEmail());
+    assertEquals("nickname", result.getAccountDto().getNickname());
+    assertEquals(0, result.getVideoDtos().size());
+  }
+
+  @Test
+  void getDetailAccountByUserInfo_없는_회원_실패_테스트() throws Exception {
+    // given
+    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+
+    given(accountRepository.findById(anyLong())).willReturn(Optional.empty());
+
+    // when, then
+    assertThrows(AccountNotFoundException.class, () -> accountService.getDetailAccountByUserInfo(userInfo));
+  }
+
+  @Test
+  void getDetailAccountByUserInfo_탈퇴_회원_실패_테스트() throws Exception {
+    // given
+    UserInfo userInfo = UserInfoFactory.createUserInfo(1L, RoleType.ROLE_USER);
+    Account account =
+      createAccount(1L, "test@email.com", "password", "nickname", RoleType.ROLE_USER);
+    setField(account, "deleted", true);
+
+    given(accountRepository.findById(anyLong())).willReturn(Optional.ofNullable(account));
+
+    // when, then
+    assertThrows(AccountWithdrawalException.class, () -> accountService.getDetailAccountByUserInfo(userInfo));
   }
 }
