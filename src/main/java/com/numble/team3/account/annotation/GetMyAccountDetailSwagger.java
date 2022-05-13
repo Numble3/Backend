@@ -1,5 +1,7 @@
 package com.numble.team3.account.annotation;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -30,6 +32,17 @@ import java.lang.annotation.Target;
       message = "회원 조회 실패 \t\n 1. access token이 유효하지 않음",
       examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{}"))
     )
+  }
+)
+@ApiImplicitParams(
+  value = {
+    @ApiImplicitParam(
+      name = "Authorization",
+      value = "access token",
+      required = true,
+      dataTypeClass = String.class,
+      paramType = "header"
+    ),
   }
 )
 public @interface GetMyAccountDetailSwagger {

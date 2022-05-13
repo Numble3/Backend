@@ -1,5 +1,7 @@
 package com.numble.team3.account.annotation;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -20,6 +22,17 @@ import java.lang.annotation.Target;
       message = "비디오 조회 성공",
       examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n \"videos\" : [ \n\t { \n\t \"videoId\" : 영상 ID, \n\t \"thumbnailPath\" : \"Thumbnail 경로\", \n\t \"title\" : \"영상 제목\", \n\t \"nickname\" : \"영상 업로더 닉네임\", \n\t \"view\" : 조회수, \n\t \"like\" : 좋아요 수, \n\t \"createdAt\" : \"업로드 날짜\" \n\t } \n ] \n \"lastVideoId\" :  다음 페이지 요청을 위한 videoId \n}"))
     )
+  }
+)
+@ApiImplicitParams(
+  value = {
+    @ApiImplicitParam(
+      name = "Authorization",
+      value = "access token",
+      required = true,
+      dataTypeClass = String.class,
+      paramType = "header"
+    ),
   }
 )
 public @interface GetMyVideosSwagger {
