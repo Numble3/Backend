@@ -6,6 +6,7 @@ import com.numble.team3.like.annotation.AddLikeVideoSwagger;
 import com.numble.team3.like.annotation.DeleteLikeVideoSwagger;
 import com.numble.team3.like.annotation.GetAllLikeVideosSwagger;
 import com.numble.team3.like.annotation.GetLikeVideosByCategorySwagger;
+import com.numble.team3.like.annotation.GetVideoRankByDayCategoryLikeSwagger;
 import com.numble.team3.like.annotation.GetVideoRankByDayLikeSwagger;
 import com.numble.team3.like.application.LikeVideoService;
 import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +32,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@Api(tags = {"관심영상 조회, 랭킹, 좋아요 추가, 좋아요 삭제"})
+@Api(tags = {"관심영상 조회, 일일 랭킹, 좋아요 추가, 좋아요 삭제"})
 public class LikeVideoController {
 
   private final LikeVideoService likeVideoService;
@@ -77,6 +79,18 @@ public class LikeVideoController {
     return new ResponseEntity(new HashMap<String, List<GetVideoRankDto>>() {
       {
         put("ranking", likeVideoService.getRank("day"));
+      }
+    }, HttpStatus.OK);
+  }
+
+  @GetVideoRankByDayCategoryLikeSwagger
+  @GetMapping(value = "/likes/rank/day/{category}", produces = "application/json")
+  public ResponseEntity<Map> getRankByDayAndCategory(
+    @ApiParam(value = "카테고리 이름", required = true) @PathVariable(name = "category") String category) {
+    VideoCategory videoCategory = VideoCategory.from(category);
+    return new ResponseEntity(new HashMap<String, List<GetVideoRankDto>>() {
+      {
+        put(videoCategory.getName(), likeVideoService.getRank("day", videoCategory));
       }
     }, HttpStatus.OK);
   }

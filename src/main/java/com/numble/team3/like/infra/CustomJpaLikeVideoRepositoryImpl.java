@@ -68,7 +68,6 @@ public class CustomJpaLikeVideoRepositoryImpl implements CustomJpaLikeVideoRepos
         likeVideo.createdAt.lt(today.atStartOfDay())
       )
       .groupBy(likeVideo.video.id)
-      .having(whereVideoCategory(null))
       .orderBy(likeVideo.id.count().desc(), likeVideo.video.id.desc())
       .limit(limit)
       .fetch();
@@ -78,14 +77,6 @@ public class CustomJpaLikeVideoRepositoryImpl implements CustomJpaLikeVideoRepos
         getLikeVideoQuerydsl.getVideo()),
         getLikeVideoQuerydsl.getLikes())).collect(
       Collectors.toList());
-  }
-
-  private BooleanExpression whereVideoCategory(VideoCategory videoCategory) {
-    if (videoCategory == null) {
-      return null;
-    }
-
-    return likeVideo.video.category.eq(videoCategory);
   }
 
   private BooleanExpression ltLikeId(Long likeId) {
