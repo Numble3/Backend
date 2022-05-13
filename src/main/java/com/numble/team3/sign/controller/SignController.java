@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,20 +96,28 @@ public class SignController {
   }
 
   private void createCookie(String token, int maxAge, HttpServletResponse response) {
-    Cookie cookie = new Cookie("refreshToken", URLEncoder.encode(token, StandardCharsets.UTF_8));
-    cookie.setSecure(true);
-    cookie.setHttpOnly(true);
-    cookie.setMaxAge(maxAge);
-    cookie.setPath("/");
+    ResponseCookie cookie = ResponseCookie.from("refreshToken", URLEncoder.encode(token, StandardCharsets.UTF_8))
+      .secure(true)
+      .httpOnly(true)
+      .path("/")
+      .maxAge(maxAge)
+      .sameSite("None")
+      .domain("localhost")
+      .build();
 
-    response.addCookie(cookie);
+    response.addHeader("Set-Cookie", cookie.toString());
   }
 
   private void deleteCookie(HttpServletResponse response) {
-    Cookie cookie = new Cookie("refreshToken", null);
-    cookie.setMaxAge(0);
-    cookie.setPath("/");
+    ResponseCookie cookie = ResponseCookie.from("refreshToken", null)
+      .secure(true)
+      .httpOnly(true)
+      .path("/")
+      .maxAge(0)
+      .sameSite("None")
+      .domain("localhost")
+      .build();
 
-    response.addCookie(cookie);
+    response.addHeader("Set-Cookie", cookie.toString());
   }
 }
