@@ -49,7 +49,6 @@ public class VideoService {
             .content(dto.getContent())
             .videoDuration(dto.getVideoDuration())
             .videoUrl(dto.getVideoUrl())
-            .embeddedUrl(dto.getEmbeddedUrl())
             .thumbnailUrl(dto.getThumbnailUrl())
             .category(dto.getCategory())
             .type(dto.getType())
@@ -61,7 +60,12 @@ public class VideoService {
   public void modifyVideo(UserInfo userInfo, Long videoId, CreateOrUpdateVideoDto dto) {
     Video video = findByAccountIdAndId(userInfo, videoId);
     video.changeVideo(
-        dto.getTitle(), dto.getContent(), dto.getThumbnailUrl(), dto.getCategory(), dto.getType());
+        dto.getTitle(),
+        dto.getContent(),
+        dto.getVideoUrl(),
+        dto.getThumbnailUrl(),
+        dto.getCategory(),
+        dto.getType());
   }
 
   @Transactional

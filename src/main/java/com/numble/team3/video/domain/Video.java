@@ -51,9 +51,6 @@ public class Video extends BaseTimeEntity {
   @Column(name = "video_url")
   private String videoUrl;
 
-  @Column(name = "embedded_url")
-  private String embeddedUrl;
-
   @Column(name = "thumbnail_url")
   private String thumbnailUrl;
 
@@ -74,15 +71,12 @@ public class Video extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private VideoType type;
 
-  private Long showId = Long.valueOf(Integer.MAX_VALUE);
-
   @Builder
   public Video(
       Long videoDuration,
       String title,
       String content,
       String videoUrl,
-      String embeddedUrl,
       String thumbnailUrl,
       Account account,
       VideoCategory category,
@@ -92,7 +86,6 @@ public class Video extends BaseTimeEntity {
     this.content = content;
     this.videoUrl = videoUrl;
     this.thumbnailUrl = thumbnailUrl;
-    this.embeddedUrl = embeddedUrl;
     this.account = account;
     this.category = category;
     this.type = type;
@@ -110,17 +103,11 @@ public class Video extends BaseTimeEntity {
     this.comments.add(comment);
   }
 
-  public String getVideoUrlByVideoType() {
-    if (this.type == VideoType.VIDEO) {
-      return videoUrl;
-    }
-    return embeddedUrl;
-  }
-
   public void changeVideo(
-      String title, String content, String thumbnailUrl, VideoCategory category, VideoType type) {
+      String title, String content, String videoUrl, String thumbnailUrl, VideoCategory category, VideoType type) {
     this.title = title;
     this.content = content;
+    this.videoUrl = videoUrl;
     this.thumbnailUrl = thumbnailUrl;
     this.category = category;
     this.type = type;
