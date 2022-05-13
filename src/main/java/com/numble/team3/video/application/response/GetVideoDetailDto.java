@@ -16,8 +16,8 @@ public class GetVideoDetailDto {
   @Schema(description = "영상 ID")
   private long videoId;
 
-  @Schema(description = "썸네일 경로")
-  private String thumbnailPath;
+  @Schema(description = "유저 프로필 사진 경로")
+  private String userProfilePath;
 
   @Schema(description = "영상 경로")
   private String videoUrl;
@@ -44,7 +44,7 @@ public class GetVideoDetailDto {
   private VideoType type;
 
   @Schema(description = "업로드 날짜")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime createdAt;
 
@@ -52,7 +52,7 @@ public class GetVideoDetailDto {
   private GetVideoDetailDto(
       long videoId,
       String videoUrl,
-      String thumbnailPath,
+      String userProfilePath,
       String title,
       String content,
       String nickname,
@@ -63,7 +63,7 @@ public class GetVideoDetailDto {
       VideoType type) {
     this.videoId = videoId;
     this.videoUrl = videoUrl;
-    this.thumbnailPath = thumbnailPath;
+    this.userProfilePath = userProfilePath;
     this.title = title;
     this.content = content;
     this.nickname = nickname;
@@ -78,7 +78,7 @@ public class GetVideoDetailDto {
     return GetVideoDetailDto.builder()
         .videoId(video.getId())
         .videoUrl(video.getVideoUrl())
-        .thumbnailPath(video.getThumbnailUrl())
+        .userProfilePath(video.getAccount().getProfile())
         .title(video.getTitle())
         .content(video.getContent())
         .nickname(video.getAccount().getNickname())
