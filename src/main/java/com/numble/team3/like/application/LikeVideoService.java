@@ -110,4 +110,9 @@ public class LikeVideoService {
   public List<GetVideoRankDto> getRank(String standard) {
     return likeVideoUtils.getDayRanking(standard);
   }
+
+  public List<GetVideoRankDto> getRank(String standard, VideoCategory videoCategory) {
+    List<GetVideoRankDto> dtos = likeVideoUtils.getDayRanking(standard);
+    return dtos.stream().filter(dto -> dto.getVideoDto().getVideoCategory().equals(videoCategory)).collect(toList());
+  }
 }

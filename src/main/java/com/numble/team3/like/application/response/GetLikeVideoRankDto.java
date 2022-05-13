@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.numble.team3.video.domain.Video;
+import com.numble.team3.video.domain.enums.VideoCategory;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class GetLikeVideoRankDto {
   private String thumbnailPath;
   private String title;
   private String nickname;
+  private VideoCategory videoCategory;
   private long view;
   private long like;
 
@@ -36,6 +38,7 @@ public class GetLikeVideoRankDto {
       .view(video.getView())
       .like(video.getLike())
       .createdAt(video.getCreatedAt().toLocalDate())
+      .videoCategory(video.getCategory())
       .build();
   }
 }
