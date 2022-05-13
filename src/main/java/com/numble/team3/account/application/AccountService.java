@@ -1,7 +1,10 @@
 package com.numble.team3.account.application;
 
 import com.numble.team3.account.application.request.UpdateMyAccountDto;
+import com.numble.team3.account.application.response.GetMyAccountDetailDto;
 import com.numble.team3.account.application.response.GetMyAccountDto;
+import com.numble.team3.account.application.response.GetMySimpleVideoDto;
+import com.numble.team3.account.application.response.GetMyVideosDto;
 import com.numble.team3.account.domain.Account;
 import com.numble.team3.account.domain.AccountUtils;
 import com.numble.team3.account.domain.RoleType;
@@ -13,9 +16,14 @@ import com.numble.team3.admin.application.response.GetAccountSimpleDto;
 import com.numble.team3.exception.account.AccountNicknameAlreadyExistsException;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.account.AccountWithdrawalException;
+import com.numble.team3.video.application.response.GetVideoDto;
+import com.numble.team3.video.domain.Video;
+import com.numble.team3.video.domain.enums.VideoSortCondition;
+import com.numble.team3.video.infra.JpaVideoRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,7 +34,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AccountService {
 
+  @Value("${account.video.limit}")
+  private int videoLimit;
+
+  @Value("${account.detail.limit}")
+  private int detailLimit;
+
   private final JpaAccountRepository accountRepository;
+  private final JpaVideoRepository videoRepository;
   private final AccountUtils accountUtils;
 
   public void changeAccountLastLoginByScheduler() {
@@ -115,5 +130,36 @@ public class AccountService {
     );
 
     account.changeMyAccount(dto.getNickname(), dto.getProfile());
+  }
+
+  @Transactional(readOnly = true)
+  public GetMyAccountDetailDto getDetailAccountByUserInfo(UserInfo userInfo) {
+    Account account =
+      accountRepository.findById(userInfo.getAccountId()).orElseThrow(AccountNotFoundException::new);
+
+    if (account.isDeleted()) {
+      throw new AccountWithdrawalException();
+    }
+
+    GetMyAccountDto getMyAccountDto =
+      new GetMyAccountDto(account.getEmail(), account.getProfile(), account.getNickname());
+
+    List<Video> videos = videoRepository.findAllByAccountIdAndLimit(userInfo.getAccountId(), detailLimit);
+    List<GetMySimpleVideoDto> videoDtos = videos.stream().map(video -> GetMySimpleVideoDto.fromEntity(video))
+      .collect(Collectors.toList());
+
+    return new GetMyAccountDetailDto(getMyAccountDto, videoDtos);
+  }
+
+  @Transactional(readOnly = true)
+  public GetMyVideosDto getMyVideosDto(VideoSortCondition sort, UserInfo userInfo, Long videoId) {
+    List<GetVideoDto> myVideoDtos
+      = videoRepository.getMyVideoDtos(sort, userInfo.getAccountId(), videoId, videoLimit);
+
+    if (myVideoDtos.size() >= videoLimit) {
+      return new GetMyVideosDto(myVideoDtos, myVideoDtos.get(myVideoDtos.size() - 1).getVideoId());
+    } else {
+      return new GetMyVideosDto(myVideoDtos, null);
+    }
   }
 }
