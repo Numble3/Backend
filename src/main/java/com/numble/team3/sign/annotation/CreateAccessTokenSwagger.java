@@ -34,17 +34,6 @@ import java.lang.annotation.Target;
     )
   }
 )
-@ApiImplicitParams(
-  value = {
-    @ApiImplicitParam(
-      name = "Cookie",
-      value = "refresh token 쿠키",
-      required = true,
-      dataTypeClass = String.class,
-      paramType = "body"
-    ),
-  }
-)
 public @interface CreateAccessTokenSwagger {
 
 }

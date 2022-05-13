@@ -234,7 +234,7 @@ public class SignControllerAdviceTest {
   }
 
   @Test
-  void createAccessTokenByRefreshToken_쿠키_누락_실패_테스트() throws Exception {
+  void createAccessTokenByRefreshToken_헤더_토큰_누락_실패_테스트() throws Exception {
     // given
 
     // when
@@ -244,36 +244,17 @@ public class SignControllerAdviceTest {
     // then
     result
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.message").value("refreshToken 쿠키가 누락되었습니다."));
+      .andExpect(jsonPath("$.message").value("Authorization 헤더가 누락되었습니다."));
   }
 
   @Test
-  void createAccessTokenByRefreshToken_쿠키_이름_실패_테스트() throws Exception {
+  void createAccessTokenByRefreshToken_토큰_만료_실패_이벤트() throws Exception {
     // given
-    Cookie mockCookie = Mockito.mock(Cookie.class);
-    given(mockCookie.getName()).willReturn("refreshToken 쿠키 아님");
-
-    // when
-    ResultActions result = mockMvc.perform(
-      get("/api/refresh-token").cookie(mockCookie));
-
-    // then
-    result
-      .andExpect(status().isUnauthorized())
-      .andExpect(jsonPath("$.message").value("refreshToken 쿠키가 누락되었습니다."));
-  }
-
-  @Test
-  void createAccessTokenByRefreshToken_토큰_만료_실패_테스트() throws Exception {
-    // given
-    Cookie mockCookie = Mockito.mock(Cookie.class);
-    given(mockCookie.getName()).willReturn("refreshToken");
-    given(mockCookie.getValue()).willReturn(URLEncoder.encode("refreshToken", StandardCharsets.UTF_8));
     given(signService.createAccessTokenByRefreshToken(anyString())).willThrow(new TokenFailureException());
 
     // when
     ResultActions result = mockMvc.perform(
-      get("/api/refresh-token").cookie(mockCookie));
+      get("/api/refresh-token").header("Authorization", "Bearer accessToken"));
 
     // then
     result
