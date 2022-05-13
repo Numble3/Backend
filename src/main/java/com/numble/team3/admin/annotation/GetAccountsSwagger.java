@@ -1,5 +1,7 @@
 package com.numble.team3.admin.annotation;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -34,6 +36,17 @@ import java.lang.annotation.Target;
       code = 403,
       message = "회원 목록 조회 실패 \t\n 1. 권한 없음",
       examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{}"))
+    ),
+  }
+)
+@ApiImplicitParams(
+  value = {
+    @ApiImplicitParam(
+      name = "Authorization",
+      value = "access token",
+      required = true,
+      dataTypeClass = String.class,
+      paramType = "header"
     ),
   }
 )
