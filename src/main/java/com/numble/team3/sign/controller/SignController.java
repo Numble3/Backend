@@ -102,7 +102,7 @@ public class SignController {
       .path("/")
       .maxAge(maxAge)
       .sameSite("None")
-      .domain("localhost")
+      .domain("3.36.157.185")
       .build();
 
     response.addHeader("Set-Cookie", cookie.toString());
@@ -115,7 +115,7 @@ public class SignController {
       .path("/")
       .maxAge(0)
       .sameSite("None")
-      .domain("localhost")
+      .domain("3.36.157.185")
       .build();
 
     response.addHeader("Set-Cookie", cookie.toString());
