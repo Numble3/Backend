@@ -12,14 +12,14 @@ import lombok.Getter;
 public class GetSimpleAccountVideoDto {
 
   private Long videoId;
-  private String thumbnailPath;
+  private String thumbnailUrl;
   private String title;
   private String videoAdminState;
 
   public static GetSimpleAccountVideoDto fromEntity(Video video) {
     return GetSimpleAccountVideoDto.builder()
         .videoId(video.getId())
-        .thumbnailPath(video.getThumbnailUrl())
+        .thumbnailUrl(video.getThumbnailUrl())
         .title(video.getTitle())
         .videoAdminState(video.isAdminDeleteYn() ? "deleted" : null)
         .build();

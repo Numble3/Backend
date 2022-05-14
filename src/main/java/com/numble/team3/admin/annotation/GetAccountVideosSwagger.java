@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
     @ApiResponse(
       code = 200,
       message = "비디오 조회 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{ \n\"videos\" : [ \n\t { \n\t\t \"videoId\" : 영상 ID, \n\t\t \"thumbnailPath\" : \"썸네일 경로\", \n\t\t \"title\" : \"영상 제목\" \n\t } \n\t ], \n\t \"totalCount\" : 전체 업로드 수, \n\t \"nowPage\" : 현재 페이지, \n\t \"totalPage\" : 전체 페이지 , \n\t \"size\" : 페이지 크기 \n}"))
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{ \n\"videos\" : [ \n\t { \n\t\t \"videoId\" : 영상 ID, \n\t\t \"thumbnailUrl\" : \"썸네일 경로\", \n\t\t \"title\" : \"영상 제목\" \n\t } \n\t ], \n\t \"totalCount\" : 전체 업로드 수, \n\t \"nowPage\" : 현재 페이지, \n\t \"totalPage\" : 전체 페이지 , \n\t \"size\" : 페이지 크기 \n}"))
     ),
     @ApiResponse(
       code = 401,
