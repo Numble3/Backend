@@ -3,6 +3,7 @@ package com.numble.team3.video.infra;
 import com.numble.team3.video.domain.Video;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,4 +27,7 @@ public interface JpaVideoRepository extends JpaRepository<Video, Long>, JpaVideo
   default List<Video> findAllByAccountIdAndLimit(Long accountId, int limit) {
     return findAllByAccountId(accountId, PageRequest.of(0, limit, Sort.by("id").descending()));
   }
+
+  @Query("SELECT v FROM Video v WHERE v.account.id = :accountId")
+  Page<Video> findAllByAccountIdWithAdmin(@Param("accountId") Long accountId, Pageable pageable);
 }
