@@ -1,5 +1,7 @@
 package com.numble.team3.converter.annotation;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -37,6 +39,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
       message = "이미지 리사이즈 실패 \t\n 1. aws 문제",
       examples = @Example(@ExampleProperty(mediaType = "application/json", value ="{\"message\" : \"이미지 변환에 실패했습니다.\"}"))
     )
+  }
+)
+@ApiImplicitParams(
+  value = {
+    @ApiImplicitParam(
+      name = "Authorization",
+      value = "access token",
+      required = true,
+      dataTypeClass = String.class,
+      paramType = "header"
+    ),
   }
 )
 @ResponseStatus(HttpStatus.CREATED)
