@@ -12,10 +12,10 @@ import org.springframework.data.domain.Page;
 @Builder
 public class GetVideoListForAdminDto {
   @Schema(description = "내용")
-  private List<GetVideoSimpleForAdminDto> contents;
+  private List<GetVideoSimpleForAdminDto> videos;
 
   @Schema(description = "총 합계 크기")
-  private Long totalSize;
+  private Long totalCount;
 
   @Schema(description = "페이지 크기")
   private int size;
@@ -32,8 +32,8 @@ public class GetVideoListForAdminDto {
       int size,
       int totalPage,
       int nowPage) {
-    this.contents = contents;
-    this.totalSize = totalSize;
+    this.videos = contents;
+    this.totalCount = totalSize;
     this.size = size;
     this.totalPage = totalPage;
     this.nowPage = nowPage;
@@ -41,12 +41,12 @@ public class GetVideoListForAdminDto {
 
   public static GetVideoListForAdminDto fromEntities(Page<Video> contents) {
     return GetVideoListForAdminDto.builder()
-        .contents(
+        .videos(
             contents.getContent().stream()
                 .map(GetVideoSimpleForAdminDto::fromEntity)
                 .collect(Collectors.toList()))
         .size(contents.getSize() + 1)
-        .totalSize(contents.getTotalElements())
+        .totalCount(contents.getTotalElements())
         .totalPage(contents.getTotalPages())
         .build();
   }
