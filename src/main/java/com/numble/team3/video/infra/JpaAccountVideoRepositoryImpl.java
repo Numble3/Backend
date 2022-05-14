@@ -1,5 +1,6 @@
 package com.numble.team3.video.infra;
 
+import static com.numble.team3.account.domain.QAccount.*;
 import static com.numble.team3.video.domain.QVideo.video;
 
 import com.numble.team3.video.application.response.GetVideoDto;
@@ -28,6 +29,7 @@ public class JpaAccountVideoRepositoryImpl implements JpaAccountVideoRepository 
           video.id, video.thumbnailUrl, video.title, video.account.nickname, video.view, video.like, video.createdAt
         ))
       .from(video)
+      .innerJoin(video.account, account)
       .where(
         video.deleteYn.isFalse(),
         video.adminDeleteYn.isFalse(),
