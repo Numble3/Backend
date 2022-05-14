@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AwsConvertImageUtils implements ConvertImageUtils {
@@ -41,7 +43,15 @@ public class AwsConvertImageUtils implements ConvertImageUtils {
       }
     };
 
-    return requestApiGateway("images", params);
+    String url = "";
+
+    try {
+      url = requestApiGateway("images", params);
+    } catch (Exception e) {
+      log.error("", e);
+    }
+
+    return url;
   }
 
   @Override
