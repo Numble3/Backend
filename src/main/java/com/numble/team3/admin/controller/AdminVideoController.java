@@ -3,6 +3,7 @@ package com.numble.team3.admin.controller;
 import com.numble.team3.admin.annotation.DeleteVideoForAdminSwagger;
 import com.numble.team3.admin.annotation.GetAllVideoForAdminSwagger;
 import com.numble.team3.admin.annotation.GetDetailVideoForAdminSwagger;
+import com.numble.team3.admin.application.response.GetAdminDeleteVideoStateDto;
 import com.numble.team3.admin.application.response.GetVideoDetailForAdminDto;
 import com.numble.team3.admin.application.response.GetVideoListForAdminDto;
 import com.numble.team3.video.application.VideoService;
@@ -52,9 +53,9 @@ public class AdminVideoController {
   @DeleteVideoForAdminSwagger
   @DeleteMapping(value = "/videos/{videoId}")
   @PreAuthorize("hasRole(ROLE_ADMIN)")
-  public ResponseEntity deleteVideoById(
+  public ResponseEntity<GetAdminDeleteVideoStateDto> deleteVideoById(
       @ApiParam(name = "영상 ID", required = true) @PathVariable Long videoId) {
-    videoService.deleteVideoByIdForAdmin(videoId);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    return ResponseEntity.status(HttpStatus.NO_CONTENT)
+        .body(videoService.deleteVideoByIdForAdmin(videoId));
   }
 }

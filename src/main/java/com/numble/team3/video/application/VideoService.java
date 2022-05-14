@@ -5,6 +5,7 @@ import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.admin.application.response.GetAccountVideosDto;
 import com.numble.team3.admin.application.response.GetSimpleAccountVideoDto;
+import com.numble.team3.admin.application.response.GetAdminDeleteVideoStateDto;
 import com.numble.team3.admin.application.response.GetVideoDetailForAdminDto;
 import com.numble.team3.admin.application.response.GetVideoListForAdminDto;
 import com.numble.team3.exception.account.AccountNotFoundException;
@@ -117,9 +118,10 @@ public class VideoService {
   }
 
   @Transactional
-  public void deleteVideoByIdForAdmin(Long videoId) {
+  public GetAdminDeleteVideoStateDto deleteVideoByIdForAdmin(Long videoId) {
     Video video = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
     video.adminDeleteVideo();
+    return new GetAdminDeleteVideoStateDto(videoId, "deleted");
   }
 
   public GetAccountVideosDto getAccountVideosForAdmin(Pageable pageable, Long accountId) {
