@@ -24,15 +24,13 @@ public class VideoConvertService {
   @Value("${cloud.aws.video.s3.name}")
   private String bucket;
 
-  @Value("${ffmpeg.convertPath}")
-  private String convertPath;
-
   private final ConvertVideoUtils convertVideoUtils;
   private final AmazonS3Client amazonS3Client;
   private final List<String> VIDEO_TYPES = List.of("mp4", "avi", "wmv", "mpg", "mpeg", "webm");
 
   private String createVideoDirFullPath() {
-    return convertPath
+    return System.getProperty("user.home")
+        + File.separator
         + UUID.randomUUID().toString().substring(0, 10);
   }
 
