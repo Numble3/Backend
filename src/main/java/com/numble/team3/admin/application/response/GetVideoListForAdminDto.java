@@ -45,7 +45,8 @@ public class GetVideoListForAdminDto {
             contents.getContent().stream()
                 .map(GetVideoSimpleForAdminDto::fromEntity)
                 .collect(Collectors.toList()))
-        .size(contents.getSize() + 1)
+        .size(contents.getSize())
+        .nowPage(contents.getNumber() + 1)
         .totalCount(contents.getTotalElements())
         .totalPage(contents.getTotalPages())
         .build();
