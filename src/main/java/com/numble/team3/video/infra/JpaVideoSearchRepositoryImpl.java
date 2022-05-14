@@ -32,7 +32,7 @@ public class JpaVideoSearchRepositoryImpl implements JpaVideoSearchRepository {
             .where(
                 video.deleteYn.isFalse(),
                 video.adminDeleteYn.isFalse(),
-                isTitleEq(filter),
+                isTitleContain(filter),
                 isCategoryEq(filter))
             .orderBy(videoSort(filter))
             .offset(pageable.getOffset())
@@ -54,11 +54,11 @@ public class JpaVideoSearchRepositoryImpl implements JpaVideoSearchRepository {
     }
   }
 
-  private BooleanExpression isTitleEq(SearchCondition filter) {
+  private BooleanExpression isTitleContain(SearchCondition filter) {
     if (filter == null || filter.getTitle() == null) {
       return null;
     }
-    return video.title.eq(filter.getTitle());
+    return video.title.contains(filter.getTitle());
   }
 
   private BooleanExpression isCategoryEq(SearchCondition filter) {
