@@ -5,9 +5,7 @@ import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.sign.TokenFailureException;
 import com.numble.team3.jwt.PrivateClaims;
 import com.numble.team3.jwt.TokenHelper;
-import java.util.Arrays;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -36,13 +34,11 @@ public class LoginMethodArgumentResolver implements HandlerMethodArgumentResolve
       throws RuntimeException {
     String authorizationHeader = webRequest.getHeader("Authorization");
     if (authorizationHeader == null) {
-      throw new AccountNotFoundException();
+      return new UserInfo(null, null);
     }
 
     PrivateClaims privateClaims =
-      accessTokenHelper
-            .parse(authorizationHeader)
-            .orElseThrow(TokenFailureException::new);
+        accessTokenHelper.parse(authorizationHeader).orElseThrow(TokenFailureException::new);
     Long accountId = Long.valueOf(privateClaims.getAccountId());
     List<String> roleTypes = privateClaims.getRoleTypes();
     return new UserInfo(accountId, roleTypes);
