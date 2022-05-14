@@ -45,6 +45,9 @@ public class GetVideoDetailForAdminDto {
   @Schema(description = "영상 경로")
   private String videoUrl;
 
+  @Schema(description = "관리자 영상 관리 상태")
+  private String videoAdminState;
+
   private GetVideoDetailForAdminDto(
       String title,
       String content,
@@ -54,7 +57,8 @@ public class GetVideoDetailForAdminDto {
       Long view,
       VideoType type,
       String thumbnailUrl,
-      String videoUrl) {
+      String videoUrl,
+      String videoAdminState) {
     this.title = title;
     this.content = content;
     this.nickname = nickname;
@@ -64,6 +68,7 @@ public class GetVideoDetailForAdminDto {
     this.type = type;
     this.thumbnailUrl = thumbnailUrl;
     this.videoUrl = videoUrl;
+    this.videoAdminState = videoAdminState;
   }
 
   public static GetVideoDetailForAdminDto fromEntity(Video video) {
@@ -77,6 +82,7 @@ public class GetVideoDetailForAdminDto {
         .type(video.getType())
         .thumbnailUrl(video.getThumbnailUrl())
         .videoUrl(video.getVideoUrl())
+        .videoAdminState(video.isAdminDeleteYn() ? "deleted" : null)
         .build();
   }
 }
