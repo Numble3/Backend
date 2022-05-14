@@ -29,7 +29,7 @@ public class VideoConvertService {
   private final List<String> VIDEO_TYPES = List.of("mp4", "avi", "wmv", "mpg", "mpeg", "webm");
 
   private String createVideoDirFullPath() {
-    return System.getProperty("user.dir")
+    return System.getProperty("user.home")
         + File.separator
         + UUID.randomUUID().toString().substring(0, 10);
   }
