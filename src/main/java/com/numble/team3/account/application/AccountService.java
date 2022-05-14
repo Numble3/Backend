@@ -154,7 +154,7 @@ public class AccountService {
   @Transactional(readOnly = true)
   public GetMyVideosDto getMyVideosDto(VideoSortCondition sort, UserInfo userInfo, Long videoId) {
     List<GetVideoDto> myVideoDtos
-      = videoRepository.getMyVideoDtos(sort, userInfo.getAccountId(), videoId, videoLimit);
+      = videoRepository.getMyVideoDtos(sort, userInfo.getAccountId(), videoId, 3);
 
     if (myVideoDtos.size() >= videoLimit) {
       return new GetMyVideosDto(myVideoDtos, myVideoDtos.get(myVideoDtos.size() - 1).getVideoId());
