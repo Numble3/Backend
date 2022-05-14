@@ -23,13 +23,8 @@ import java.lang.annotation.Target;
       examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{\"accessToken\" : \"String\", \"refreshToken\" : \"String\"}"))
     ),
     @ApiResponse(
-      code = 400,
-      message = "요청 시 아무 쿠키도 전달되지 않음",
-      examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{\"message\" : \"refreshToken 쿠키가 누락되었습니다.\"}"))
-    ),
-    @ApiResponse(
       code = 401,
-      message = "refreshToken 쿠키 누락",
+      message = "access token 재발급 실패 \n\t 1. Authorization 헤더가 존재하지 않음 \n\t 2. Authorization 헤더로 전달한 토큰이 유효하지 않음(refresh token까지 만료된 상태로, 재 로그인 필요)",
       examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{\"message\" : \"refreshToken 쿠키가 누락되었습니다.\"}"))
     )
   }
