@@ -3,6 +3,8 @@ package com.numble.team3.video.application;
 import com.numble.team3.account.domain.Account;
 import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.account.resolver.UserInfo;
+import com.numble.team3.admin.application.response.GetAccountVideosDto;
+import com.numble.team3.admin.application.response.GetSimpleAccountVideoDto;
 import com.numble.team3.admin.application.response.GetVideoDetailForAdminDto;
 import com.numble.team3.admin.application.response.GetVideoListForAdminDto;
 import com.numble.team3.exception.account.AccountNotFoundException;
@@ -14,10 +16,14 @@ import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.domain.VideoUtils;
 import com.numble.team3.video.infra.JpaVideoRepository;
 import com.numble.team3.video.resolver.SearchCondition;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,5 +120,21 @@ public class VideoService {
   public void deleteVideoByIdForAdmin(Long videoId) {
     Video video = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
     video.adminDeleteVideo();
+  }
+
+  public GetAccountVideosDto getAccountVideosForAdmin(Pageable pageable, Long accountId) {
+    Page<Video> pageResult = videoRepository.findAllByAccountIdWithAdmin(accountId, pageable);
+
+    List<GetSimpleAccountVideoDto> collectResult =
+      pageResult.stream().map(video -> GetSimpleAccountVideoDto.fromEntity(video))
+        .collect(Collectors.toList());
+
+    return GetAccountVideosDto.builder()
+      .videos(collectResult)
+      .totalCount(pageResult.getTotalElements())
+      .nowPage(pageResult.getNumber() + 1)
+      .totalPage(pageResult.getTotalPages())
+      .size(pageResult.getSize())
+      .build();
   }
 }

@@ -3,13 +3,16 @@ package com.numble.team3.admin.controller;
 import com.numble.team3.account.application.AccountService;
 import com.numble.team3.admin.annotation.DeleteTokenSwagger;
 import com.numble.team3.admin.annotation.GetAccountSwagger;
+import com.numble.team3.admin.annotation.GetAccountVideosSwagger;
 import com.numble.team3.admin.annotation.GetAccountsSwagger;
 import com.numble.team3.admin.annotation.WithdrawalSwagger;
 import com.numble.team3.sign.application.SignService;
+import com.numble.team3.video.application.VideoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +31,7 @@ public class AdminAccountController {
 
   private final AccountService accountService;
   private final SignService signService;
+  private final VideoService videoService;
 
   @GetAccountsSwagger
   @GetMapping(value = "/accounts/all", produces = "application/json")
@@ -61,4 +65,15 @@ public class AdminAccountController {
     return new ResponseEntity(HttpStatus.OK);
   }
 
+  @GetAccountVideosSwagger
+  @GetMapping(value = "/accounts/videos/{id}", produces = "application/json")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity getAccountVideos(
+    @ApiParam(value = "회원 id", required = true) @PathVariable("id") Long accountId,
+    @ApiParam(value = "페이지", required = true) @RequestParam("page") int page,
+    @ApiParam(value = "페이지 크기", required = true) @RequestParam("size") int size) {
+    return ResponseEntity.ok(
+      videoService.getAccountVideosForAdmin(
+        PageRequest.of(page - 1, size, Sort.by("id").descending()), accountId));
+  }
 }
