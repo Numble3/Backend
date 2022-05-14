@@ -17,12 +17,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 @Slf4j
 public class CommonRestControllerAdvice {
 
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  Map<String, String> exceptionHandler(Exception e) {
-    return createResponse(e.toString());
-  }
-
   @ExceptionHandler(HttpMessageNotReadableException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   Map<String, String> httpMessageNotReadableException() {
