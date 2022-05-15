@@ -125,7 +125,7 @@ public class VideoService {
   }
 
   public GetAccountVideosDto getAccountVideosForAdmin(Pageable pageable, Long accountId) {
-    Page<Video> pageResult = videoRepository.findAllByAccountIdWithAdmin(accountId, pageable);
+    Page<Video> pageResult = videoRepository.findAllByAccountIdWithAdmin(accountId, false, pageable);
 
     List<GetSimpleAccountVideoDto> collectResult =
       pageResult.stream().map(video -> GetSimpleAccountVideoDto.fromEntity(video))

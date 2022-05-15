@@ -28,6 +28,6 @@ public interface JpaVideoRepository extends JpaRepository<Video, Long>, JpaVideo
     return findAllByAccountId(accountId, PageRequest.of(0, limit, Sort.by("id").descending()));
   }
 
-  @Query("SELECT v FROM Video v WHERE v.account.id = :accountId AND v.deleteYn = false")
-  Page<Video> findAllByAccountIdWithAdmin(@Param("accountId") Long accountId, Pageable pageable);
+  @Query("SELECT v FROM Video v WHERE v.account.id = :accountId AND v.deleteYn = :deleted")
+  Page<Video> findAllByAccountIdWithAdmin(@Param("accountId") Long accountId, @Param("deleted") boolean deleted, Pageable pageable);
 }
