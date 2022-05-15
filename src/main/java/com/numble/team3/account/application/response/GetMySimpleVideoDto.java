@@ -14,12 +14,14 @@ public class GetMySimpleVideoDto {
   private Long videoId;
   private String thumbnailPath;
   private String title;
+  private String videoType;
 
   public static GetMySimpleVideoDto fromEntity(Video video) {
     return GetMySimpleVideoDto.builder()
       .videoId(video.getId())
       .thumbnailPath(video.getThumbnailUrl())
       .title(video.getTitle())
+      .videoType(video.getType().getType())
       .build();
   }
 }
