@@ -22,6 +22,9 @@ public class GetVideoDetailDto {
   @Schema(description = "영상 경로")
   private String videoUrl;
 
+  @Schema(description = "영상 시간")
+  private Long videoDuration;
+
   @Schema(description = "영상 제목")
   private String title;
 
@@ -44,7 +47,10 @@ public class GetVideoDetailDto {
   private VideoType type;
 
   @Schema(description = "업로드 날짜")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+  @JsonFormat(
+      shape = JsonFormat.Shape.STRING,
+      pattern = "yyyy-MM-dd HH:mm:ss",
+      timezone = "Asia/Seoul")
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime createdAt;
 
@@ -60,7 +66,8 @@ public class GetVideoDetailDto {
       long like,
       LocalDateTime createdAt,
       VideoCategory category,
-      VideoType type) {
+      VideoType type,
+      Long videoDuration) {
     this.videoId = videoId;
     this.videoUrl = videoUrl;
     this.userProfilePath = userProfilePath;
@@ -72,6 +79,7 @@ public class GetVideoDetailDto {
     this.createdAt = createdAt;
     this.category = category;
     this.type = type;
+    this.videoDuration = videoDuration;
   }
 
   public static GetVideoDetailDto fromEntity(Video video) {
@@ -87,6 +95,7 @@ public class GetVideoDetailDto {
         .createdAt(video.getCreatedAt())
         .category(video.getCategory())
         .type(video.getType())
+        .videoDuration(video.getVideoDuration())
         .build();
   }
 }
