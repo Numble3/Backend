@@ -58,6 +58,7 @@ public class GetVideoDto {
     this.view = view;
     this.like = like;
     this.createdAt = createdAt;
+    this.videoType = videoType;
   }
 
   public static GetVideoDto fromEntity(Video video) {
