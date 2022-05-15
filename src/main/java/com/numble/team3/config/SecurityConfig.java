@@ -9,6 +9,8 @@ import com.numble.team3.security.JwtAuthenticationFilter;
 import com.numble.team3.security.OAuth2SuccessHandler;
 import com.numble.team3.security.SecurityUtils;
 import com.numble.team3.sign.infra.SignRedisHelper;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -91,9 +93,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.addAllowedOrigin("https://master.d2welxu3900atg.amplifyapp.com");
-    configuration.addAllowedMethod("*");
-    configuration.addAllowedHeader("*");
+    configuration.setAllowedMethods(List.of("GET","POST","PUT","PATCH","OPTIONS","DELETE"));
+    configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://master.d2welxu3900atg.amplifyapp.com"));
     configuration.setAllowCredentials(true);
     configuration.setMaxAge(3600L);
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
