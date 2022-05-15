@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.numble.team3.video.domain.Video;
+import com.numble.team3.video.domain.enums.VideoType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -29,6 +30,9 @@ public class GetVideoDto {
   @Schema(description = "좋아요 수")
   private long like;
 
+  @Schema(description = "영상 타입")
+  private VideoType videoType;
+
   @Schema(description = "업로드 날짜")
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,
@@ -45,7 +49,8 @@ public class GetVideoDto {
       String nickname,
       long view,
       long like,
-      LocalDateTime createdAt) {
+      LocalDateTime createdAt,
+      VideoType videoType) {
     this.videoId = videoId;
     this.thumbnailPath = thumbnailPath;
     this.title = title;
@@ -53,6 +58,7 @@ public class GetVideoDto {
     this.view = view;
     this.like = like;
     this.createdAt = createdAt;
+    this.videoType = videoType;
   }
 
   public static GetVideoDto fromEntity(Video video) {
