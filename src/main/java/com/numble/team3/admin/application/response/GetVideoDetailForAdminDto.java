@@ -45,6 +45,9 @@ public class GetVideoDetailForAdminDto {
   @Schema(description = "영상 경로")
   private String videoUrl;
 
+  @Schema(description = "영상 시간")
+  private Long videoDuration;
+
   @Schema(description = "관리자 영상 관리 상태")
   private String videoAdminState;
 
@@ -62,7 +65,8 @@ public class GetVideoDetailForAdminDto {
       String thumbnailUrl,
       String videoUrl,
       String videoAdminState,
-      Long accountId) {
+      Long accountId,
+      Long videoDuration) {
     this.title = title;
     this.content = content;
     this.nickname = nickname;
@@ -74,6 +78,7 @@ public class GetVideoDetailForAdminDto {
     this.videoUrl = videoUrl;
     this.videoAdminState = videoAdminState;
     this.accountId = accountId;
+    this.videoDuration = videoDuration;
   }
 
   public static GetVideoDetailForAdminDto fromEntity(Video video) {
@@ -89,6 +94,7 @@ public class GetVideoDetailForAdminDto {
         .videoUrl(video.getVideoUrl())
         .videoAdminState(video.isAdminDeleteYn() ? "deleted" : null)
         .accountId(video.getAccount().getId())
+        .videoDuration(video.getVideoDuration())
         .build();
   }
 }
