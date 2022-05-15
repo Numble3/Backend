@@ -117,9 +117,8 @@ public class VideoFfmpegUtils implements ConvertVideoUtils {
   public long extractVideoDuration(String filePath) throws IOException {
     log.info("[extract start video metadata] path: {}", filePath);
     FFmpegProbeResult probeResult = ffprobe.probe(filePath);
-    log.info(
-        "[extract start video metadata] duration: {}", probeResult.getStreams().get(0).duration_ts);
-    return probeResult.getStreams().get(0).duration_ts;
+    log.info("[extract start video metadata] duration: {}", probeResult.getStreams().get(0).duration);
+    return (long)probeResult.getStreams().get(0).duration;
   }
 
   @Override

@@ -5,6 +5,8 @@ spring:
 ffmpeg:
   ffmpegPath: '${user.dir}\ffmpeg.exe'
   ffprobePath: '${user.dir}\ffprobe.exe'
+  convert:
+    path: '${user.dir}\convert\'
   chunkUnit: 10
 ---
 spring:
@@ -14,4 +16,6 @@ spring:
 ffmpeg:
   ffmpegPath: /home/ec2-user/app/ffmpeg.exe
   ffprobePath: /home/ec2-user/app/ffprobe.exe
+  convert:
+    path: /home/ec2-user/convert
   chunkUnit: 10

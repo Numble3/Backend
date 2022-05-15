@@ -47,7 +47,7 @@ public class JpaVideoSearchRepositoryImpl implements JpaVideoSearchRepository {
   }
 
   private OrderSpecifier videoSort(SearchCondition filter) {
-    if (filter.getSortCondition() == VideoSortCondition.POPULARITY) {
+    if (filter.getSort() == VideoSortCondition.POPULARITY) {
       return new OrderSpecifier<>(Order.DESC, video.like);
     } else {
       return new OrderSpecifier<>(Order.DESC, video.createdAt);

@@ -20,5 +20,5 @@ public class SearchCondition {
   private VideoCategory category;
 
   @ApiModelProperty(value = "정렬 조건 (생략 가능)")
-  private VideoSortCondition sortCondition;
+  private VideoSortCondition sort;
 }
