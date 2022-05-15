@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class GetVideoDetailForAdminDto {
   @Schema(description = "영상 제목")
   private String title;
@@ -54,6 +53,7 @@ public class GetVideoDetailForAdminDto {
   @Schema(description = "영상 업로더 account ID")
   private Long accountId;
 
+  @Builder
   private GetVideoDetailForAdminDto(
       String title,
       String content,
