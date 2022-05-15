@@ -66,7 +66,7 @@ public class LikeVideoService {
 
     List<GetLikeVideoDto> likes = likeRepository.getLikesByCategory(userInfo, categoryName, likeId, size);
 
-    if (likes.size() == 0) {
+    if (likes.size() < size) {
       return new GetLikeListDto(likes, null);
     }
     else {
