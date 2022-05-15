@@ -33,7 +33,8 @@ public class JpaAccountVideoRepositoryImpl implements JpaAccountVideoRepository 
       .where(
         video.deleteYn.isFalse(),
         video.adminDeleteYn.isFalse(),
-        ltVideoId(videoId)
+        ltVideoId(videoId),
+        video.account.id.eq(accountId)
       )
       .orderBy(videoSortList(sort).stream().toArray(OrderSpecifier[]::new))
       .limit(limit)
