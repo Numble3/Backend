@@ -1,7 +1,5 @@
 package com.numble.team3.converter.domain;
 
-import com.numble.team3.converter.application.request.CreateVideoDto;
-import com.numble.team3.converter.application.response.GetConvertVideoDto;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
