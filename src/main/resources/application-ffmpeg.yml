@@ -14,8 +14,8 @@ spring:
     activate:
       on-profile: prod1, prod2
 ffmpeg:
-  ffmpegPath: /home/ec2-user/app/ffmpeg.exe
-  ffprobePath: /home/ec2-user/app/ffprobe.exe
+  ffmpegPath: /home/ec2-user/app/ffmpeg
+  ffprobePath: /home/ec2-user/app/ffprobe
   convert:
     path: /home/ec2-user/convert
   chunkUnit: 10
