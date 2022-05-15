@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
     @ApiResponse(
       code = 200,
       message = "회원 조회 성공",
-      examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{ \n\t \"accountDto\" : { \n\t\t \"email\" : \"회원 이메일\", \n\t\t \"profile\" : \"profile 경로\", \n\t\t \"nickname\" : \"사용자 닉네임\" \n\t }, \n\t \"videoDtos\" : [ \n\t { \n\t\t \"videoId\" : 영상 ID, \n\t\t \"thumbnailPath\" : \"Thumbnail 경로\", \n\t\t \"title\" : \"영상 제목\" \n\t } \n\t ] \n}"))
+      examples = @Example(@ExampleProperty(mediaType= "application/json", value = "{ \n\t \"accountDto\" : { \n\t\t \"email\" : \"회원 이메일\", \n\t\t \"profile\" : \"profile 경로\", \n\t\t \"nickname\" : \"사용자 닉네임\" \n\t }, \n\t \"videoDtos\" : [ \n\t { \n\t\t \"videoId\" : 영상 ID, \n\t\t \"thumbnailPath\" : \"Thumbnail 경로\", \n\t\t \"title\" : \"영상 제목\", \n\t\t \"videoType\" : \"영상 타입(임베딩 영상, 직접 업로드)\" \n\t } \n\t ] \n}"))
     ),
     @ApiResponse(
       code = 400,
