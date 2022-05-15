@@ -49,7 +49,8 @@ public class GetVideoDto {
       String nickname,
       long view,
       long like,
-      LocalDateTime createdAt) {
+      LocalDateTime createdAt,
+      VideoType videoType) {
     this.videoId = videoId;
     this.thumbnailPath = thumbnailPath;
     this.title = title;
@@ -68,6 +69,7 @@ public class GetVideoDto {
         .view(video.getView())
         .like(video.getLike())
         .createdAt(video.getCreatedAt())
+        .videoType(video.getType())
         .build();
   }
 }
