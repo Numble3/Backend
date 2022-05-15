@@ -21,7 +21,7 @@ public interface JpaVideoRepository extends JpaRepository<Video, Long>, JpaVideo
   @Query("UPDATE Video v SET v.view = v.view + :viewCount WHERE v.id = :videoId")
   void updateVideoViewCount(@Param("viewCount") Long viewCount, @Param("videoId") Long videoId);
 
-  @Query("SELECT v FROM Video v WHERE v.account.id = :id")
+  @Query("SELECT v FROM Video v WHERE v.account.id = :id AND v.deleteYn = false")
   List<Video> findAllByAccountId(@Param("id") Long accountId, Pageable pageable);
 
   default List<Video> findAllByAccountIdAndLimit(Long accountId, int limit) {
