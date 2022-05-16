@@ -18,6 +18,9 @@ public class GetVideoDto {
   @Schema(description = "썸네일 경로")
   private String thumbnailPath;
 
+  @Schema(description = "업로드 유저 프로필 사진 경로")
+  private String profileUrl;
+
   @Schema(description = "영상 제목")
   private String title;
 
@@ -29,6 +32,9 @@ public class GetVideoDto {
 
   @Schema(description = "좋아요 수")
   private long like;
+
+  @Schema(description = "카테고리")
+  private String category;
 
   @Schema(description = "영상 타입")
   private VideoType videoType;
@@ -50,7 +56,9 @@ public class GetVideoDto {
       long view,
       long like,
       LocalDateTime createdAt,
-      VideoType videoType) {
+      VideoType videoType,
+      String profileUrl,
+      String category) {
     this.videoId = videoId;
     this.thumbnailPath = thumbnailPath;
     this.title = title;
@@ -59,6 +67,8 @@ public class GetVideoDto {
     this.like = like;
     this.createdAt = createdAt;
     this.videoType = videoType;
+    this.profileUrl = profileUrl;
+    this.category = category;
   }
 
   public static GetVideoDto fromEntity(Video video) {
@@ -71,6 +81,8 @@ public class GetVideoDto {
         .like(video.getLike())
         .createdAt(video.getCreatedAt())
         .videoType(video.getType())
+        .profileUrl(video.getAccount().getProfile())
+        .category(video.getCategory().toString())
         .build();
   }
 }

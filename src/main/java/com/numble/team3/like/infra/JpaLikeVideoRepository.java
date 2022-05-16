@@ -30,4 +30,7 @@ public interface JpaLikeVideoRepository extends JpaRepository<LikeVideo, Long>,
     return getAllLikesByAccountIdAndCategory(accountId, category, pageable);
   }
 
+  @Query("SELECT l FROM LikeVideo l WHERE l.video.id IN :videoIds AND l.video.account.id = :accountId")
+  List<LikeVideo> getLikesByAccountId(@Param("videoIds") List<Long> videoIds, @Param("accountId") Long accountId);
+
 }
