@@ -10,6 +10,8 @@ import com.numble.team3.admin.application.response.GetVideoDetailForAdminDto;
 import com.numble.team3.admin.application.response.GetVideoListForAdminDto;
 import com.numble.team3.exception.account.AccountNotFoundException;
 import com.numble.team3.exception.video.VideoNotFoundException;
+import com.numble.team3.like.domain.LikeVideo;
+import com.numble.team3.like.infra.JpaLikeVideoRepository;
 import com.numble.team3.video.application.request.CreateOrUpdateVideoDto;
 import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
@@ -17,14 +19,17 @@ import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.domain.VideoUtils;
 import com.numble.team3.video.infra.JpaVideoRepository;
 import com.numble.team3.video.resolver.SearchCondition;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoService {
   private final JpaAccountRepository accountRepository;
   private final JpaVideoRepository videoRepository;
+  private final JpaLikeVideoRepository likeVideoRepository;
   private final VideoUtils videoUtils;
 
   private Account findByAccountId(Long accountId) {
@@ -94,9 +100,16 @@ public class VideoService {
 
   @Transactional(readOnly = true)
   public GetVideoListDto getAllVideoByCondition(
-      SearchCondition condition, PageRequest pageRequest) {
-    return GetVideoListDto.fromEntities(
-        videoRepository.searchVideoByCondition(condition, pageRequest));
+      UserInfo userInfo, SearchCondition condition, PageRequest pageRequest) {
+    Slice<Video> videos = videoRepository.searchVideoByCondition(condition, pageRequest);
+    List<LikeVideo> likeVideoIds = new ArrayList<>();
+    if (userInfo != null || userInfo.getAccountId() != null) {
+      likeVideoIds =
+          likeVideoRepository.getLikesByAccountId(
+              videos.getContent().stream().map(v -> v.getId()).collect(Collectors.toList()),
+              userInfo.getAccountId());
+    }
+    return GetVideoListDto.fromEntities(videos, likeVideoIds);
   }
 
   @Transactional(readOnly = true)
@@ -128,15 +141,16 @@ public class VideoService {
     Page<Video> pageResult = videoRepository.findAllByAccountIdWithAdmin(accountId, pageable);
 
     List<GetSimpleAccountVideoDto> collectResult =
-      pageResult.stream().map(video -> GetSimpleAccountVideoDto.fromEntity(video))
-        .collect(Collectors.toList());
+        pageResult.stream()
+            .map(video -> GetSimpleAccountVideoDto.fromEntity(video))
+            .collect(Collectors.toList());
 
     return GetAccountVideosDto.builder()
-      .videos(collectResult)
-      .totalCount(pageResult.getTotalElements())
-      .nowPage(pageResult.getNumber() + 1)
-      .totalPage(pageResult.getTotalPages())
-      .size(pageResult.getSize())
-      .build();
+        .videos(collectResult)
+        .totalCount(pageResult.getTotalElements())
+        .nowPage(pageResult.getNumber() + 1)
+        .totalPage(pageResult.getTotalPages())
+        .size(pageResult.getSize())
+        .build();
   }
 }

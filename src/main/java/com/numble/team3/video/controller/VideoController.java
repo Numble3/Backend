@@ -15,6 +15,7 @@ import com.numble.team3.video.application.response.GetVideoDetailDto;
 import com.numble.team3.video.application.response.GetVideoListDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
+import java.util.Optional;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,6 +52,7 @@ public class VideoController {
   @GetVideoAllSwagger
   @GetMapping("/videos")
   public ResponseEntity<GetVideoListDto> getAllVideo(
+      @ApiIgnore @LoginUser UserInfo userInfo,
       @ApiParam(value = "페이지 번호", defaultValue = "0", required = true)
           @RequestParam(defaultValue = "0")
           int page,
@@ -58,7 +61,7 @@ public class VideoController {
           int size,
       @SearchFilter SearchCondition filter) {
     return ResponseEntity.ok(
-        videoService.getAllVideoByCondition(filter, PageRequest.of(page, size)));
+        videoService.getAllVideoByCondition(userInfo, filter, PageRequest.of(page, size)));
   }
 
   @GetVideoDetailSwagger
