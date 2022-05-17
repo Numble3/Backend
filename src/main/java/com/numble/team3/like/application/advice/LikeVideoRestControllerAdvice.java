@@ -1,5 +1,6 @@
 package com.numble.team3.like.application.advice;
 
+import com.numble.team3.exception.like.LikeVideoAlreadyExistsException;
 import com.numble.team3.exception.like.LikeVideoNotFoundException;
 import com.numble.team3.exception.video.VideoNotFoundException;
 import com.numble.team3.like.controller.LikeVideoController;
@@ -17,14 +18,20 @@ public class LikeVideoRestControllerAdvice {
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  Map<String, String> missingServletRequestParameterException() {
+  Map<String, String> missingServletRequestParameterExceptionHandler() {
     return createResponse("쿼리 파라미터를 확인해주세요.");
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  Map<String, String> methodArgumentTypeMismatchException() {
+  Map<String, String> methodArgumentTypeMismatchExceptionHandler() {
     return createResponse("쿼리 파라미터의 타입을 확인해주세요.");
+  }
+
+  @ExceptionHandler(LikeVideoAlreadyExistsException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  Map<String, String> likeVideoAlreadyExistsExceptionHandler() {
+    return createResponse("이미 관심 영상(좋아요)에 추가한 영상입니다.");
   }
 
   @ExceptionHandler(LikeVideoNotFoundException.class)

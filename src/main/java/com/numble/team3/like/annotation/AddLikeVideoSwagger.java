@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
     ),
     @ApiResponse(
       code = 400,
-      message = "좋아요 추가 실패 \t\n 1. 존재하지 않는 비디오 \t\n 2. 쿼리 파라미터가 존재하지 않음 \t\n 3. 쿼리 파라미터의 타입이 올바르지 않음",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"message\" : \"존재하지 않는 비디오입니다.\"\n\"message\" : \"쿼리 파라미터를 확인해주세요.\"\n\"message\" : \"쿼리 파라미터의 타입을 확인해주세요.\"\n}"))
+      message = "좋아요 추가 실패 \t\n 1. 존재하지 않는 비디오 \t\n 2. 쿼리 파라미터가 존재하지 않음 \t\n 3. 쿼리 파라미터의 타입이 올바르지 않음 \t\n 4. 이미 관심영상(좋아요)에 추가한 영상",
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\n\"message\" : \"존재하지 않는 비디오입니다.\"\n\"message\" : \"쿼리 파라미터를 확인해주세요.\"\n\"message\" : \"쿼리 파라미터의 타입을 확인해주세요.\" \n\"message\" : \"이미 관심 영상(좋아요)에 추가한 영상입니다.\"\n}"))
     ),
     @ApiResponse(
       code = 401,
