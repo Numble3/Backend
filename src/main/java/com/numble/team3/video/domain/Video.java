@@ -42,11 +42,11 @@ public class Video extends BaseTimeEntity {
 
   @ColumnDefault(value = "0")
   @Column(name = "view_count")
-  private Long view;
+  private Long view = 0L;
 
   @ColumnDefault(value = "0")
   @Column(name = "like_count")
-  private Long like;
+  private Long like = 0L;
 
   @Column(name = "video_url")
   private String videoUrl;

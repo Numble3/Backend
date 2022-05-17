@@ -63,59 +63,6 @@ class LikeVideoServiceTest {
   }
 
   @Test
-  void addLike_성공_테스트() throws Exception {
-    // given
-    Video video = createVideo();
-    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
-
-    given(videoRepository.findById(anyLong())).willReturn(Optional.ofNullable(video));
-    given(likeRepository.save(any(LikeVideo.class))).willReturn(null);
-
-    // when
-    likeVideoService.addLike(userInfo, 1L, VideoCategory.CAT);
-
-    // then
-    verify(likeRepository).save(any(LikeVideo.class));
-  }
-
-  @Test
-  void addLike_없는_비디오_id_실패_테스트() {
-    // given
-    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
-
-    given(videoRepository.findById(anyLong())).willReturn(Optional.empty());
-
-    // when, then
-    assertThrows(VideoNotFoundException.class, () -> likeVideoService.addLike(userInfo, 1L, VideoCategory.CAT));
-  }
-
-  @Test
-  void deleteLike_성공_테스트() throws Exception {
-    // given
-    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
-    LikeVideo likeVideo = createLike();
-
-    given(likeRepository.getLikeByAccountIdAndVideoId(anyLong(), anyLong())).willReturn(Optional.ofNullable(likeVideo));
-
-    // when
-    likeVideoService.deleteLike(userInfo, 1L);
-
-    // then
-    verify(likeRepository).delete(any(LikeVideo.class));
-  }
-
-  @Test
-  void deleteLike_없는_좋아요_id_실패_테스트() {
-    // given
-    UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
-
-    given(likeRepository.getLikeByAccountIdAndVideoId(anyLong(), anyLong())).willReturn(Optional.empty());
-
-    // when, then
-    assertThrows(LikeVideoNotFoundException.class, () -> likeVideoService.deleteLike(userInfo, 1L));
-  }
-
-  @Test
   void getLikesByCategory_리스트_없는_성공_테스트() {
     // given
     UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
