@@ -10,6 +10,8 @@ import com.numble.team3.converter.domain.ConvertVideoUtils;
 import com.numble.team3.exception.convert.VideoTypeUnSupportException;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -45,14 +47,21 @@ public class VideoConvertService {
     }
   }
 
+  public String uploadS3UploadKeyGenerator() {
+    return UUID.randomUUID().toString().substring(0, 10)
+        + "_"
+        + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+  }
+
   private String uploadFilesToS3(String dirFullPath) {
     File dirFile = new File(dirFullPath);
     String indexFileUploadUrl = null;
-    String baseKey = UUID.randomUUID().toString() + "/";
+    String baseKey = uploadS3UploadKeyGenerator();
     for (File file : dirFile.listFiles()) {
       String s3UploadKey =
           baseKey
-              + convertVideoUtils.getFileOriginName(file.getAbsolutePath())
+              + File.separator
+              + baseKey
               + "."
               + convertVideoUtils.getFileExt(file.getAbsolutePath());
       log.info("[s3Upload] upload url: {}", s3UploadKey);
