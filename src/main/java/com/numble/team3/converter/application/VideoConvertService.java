@@ -27,14 +27,15 @@ public class VideoConvertService {
   @Value("${ffmpeg.convert.path}")
   private String convertDirPath;
 
+  @Value("${cloud.aws.cloud_front.domain_name")
+  private String CLOUD_FRONT_DOMAIN_NAME;
+
   private final ConvertVideoUtils convertVideoUtils;
   private final AmazonS3Client amazonS3Client;
   private final List<String> VIDEO_TYPES = List.of("mp4", "avi", "wmv", "mpg", "mpeg", "webm");
 
   private String createVideoDirFullPath() {
-    return convertDirPath
-        + File.separator
-        + UUID.randomUUID().toString().substring(0, 10);
+    return convertDirPath + File.separator + UUID.randomUUID().toString().substring(0, 10);
   }
 
   private void validationFileType(String filePath) {
@@ -59,7 +60,7 @@ public class VideoConvertService {
         amazonS3Client.putObject(
             new PutObjectRequest(bucket, s3UploadKey, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
-        indexFileUploadUrl = amazonS3Client.getUrl(bucket, s3UploadKey).toString();
+        indexFileUploadUrl = CLOUD_FRONT_DOMAIN_NAME + "/" + s3UploadKey;
         log.info("[s3Upload] index file upload url: {}", indexFileUploadUrl);
       } else {
         amazonS3Client.putObject(
@@ -70,9 +71,9 @@ public class VideoConvertService {
     return indexFileUploadUrl;
   }
 
-  private void cleanUpDirectory(String dirFullPath){
+  private void cleanUpDirectory(String dirFullPath) {
     File dirFile = new File(dirFullPath);
-    for(File file: dirFile.listFiles()){
+    for (File file : dirFile.listFiles()) {
       file.delete();
     }
     dirFile.delete();
