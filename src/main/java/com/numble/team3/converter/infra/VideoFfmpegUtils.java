@@ -6,7 +6,10 @@ import com.numble.team3.exception.convert.VideoConvertFailureException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.UUID;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,11 +100,24 @@ public class VideoFfmpegUtils implements ConvertVideoUtils {
     return dirFullPath;
   }
 
+  @Override
+  public String getRandomFileName() {
+    return UUID.randomUUID().toString().substring(0, 10)
+        + "_"
+        + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss"));
+  }
+
   // 로컬에 파일 업로드 하기
   private Optional<File> convertMultipartToFile(String dirFullPath, MultipartFile multipartFile)
       throws IOException {
     makeEncodingDirectory(dirFullPath);
-    File convertFile = new File(dirFullPath + File.separator + multipartFile.getOriginalFilename());
+    File convertFile =
+        new File(
+            dirFullPath
+                + File.separator
+                + getRandomFileName()
+                + "."
+                + getFileExt(multipartFile.getOriginalFilename()));
     if (convertFile.createNewFile()) { // 바로 위에서 지정한 경로에 File이 생성됨 (경로가 잘못되었다면 생성 불가능)
       try (FileOutputStream fos =
           new FileOutputStream(convertFile)) { // FileOutputStream 데이터를 파일에 바이트 스트림으로 저장하기 위함
@@ -117,17 +133,27 @@ public class VideoFfmpegUtils implements ConvertVideoUtils {
   public long extractVideoDuration(String filePath) throws IOException {
     log.info("[extract start video metadata] path: {}", filePath);
     FFmpegProbeResult probeResult = ffprobe.probe(filePath);
-    log.info("[extract start video metadata] duration: {}", probeResult.getStreams().get(0).duration);
-    return (long)probeResult.getStreams().get(0).duration;
+    log.info(
+        "[extract start video metadata] duration: {}", probeResult.getStreams().get(0).duration);
+    return (long) probeResult.getStreams().get(0).duration;
   }
 
+  /*
+  디렉토리 풀 경로, 멀티 파일을 입력 받아 user.dir/convert/ 경로에 랜덤한 이름으로 원본 파일을 생성
+  return: 생성된 파일의 풀 경로
+  * */
   @Override
-  public String saveTempVideoForConvert(String dirName, MultipartFile videoFile) throws IOException {
+  public String saveTempVideoForConvert(String dirName, MultipartFile videoFile)
+      throws IOException {
     return convertMultipartToFile(dirName, videoFile)
         .orElseThrow(VideoConvertFailureException::new)
         .getAbsolutePath();
   }
 
+  /*
+  user.dir/convert/[UUID 앞 10글자]/convert/ <- 이 경로에 변환된 파일들 저장
+  return: 동영상 시간, S3에 업로드할 디렉토리 풀경로, .m3u8 파일의 풀경로
+  * */
   @Override
   public ConvertResult processConvertVideo(String dirPath, String filePath) throws IOException {
     long videoDuration = extractVideoDuration(filePath);
