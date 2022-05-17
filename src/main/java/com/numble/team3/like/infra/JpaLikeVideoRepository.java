@@ -34,5 +34,5 @@ public interface JpaLikeVideoRepository extends JpaRepository<LikeVideo, Long>,
   List<LikeVideo> getLikesByAccountId(@Param("videoIds") List<Long> videoIds, @Param("accountId") Long accountId);
 
   @Query("SELECT l FROM LikeVideo l JOIN FETCH l.video v WHERE v.id = :videoId AND l.accountId = :accountId")
-  Boolean existsLikeByVideoIdAndAccountId(@Param("videoId") Long videoId, @Param("accountId") Long accountId);
+  Optional<LikeVideo> existsLikeByVideoIdAndAccountId(@Param("videoId") Long videoId, @Param("accountId") Long accountId);
 }
