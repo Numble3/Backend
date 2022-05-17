@@ -29,7 +29,7 @@ public class JpaAccountVideoRepositoryImpl implements JpaAccountVideoRepository 
           video.id, video.thumbnailUrl, video.title,
           video.account.nickname, video.view, video.like,
           video.createdAt, video.type, video.account.profile,
-          video.category
+          video.category.stringValue()
         ))
       .from(video)
       .innerJoin(video.account, account)
