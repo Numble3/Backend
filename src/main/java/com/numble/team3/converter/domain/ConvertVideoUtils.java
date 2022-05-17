@@ -11,4 +11,5 @@ public interface ConvertVideoUtils {
 
   String getFileOriginName(String filePath);
   String getFileExt(String filePath);
+  String getRandomFileName();
 }

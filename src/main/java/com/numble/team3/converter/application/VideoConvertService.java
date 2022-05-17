@@ -47,21 +47,15 @@ public class VideoConvertService {
     }
   }
 
-  public String uploadS3UploadKeyGenerator() {
-    return UUID.randomUUID().toString().substring(0, 10)
-        + "_"
-        + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
-  }
-
   private String uploadFilesToS3(String dirFullPath) {
     File dirFile = new File(dirFullPath);
     String indexFileUploadUrl = null;
-    String baseKey = uploadS3UploadKeyGenerator();
+    String baseKey = convertVideoUtils.getRandomFileName();
     for (File file : dirFile.listFiles()) {
       String s3UploadKey =
           baseKey
-              + File.separator
-              + baseKey
+              + "/"
+              + convertVideoUtils.getFileOriginName(file.getAbsolutePath())
               + "."
               + convertVideoUtils.getFileExt(file.getAbsolutePath());
       log.info("[s3Upload] upload url: {}", s3UploadKey);
