@@ -22,10 +22,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class VideoConvertService {
   @Value("${cloud.aws.video.s3.name}")
-  private String bucket;
+  private String BUCKET;
 
   @Value("${ffmpeg.convert.path}")
-  private String convertDirPath;
+  private String BASE_CONVERT_DIR_PATH;
 
   @Value("${cloud.aws.cloud_front.domain_name")
   private String CLOUD_FRONT_DOMAIN_NAME;
@@ -35,7 +35,7 @@ public class VideoConvertService {
   private final List<String> VIDEO_TYPES = List.of("mp4", "avi", "wmv", "mpg", "mpeg", "webm");
 
   private String createVideoDirFullPath() {
-    return convertDirPath + File.separator + UUID.randomUUID().toString().substring(0, 10);
+    return BASE_CONVERT_DIR_PATH + File.separator + UUID.randomUUID().toString().substring(0, 10);
   }
 
   private void validationFileType(String filePath) {
@@ -58,13 +58,13 @@ public class VideoConvertService {
       log.info("[s3Upload] upload url: {}", s3UploadKey);
       if (convertVideoUtils.getFileExt(file.getAbsolutePath()).equals("m3u8")) {
         amazonS3Client.putObject(
-            new PutObjectRequest(bucket, s3UploadKey, file)
+            new PutObjectRequest(BUCKET, s3UploadKey, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         indexFileUploadUrl = CLOUD_FRONT_DOMAIN_NAME + "/" + s3UploadKey;
         log.info("[s3Upload] index file upload url: {}", indexFileUploadUrl);
       } else {
         amazonS3Client.putObject(
-            new PutObjectRequest(bucket, s3UploadKey, file)
+            new PutObjectRequest(BUCKET, s3UploadKey, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
       }
     }
