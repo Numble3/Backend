@@ -112,8 +112,12 @@ public class VideoService {
     return GetVideoListDto.fromEntities(videos, likeVideoIds);
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public GetVideoDetailDto getVideoById(Long videoId) {
+    //todo: 개발용 조회수 바로 반영
+    Video video = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
+    video.changeViewCountPlusForDev();
+
     videoUtils.updateViewCount(videoId);
     return GetVideoDetailDto.fromEntity(
         videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new));
