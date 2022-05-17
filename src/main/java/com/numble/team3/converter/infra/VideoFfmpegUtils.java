@@ -138,6 +138,10 @@ public class VideoFfmpegUtils implements ConvertVideoUtils {
     return (long) probeResult.getStreams().get(0).duration;
   }
 
+  /*
+  디렉토리 풀 경로, 멀티 파일을 입력 받아 user.dir/convert/ 경로에 랜덤한 이름으로 원본 파일을 생성
+  return: 생성된 파일의 풀 경로
+  * */
   @Override
   public String saveTempVideoForConvert(String dirName, MultipartFile videoFile)
       throws IOException {
@@ -146,6 +150,10 @@ public class VideoFfmpegUtils implements ConvertVideoUtils {
         .getAbsolutePath();
   }
 
+  /*
+  user.dir/convert/[UUID 앞 10글자]/convert/ <- 이 경로에 변환된 파일들 저장
+  return: 동영상 시간, S3에 업로드할 디렉토리 풀경로, .m3u8 파일의 풀경로
+  * */
   @Override
   public ConvertResult processConvertVideo(String dirPath, String filePath) throws IOException {
     long videoDuration = extractVideoDuration(filePath);
