@@ -3,6 +3,7 @@ package com.numble.team3.converter.application;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.numble.team3.converter.application.request.CreateVideoDto;
 import com.numble.team3.converter.application.response.GetConvertVideoDto;
 import com.numble.team3.converter.domain.ConvertResult;
 import com.numble.team3.converter.domain.ConvertVideoUtils;
@@ -15,26 +16,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class VideoConvertService {
   @Value("${cloud.aws.video.s3.name}")
-  private String bucket;
+  private String BUCKET;
 
   @Value("${ffmpeg.convert.path}")
-  private String convertDirPath;
+  private String BASE_CONVERT_DIR_PATH;
+
+  @Value("${cloud.aws.cloud_front.domain_name")
+  private String CLOUD_FRONT_DOMAIN_NAME;
 
   private final ConvertVideoUtils convertVideoUtils;
   private final AmazonS3Client amazonS3Client;
   private final List<String> VIDEO_TYPES = List.of("mp4", "avi", "wmv", "mpg", "mpeg", "webm");
 
   private String createVideoDirFullPath() {
-    return convertDirPath
-        + File.separator
-        + UUID.randomUUID().toString().substring(0, 10);
+    return BASE_CONVERT_DIR_PATH + File.separator + UUID.randomUUID().toString().substring(0, 10);
   }
 
   private void validationFileType(String filePath) {
@@ -57,31 +58,32 @@ public class VideoConvertService {
       log.info("[s3Upload] upload url: {}", s3UploadKey);
       if (convertVideoUtils.getFileExt(file.getAbsolutePath()).equals("m3u8")) {
         amazonS3Client.putObject(
-            new PutObjectRequest(bucket, s3UploadKey, file)
+            new PutObjectRequest(BUCKET, s3UploadKey, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
-        indexFileUploadUrl = amazonS3Client.getUrl(bucket, s3UploadKey).toString();
+        indexFileUploadUrl = CLOUD_FRONT_DOMAIN_NAME + "/" + s3UploadKey;
         log.info("[s3Upload] index file upload url: {}", indexFileUploadUrl);
       } else {
         amazonS3Client.putObject(
-            new PutObjectRequest(bucket, s3UploadKey, file)
+            new PutObjectRequest(BUCKET, s3UploadKey, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
       }
     }
     return indexFileUploadUrl;
   }
 
-  private void cleanUpDirectory(String dirFullPath){
+  private void cleanUpDirectory(String dirFullPath) {
     File dirFile = new File(dirFullPath);
-    for(File file: dirFile.listFiles()){
+    for (File file : dirFile.listFiles()) {
       file.delete();
     }
     dirFile.delete();
   }
 
-  public GetConvertVideoDto uploadConvertVideo(MultipartFile videoFile) throws IOException {
-    validationFileType(videoFile.getOriginalFilename());
+  public GetConvertVideoDto uploadConvertVideo(CreateVideoDto dto) throws IOException {
+    validationFileType(dto.getVideoFile().getOriginalFilename());
     String dirFullPath = createVideoDirFullPath();
-    String fileFullPath = convertVideoUtils.saveTempVideoForConvert(dirFullPath, videoFile);
+    String fileFullPath =
+        convertVideoUtils.saveTempVideoForConvert(dirFullPath, dto.getVideoFile());
     ConvertResult convertResult = convertVideoUtils.processConvertVideo(dirFullPath, fileFullPath);
     String indexFileUploadUrl = uploadFilesToS3(convertResult.getUploadDir());
     cleanUpDirectory(convertResult.getUploadDir());
