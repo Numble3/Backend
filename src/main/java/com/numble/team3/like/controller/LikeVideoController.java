@@ -67,7 +67,7 @@ public class LikeVideoController {
   public ResponseEntity getLikesByCategory(
     @ApiIgnore @LoginUser UserInfo userInfo,
     @ApiParam(value = "카테고리 이름", required = true) @RequestParam(name = "category") String categoryName,
-    @ApiParam(value = "like id, 2페이지 이후 조회를 위한 값", required = false) @RequestParam(required = false, name = "id") Long likeId,
+    @ApiParam(value = "like id, 2페이지 이후 조회를 위한 값, 입력하지 않거나 0일 때 1페이지 요청", required = false) @RequestParam(required = false, name = "id") Long likeId,
     @ApiParam(value = "페이지 크기", required = true) @RequestParam(name = "size") int size) {
     return ResponseEntity.ok(
       likeVideoService.getLikesByCategory(userInfo, categoryName, likeId, size));

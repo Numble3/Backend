@@ -80,7 +80,7 @@ public class CustomJpaLikeVideoRepositoryImpl implements CustomJpaLikeVideoRepos
   }
 
   private BooleanExpression ltLikeId(Long likeId) {
-    if (likeId == null) {
+    if (likeId == null || likeId == 0) {
       return null;
     }
 
