@@ -26,7 +26,10 @@ public class JpaAccountVideoRepositoryImpl implements JpaAccountVideoRepository 
     return queryFactory
       .select(
         Projections.constructor(GetVideoDto.class,
-          video.id, video.thumbnailUrl, video.title, video.account.nickname, video.view, video.like, video.createdAt, video.type
+          video.id, video.thumbnailUrl, video.title,
+          video.account.nickname, video.view, video.like,
+          video.createdAt, video.type, video.account.profile,
+          video.category
         ))
       .from(video)
       .innerJoin(video.account, account)
