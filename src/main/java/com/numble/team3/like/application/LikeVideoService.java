@@ -42,9 +42,10 @@ public class LikeVideoService {
 
   @Transactional
   public void addLike(UserInfo userInfo, Long videoId, VideoCategory category) {
-    if (likeRepository.existsLikeByVideoIdAndAccountId(videoId, userInfo.getAccountId())) {
-      throw new LikeVideoAlreadyExistsException();
-    }
+    likeRepository.existsLikeByVideoIdAndAccountId(videoId, userInfo.getAccountId())
+      .ifPresent(likeVideo -> {
+        throw new LikeVideoAlreadyExistsException();
+      });
 
     likeRepository.save(
       new LikeVideo(
