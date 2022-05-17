@@ -3,6 +3,7 @@ package com.numble.team3.converter.application;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.numble.team3.converter.application.request.CreateVideoDto;
 import com.numble.team3.converter.application.response.GetConvertVideoDto;
 import com.numble.team3.converter.domain.ConvertResult;
 import com.numble.team3.converter.domain.ConvertVideoUtils;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -79,10 +79,11 @@ public class VideoConvertService {
     dirFile.delete();
   }
 
-  public GetConvertVideoDto uploadConvertVideo(MultipartFile videoFile) throws IOException {
-    validationFileType(videoFile.getOriginalFilename());
+  public GetConvertVideoDto uploadConvertVideo(CreateVideoDto dto) throws IOException {
+    validationFileType(dto.getVideoFile().getOriginalFilename());
     String dirFullPath = createVideoDirFullPath();
-    String fileFullPath = convertVideoUtils.saveTempVideoForConvert(dirFullPath, videoFile);
+    String fileFullPath =
+        convertVideoUtils.saveTempVideoForConvert(dirFullPath, dto.getVideoFile());
     ConvertResult convertResult = convertVideoUtils.processConvertVideo(dirFullPath, fileFullPath);
     String indexFileUploadUrl = uploadFilesToS3(convertResult.getUploadDir());
     cleanUpDirectory(convertResult.getUploadDir());

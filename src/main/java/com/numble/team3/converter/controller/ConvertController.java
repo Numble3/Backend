@@ -2,6 +2,7 @@ package com.numble.team3.converter.controller;
 
 import com.numble.team3.converter.annotation.VideoConvertSwagger;
 import com.numble.team3.converter.application.VideoConvertService;
+import com.numble.team3.converter.application.request.CreateVideoDto;
 import com.numble.team3.converter.application.response.GetConvertVideoDto;
 import com.numble.team3.exception.convert.ImageResizeTypeUnSupportException;
 import com.numble.team3.converter.annotation.ImageResizeSwagger;
@@ -53,10 +54,10 @@ public class ConvertController {
       value = "/videos/storage",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<GetConvertVideoDto> videoConvert(
-      @RequestPart(value = "videoFile") MultipartFile videoFile) throws IOException {
+  public ResponseEntity<GetConvertVideoDto> videoConvert(@ModelAttribute CreateVideoDto dto)
+      throws IOException {
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(videoConvertService.uploadConvertVideo(videoFile));
+        .body(videoConvertService.uploadConvertVideo(dto));
   }
 
   private void checkResizeType(String type) {
