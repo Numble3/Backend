@@ -27,7 +27,7 @@ public class VideoConvertService {
   @Value("${ffmpeg.convert.path}")
   private String BASE_CONVERT_DIR_PATH;
 
-  @Value("${cloud.aws.cloud_front.domain_name")
+  @Value("${cloud.aws.cloud_front.domain_name}")
   private String CLOUD_FRONT_DOMAIN_NAME;
 
   private final ConvertVideoUtils convertVideoUtils;
