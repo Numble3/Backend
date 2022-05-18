@@ -52,6 +52,12 @@ public class VideoService {
         .orElseThrow(VideoNotFoundException::new);
   }
 
+  private boolean isLikedVideoById(UserInfo userInfo, Long videoId) {
+    return likeVideoRepository
+        .existsLikeByVideoIdAndAccountId(videoId, userInfo.getAccountId())
+        .isPresent();
+  }
+
   @Transactional
   public void createVideo(UserInfo userInfo, CreateOrUpdateVideoDto dto) {
     Account account = findByAccountId(userInfo.getAccountId());
@@ -113,14 +119,18 @@ public class VideoService {
   }
 
   @Transactional
-  public GetVideoDetailDto getVideoById(Long videoId) {
-    //todo: 개발용 조회수 바로 반영
+  public GetVideoDetailDto getVideoById(UserInfo userInfo, Long videoId) {
+    // todo: 개발용 조회수 바로 반영
     Video video = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
     video.changeViewCountPlusForDev();
 
     videoUtils.updateViewCount(videoId);
-    return GetVideoDetailDto.fromEntity(
-        videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new));
+    GetVideoDetailDto dto = GetVideoDetailDto.fromEntity(video);
+    if (userInfo != null || userInfo.getAccountId() != null) {
+      dto.isLike(isLikedVideoById(userInfo, videoId));
+    }
+
+    return dto;
   }
 
   @Transactional(readOnly = true)

@@ -74,8 +74,7 @@ public class GetVideoDetailDto {
       VideoCategory category,
       VideoType type,
       Long videoDuration,
-      String thumbnailUrl,
-    boolean isLike) {
+      String thumbnailUrl) {
     this.videoId = videoId;
     this.videoUrl = videoUrl;
     this.userProfilePath = userProfilePath;
@@ -89,7 +88,6 @@ public class GetVideoDetailDto {
     this.type = type;
     this.videoDuration = videoDuration;
     this.thumbnailUrl = thumbnailUrl;
-    this.isLike = isLike;
   }
 
   public static GetVideoDetailDto fromEntity(Video video) {
@@ -108,5 +106,10 @@ public class GetVideoDetailDto {
         .videoDuration(video.getVideoDuration())
         .thumbnailUrl(video.getThumbnailUrl())
         .build();
+  }
+
+  public GetVideoDetailDto isLike(boolean isLike) {
+    this.isLike(isLike);
+    return this;
   }
 }
