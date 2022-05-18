@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -33,6 +34,7 @@ public interface JpaLikeVideoRepository extends JpaRepository<LikeVideo, Long>,
   @Query("SELECT l FROM LikeVideo l JOIN FETCH l.video v WHERE v.id IN :videoIds AND l.accountId = :accountId")
   List<LikeVideo> getLikesByAccountId(@Param("videoIds") List<Long> videoIds, @Param("accountId") Long accountId);
 
+  @Modifying(clearAutomatically = true)
   @Query("SELECT l FROM LikeVideo l JOIN FETCH l.video v WHERE v.id = :videoId AND l.accountId = :accountId")
   Optional<LikeVideo> existsLikeByVideoIdAndAccountId(@Param("videoId") Long videoId, @Param("accountId") Long accountId);
 }
