@@ -64,7 +64,7 @@ public class AccountController {
   @GetMapping(value = "/accounts/videos", produces = "application/json")
   public ResponseEntity getMyVideos(
     @ApiIgnore @LoginUser UserInfo userInfo,
-    @ApiParam(value = "video id, 2페이지 이후 조회를 위한 값", required = false)
+    @ApiParam(value = "video id, 2페이지 이후 조회를 위한 값, null이거나 0일 경우 1페이지 조회", required = false)
     @RequestParam(required = false, name = "id") Long videoId,
     @ApiParam(value = "비디오 정렬 기준, 기본값 최신순(latest, popularity)", required = false)
     @RequestParam(required = false, defaultValue = "latest") String sort) {
