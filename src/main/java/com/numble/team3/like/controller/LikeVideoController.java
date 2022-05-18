@@ -43,8 +43,11 @@ public class LikeVideoController {
     @ApiIgnore @LoginUser UserInfo userInfo,
     @ApiParam(value = "비디오 id", required = true) @RequestParam(name = "id") Long videoId,
     @ApiParam(value = "카테고리", required = true) @RequestParam(name = "category") String categoryName) {
-    likeVideoService.addLike(userInfo, videoId, VideoCategory.from(categoryName));
-    return new ResponseEntity(HttpStatus.CREATED);
+    return new ResponseEntity(new HashMap<String, Long>() {
+      {
+        put("nowLikeCount", likeVideoService.addLike(userInfo, videoId, VideoCategory.from(categoryName)));
+      }
+    }, HttpStatus.CREATED);
   }
 
   @DeleteLikeVideoSwagger
@@ -52,8 +55,11 @@ public class LikeVideoController {
   public ResponseEntity deleteLike(
     @ApiIgnore @LoginUser UserInfo userInfo,
     @ApiParam(value = "비디오 id", required = true) @RequestParam(name = "id") Long videoId) {
-    likeVideoService.deleteLike(userInfo, videoId);
-    return new ResponseEntity(HttpStatus.OK);
+    return new ResponseEntity(new HashMap<String, Long>() {
+      {
+        put("nowLikeCount", likeVideoService.deleteLike(userInfo, videoId));
+      }
+    }, HttpStatus.OK);
   }
 
   @GetAllLikeVideosSwagger

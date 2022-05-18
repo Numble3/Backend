@@ -129,4 +129,8 @@ public class Video extends BaseTimeEntity {
   public void changeLikeCountMinusForDev(){
     this.like -= 1L;
   }
+
+  public void changeLikeCount(Long value) {
+    this.like += value;
+  }
 }
