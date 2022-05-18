@@ -66,8 +66,9 @@ public class VideoController {
   @GetVideoDetailSwagger
   @GetMapping("/videos/{videoId}")
   public ResponseEntity<GetVideoDetailDto> getVideoById(
+      @ApiIgnore @LoginUser UserInfo userInfo,
       @ApiParam(value = "영상 ID", required = true) @PathVariable Long videoId) {
-    return ResponseEntity.ok(videoService.getVideoById(videoId));
+    return ResponseEntity.ok(videoService.getVideoById(userInfo, videoId));
   }
 
   @DeleteVideoSwagger

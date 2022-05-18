@@ -29,6 +29,7 @@ public class CreateOrUpdateVideoDto {
 
   @Schema(description = "영상 경로 (직접 업로드, 임베드 업로드 포함)")
   @URL(message = "유효하지 않은 URL입니다.")
+  @NotBlank(message = "동영상 URL은 반드시 있어야 합니다.")
   private String videoUrl;
 
   @Schema(description = "영상 시간")
