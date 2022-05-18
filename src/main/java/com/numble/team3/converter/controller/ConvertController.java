@@ -53,7 +53,7 @@ public class ConvertController {
       value = "/videos/storage",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<GetConvertVideoDto> videoConvert(@RequestPart(name = "videoFile") CreateVideoDto dto)
+  public ResponseEntity<GetConvertVideoDto> videoConvert(@ModelAttribute CreateVideoDto dto)
       throws IOException {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(videoConvertService.uploadConvertVideo(dto));
