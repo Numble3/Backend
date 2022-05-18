@@ -22,6 +22,9 @@ public class GetVideoDetailDto {
   @Schema(description = "영상 경로")
   private String videoUrl;
 
+  @Schema(description = "썸네일 경로")
+  private String thumbnailUrl;
+
   @Schema(description = "영상 시간")
   private Long videoDuration;
 
@@ -39,6 +42,9 @@ public class GetVideoDetailDto {
 
   @Schema(description = "좋아요 수")
   private long like;
+
+  @Schema(description = "유저가 누른 좋아요 여부")
+  private boolean isLike = false;
 
   @Schema(description = "영상 카테고리")
   private VideoCategory category;
@@ -67,7 +73,9 @@ public class GetVideoDetailDto {
       LocalDateTime createdAt,
       VideoCategory category,
       VideoType type,
-      Long videoDuration) {
+      Long videoDuration,
+      String thumbnailUrl,
+    boolean isLike) {
     this.videoId = videoId;
     this.videoUrl = videoUrl;
     this.userProfilePath = userProfilePath;
@@ -80,6 +88,8 @@ public class GetVideoDetailDto {
     this.category = category;
     this.type = type;
     this.videoDuration = videoDuration;
+    this.thumbnailUrl = thumbnailUrl;
+    this.isLike = isLike;
   }
 
   public static GetVideoDetailDto fromEntity(Video video) {
@@ -96,6 +106,7 @@ public class GetVideoDetailDto {
         .category(video.getCategory())
         .type(video.getType())
         .videoDuration(video.getVideoDuration())
+        .thumbnailUrl(video.getThumbnailUrl())
         .build();
   }
 }
