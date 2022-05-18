@@ -56,7 +56,7 @@ public class JpaAccountVideoRepositoryImpl implements JpaAccountVideoRepository 
   }
 
   private BooleanExpression ltVideoId(Long videoId) {
-    if (videoId == null) {
+    if (videoId == null || videoId == 0) {
       return null;
     }
 
