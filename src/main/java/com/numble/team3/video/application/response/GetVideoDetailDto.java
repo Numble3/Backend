@@ -44,7 +44,7 @@ public class GetVideoDetailDto {
   private long like;
 
   @Schema(description = "유저가 누른 좋아요 여부")
-  private boolean isLike = false;
+  private Boolean userLikeVideo;
 
   @Schema(description = "영상 카테고리")
   private VideoCategory category;
@@ -108,8 +108,8 @@ public class GetVideoDetailDto {
         .build();
   }
 
-  public GetVideoDetailDto isLike(boolean isLike) {
-    this.isLike(isLike);
+  public GetVideoDetailDto userLikeVideo(boolean isLike) {
+    this.userLikeVideo = isLike;
     return this;
   }
 }

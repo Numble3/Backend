@@ -126,9 +126,7 @@ public class VideoService {
 
     videoUtils.updateViewCount(videoId);
     GetVideoDetailDto dto = GetVideoDetailDto.fromEntity(video);
-    if (userInfo != null || userInfo.getAccountId() != null) {
-      dto.isLike(isLikedVideoById(userInfo, videoId));
-    }
+    dto = dto.userLikeVideo(isLikedVideoById(userInfo, videoId));
 
     return dto;
   }
