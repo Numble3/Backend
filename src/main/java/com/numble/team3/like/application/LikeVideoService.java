@@ -16,6 +16,7 @@ import com.numble.team3.like.application.response.GetVideoRankDto;
 import com.numble.team3.like.domain.LikeVideo;
 import com.numble.team3.like.domain.LikeVideoUtils;
 import com.numble.team3.like.infra.JpaLikeVideoRepository;
+import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import com.numble.team3.video.infra.JpaVideoRepository;
 import java.util.ArrayList;
@@ -41,26 +42,36 @@ public class LikeVideoService {
   private final LikeVideoUtils likeVideoUtils;
 
   @Transactional
-  public void addLike(UserInfo userInfo, Long videoId, VideoCategory category) {
+  public Long addLike(UserInfo userInfo, Long videoId, VideoCategory category) {
     likeRepository.existsLikeByVideoIdAndAccountId(videoId, userInfo.getAccountId())
       .ifPresent(likeVideo -> {
         throw new LikeVideoAlreadyExistsException();
       });
+
+    Video likeVideo = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
+    likeVideo.changeLikeCount(1L);
 
     likeRepository.save(
       new LikeVideo(
         videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new),
         userInfo.getAccountId(),
         category));
+
+    return likeVideo.getLike();
   }
 
   @Transactional
-  public void deleteLike(UserInfo userInfo, Long videoId) {
+  public Long deleteLike(UserInfo userInfo, Long videoId) {
     LikeVideo like =
       likeRepository.getLikeByAccountIdAndVideoId(userInfo.getAccountId(), videoId)
         .orElseThrow(LikeVideoNotFoundException::new);
 
+    Video likeVideo = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
+    likeVideo.changeLikeCount(-1L);
+
     likeRepository.delete(like);
+
+    return likeVideo.getLike();
   }
 
   @Transactional(readOnly = true)

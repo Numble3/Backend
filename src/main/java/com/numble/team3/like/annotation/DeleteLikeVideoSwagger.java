@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
     @ApiResponse(
       code = 200,
       message = "좋아요 삭제 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{}"))
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\"nowLikeCount\" : 해당 비디오의 현재 좋아요 수}"))
     ),
     @ApiResponse(
       code = 400,

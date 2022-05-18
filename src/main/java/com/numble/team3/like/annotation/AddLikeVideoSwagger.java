@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
     @ApiResponse(
       code = 201,
       message = "좋아요 추가 성공",
-      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{}"))
+      examples = @Example(@ExampleProperty(mediaType = "application/json", value = "{\"nowLikeCount\" : 해당 비디오의 현재 좋아요 수}"))
     ),
     @ApiResponse(
       code = 400,

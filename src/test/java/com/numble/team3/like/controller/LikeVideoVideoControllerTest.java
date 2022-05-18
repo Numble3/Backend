@@ -75,8 +75,7 @@ class LikeVideoVideoControllerTest {
 
     given(loginMethodArgumentResolver.supportsParameter(any())).willReturn(true);
     given(loginMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
-    willDoNothing().given(likeVideoService)
-      .addLike(any(UserInfo.class), anyLong(), any(VideoCategory.class));
+    given(likeVideoService.addLike(any(UserInfo.class), anyLong(), any(VideoCategory.class))).willReturn(1L);
 
     // when
     ResultActions result = mockMvc.perform(
@@ -96,7 +95,7 @@ class LikeVideoVideoControllerTest {
     // given
     UserInfo userInfo = createUserInfo(1L, RoleType.ROLE_USER);
 
-    willDoNothing().given(likeVideoService).deleteLike(any(UserInfo.class), anyLong());
+    given(likeVideoService.deleteLike(any(UserInfo.class), anyLong())).willReturn(1L);
 
     // when
     ResultActions result = mockMvc.perform(
