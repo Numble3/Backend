@@ -56,6 +56,9 @@ dependencies {
 	implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
 
 	compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.3'
+
+	//embedded-redis
+	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
 }
 
 tasks.named('test') {
