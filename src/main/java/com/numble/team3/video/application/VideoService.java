@@ -83,6 +83,7 @@ public class VideoService {
         dto.getContent(),
         dto.getVideoUrl(),
         dto.getThumbnailUrl(),
+        dto.getVideoDuration(),
         dto.getCategory(),
         dto.getType());
   }
@@ -109,7 +110,7 @@ public class VideoService {
       UserInfo userInfo, SearchCondition condition, PageRequest pageRequest) {
     Slice<Video> videos = videoRepository.searchVideoByCondition(condition, pageRequest);
     List<LikeVideo> likeVideoIds = new ArrayList<>();
-    if (userInfo != null || userInfo.getAccountId() != null) {
+    if (userInfo != null && userInfo.getAccountId() != null) {
       likeVideoIds =
           likeVideoRepository.getLikesByAccountId(
               videos.getContent().stream().map(v -> v.getId()).collect(Collectors.toList()),
@@ -121,7 +122,8 @@ public class VideoService {
   @Transactional
   public GetVideoDetailDto getVideoById(UserInfo userInfo, Long videoId) {
     // todo: 개발용 조회수 바로 반영
-    Video video = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
+    Video video =
+        videoRepository.findByIdNotDeleted(videoId).orElseThrow(VideoNotFoundException::new);
     video.changeViewCountPlusForDev();
 
     videoUtils.updateViewCount(videoId);
@@ -139,7 +141,7 @@ public class VideoService {
   @Transactional(readOnly = true)
   public GetVideoDetailForAdminDto getVideoByIdForAdmin(Long videoId) {
     return GetVideoDetailForAdminDto.fromEntity(
-        videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new));
+        videoRepository.findByIdNotDeleted(videoId).orElseThrow(VideoNotFoundException::new));
   }
 
   @Transactional

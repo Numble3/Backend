@@ -108,11 +108,13 @@ public class Video extends BaseTimeEntity {
       String content,
       String videoUrl,
       String thumbnailUrl,
+      Long videoDuration,
       VideoCategory category,
       VideoType type) {
     this.title = title;
     this.content = content;
     this.videoUrl = videoUrl;
+    this.videoDuration = videoDuration;
     this.thumbnailUrl = thumbnailUrl;
     this.category = category;
     this.type = type;
@@ -126,7 +128,7 @@ public class Video extends BaseTimeEntity {
     this.like += 1L;
   }
 
-  public void changeLikeCountMinusForDev(){
+  public void changeLikeCountMinusForDev() {
     this.like -= 1L;
   }
 
