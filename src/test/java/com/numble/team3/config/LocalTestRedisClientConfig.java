@@ -1,4 +1,4 @@
-package com.numble.team3.video;
+package com.numble.team3.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

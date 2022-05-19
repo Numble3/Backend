@@ -1,18 +1,16 @@
 package com.numble.team3.video;
 
-import static com.numble.team3.factory.entity.VideoEntityFactory.*;
-import static com.numble.team3.factory.entity.AccountEntityFactory.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.assertj.core.api.Assertions.*;
 
 import com.numble.team3.Team3ApplicationTests;
 import com.numble.team3.account.domain.Account;
 import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.account.infra.JpaAccountRepository;
 import com.numble.team3.account.resolver.UserInfo;
+import com.numble.team3.config.LocalRedisConfig;
+import com.numble.team3.config.LocalTestRedisClientConfig;
 import com.numble.team3.exception.video.VideoNotFoundException;
 import com.numble.team3.like.infra.JpaLikeVideoRepository;
 import com.numble.team3.video.application.VideoService;
@@ -32,17 +30,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
-@AutoConfigureMockMvc
-@ActiveProfiles("test") //이 클래스는 test profile로 실행시킴
+@ActiveProfiles("test") // 이 클래스는 test profile로 실행시킴
 @ImportAutoConfiguration(classes = {LocalRedisConfig.class, LocalTestRedisClientConfig.class})
-@DisplayName("VideoService 테스트")
+@DisplayName("Video Service 테스트")
 public class VideoServiceTest extends Team3ApplicationTests {
-  @Autowired MockMvc mvc;
   @Autowired JpaVideoRepository videoRepository;
   @Autowired JpaAccountRepository accountRepository;
   @Autowired JpaLikeVideoRepository likeVideoRepository;
@@ -92,33 +86,20 @@ public class VideoServiceTest extends Team3ApplicationTests {
     accountRepository.deleteAllInBatch();
   }
 
-  @DisplayName("동영상 정렬, 검색, 페이징 테스트 (비로그인)")
-  @ParameterizedTest
-  @CsvSource(
-      value = {
-        "/api/videos?sort=POPULARITY,lizard_highest,true",
-        "/api/videos?title=dog,dogdogdog,false",
-        "/api/videos?category=CAT,catcatcat,false"
-      },
-      delimiter = ',')
-  void getAllVideoTest(String url, String title, String hasNext) throws Exception {
-    mvc.perform(get(url))
-        .andExpect(jsonPath("$.contents[0].title").value(title))
-        .andExpect(jsonPath("hasNext").value(Boolean.valueOf(hasNext)))
-        .andExpect(jsonPath("likeVideoIds").isEmpty())
-        .andExpect(status().is2xxSuccessful())
-        .andDo(print());
-  }
-
-  @DisplayName("동영상 상세 조회 테스트 (비로그인)")
+  @DisplayName("동영상 삭제 테스트")
   @Test
-  void getVideoDetailTest() throws Exception {
-    String url = "/api/videos/" + saveResult.get(3).getId();
-    mvc.perform(get(url))
-        .andExpect(jsonPath("title").value(saveResult.get(3).getTitle()))
-        .andExpect(jsonPath("userLikeVideo").value(false))
-        .andExpect(status().is2xxSuccessful())
-        .andDo(print());
+  void videoDeleteTest() {
+    Long videoId = saveResult.get(3).getId();
+    videoService.deleteVideo(new UserInfo(account.getId(), List.of("ROLE_USER")), videoId);
+    GetVideoListDto list =
+        videoService.getAllVideoByCondition(
+            null, new SearchCondition(null, null, null), PageRequest.of(0, 100));
+    // 목록 조회에서 삭제됐는지
+    assertThat(list.getContents().stream().filter(v -> v.getVideoId() == videoId).findAny())
+        .isEmpty();
+    // 단건 조회가 안되는지
+    assertThatThrownBy(() -> videoService.getVideoById(new UserInfo(null, null), videoId))
+        .isInstanceOf(VideoNotFoundException.class);
   }
 
   @DisplayName("없는 동영상 예외")
@@ -179,21 +160,5 @@ public class VideoServiceTest extends Team3ApplicationTests {
     assertThat(video.getThumbnailUrl()).isEqualTo(thumbnailUrl);
     assertThat(video.getCategory().toString()).isEqualTo(category);
     assertThat(video.getType().toString()).isEqualTo(type);
-  }
-
-  @DisplayName("동영상 삭제 테스트")
-  @Test
-  void videoDeleteTest() {
-    Long videoId = saveResult.get(3).getId();
-    videoService.deleteVideo(new UserInfo(account.getId(), List.of("ROLE_USER")), videoId);
-    GetVideoListDto list =
-        videoService.getAllVideoByCondition(
-            null, new SearchCondition(null, null, null), PageRequest.of(0, 100));
-    //목록 조회에서 삭제됐는지
-    assertThat(list.getContents().stream().filter(v -> v.getVideoId() == videoId).findAny())
-        .isEmpty();
-    //단건 조회가 안되는지
-    assertThatThrownBy(() -> videoService.getVideoById(new UserInfo(null, null), videoId))
-        .isInstanceOf(VideoNotFoundException.class);
   }
 }
