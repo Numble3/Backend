@@ -10,7 +10,7 @@ import com.numble.team3.like.annotation.GetVideoRankByDayCategoryLikeSwagger;
 import com.numble.team3.like.annotation.GetVideoRankByDayLikeSwagger;
 import com.numble.team3.like.application.LikeVideoService;
 import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
-import com.numble.team3.like.application.response.GetVideoRankDto;
+import com.numble.team3.like.application.response.GetLikeVideoRankDto;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
@@ -82,9 +82,9 @@ public class LikeVideoController {
   @GetVideoRankByDayLikeSwagger
   @GetMapping(value = "/likes/rank/day", produces = "application/json")
   public ResponseEntity<Map> getRankByDay() {
-    return new ResponseEntity(new HashMap<String, List<GetVideoRankDto>>() {
+    return new ResponseEntity(new HashMap<String, List<GetLikeVideoRankDto>>() {
       {
-        put("ranking", likeVideoService.getRank("day"));
+        put("contents", likeVideoService.getRank("day"));
       }
     }, HttpStatus.OK);
   }
@@ -94,7 +94,7 @@ public class LikeVideoController {
   public ResponseEntity<Map> getRankByDayAndCategory(
     @ApiParam(value = "카테고리 이름", required = true) @PathVariable(name = "category") String category) {
     VideoCategory videoCategory = VideoCategory.from(category);
-    return new ResponseEntity(new HashMap<String, List<GetVideoRankDto>>() {
+    return new ResponseEntity(new HashMap<String, List<GetLikeVideoRankDto>>() {
       {
         put(videoCategory.getName(), likeVideoService.getRank("day", videoCategory));
       }
