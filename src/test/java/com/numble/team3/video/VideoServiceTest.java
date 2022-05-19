@@ -2,7 +2,7 @@ package com.numble.team3.video;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static com.numble.team3.video.factory.VideoFactory.*;
 
 import com.numble.team3.Team3ApplicationTests;
 import com.numble.team3.account.domain.Account;
@@ -45,23 +45,6 @@ public class VideoServiceTest extends Team3ApplicationTests {
   Account account;
   List<Video> saveResult;
 
-  Video createVideoForTest(String title, long view, long like, VideoCategory category) {
-    Video video =
-        Video.builder()
-            .category(category)
-            .videoDuration(10L)
-            .videoUrl("https://video-url")
-            .thumbnailUrl("https://thumbnail-url")
-            .type(VideoType.VIDEO)
-            .title(title)
-            .account(account)
-            .content("content")
-            .build();
-    setField(video, "like", like);
-    setField(video, "view", view);
-    return video;
-  }
-
   @BeforeEach
   void beforeEach() {
     account =
@@ -72,12 +55,13 @@ public class VideoServiceTest extends Team3ApplicationTests {
     saveResult =
         videoRepository.saveAll(
             List.of(
-                createVideoForTest("catcatcat", 10, 10, VideoCategory.CAT),
-                createVideoForTest("bird", 100, 100, VideoCategory.BIRD),
-                createVideoForTest("dogdogdog", 1000, 1000, VideoCategory.DOG),
-                createVideoForTest("lizard_highest", 100, Integer.MAX_VALUE, VideoCategory.LIZARD),
-                createVideoForTest("cat123", 1, 1, VideoCategory.CAT),
-                createVideoForTest("dog123", 1, 1, VideoCategory.DOG)));
+                createVideoForTest("catcatcat", 10, 10, VideoCategory.CAT, account),
+                createVideoForTest("bird", 100, 100, VideoCategory.BIRD, account),
+                createVideoForTest("dogdogdog", 1000, 1000, VideoCategory.DOG, account),
+                createVideoForTest(
+                    "lizard_highest", 100, Integer.MAX_VALUE, VideoCategory.LIZARD, account),
+                createVideoForTest("cat123", 1, 1, VideoCategory.CAT, account),
+                createVideoForTest("dog123", 1, 1, VideoCategory.DOG, account)));
   }
 
   @AfterEach

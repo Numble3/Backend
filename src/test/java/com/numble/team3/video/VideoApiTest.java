@@ -1,9 +1,9 @@
 package com.numble.team3.video;
 
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static com.numble.team3.video.factory.VideoFactory.*;
 
 import com.numble.team3.Team3ApplicationTests;
 import com.numble.team3.account.domain.Account;
@@ -14,7 +14,6 @@ import com.numble.team3.like.infra.JpaLikeVideoRepository;
 import com.numble.team3.video.application.VideoService;
 import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.domain.enums.VideoCategory;
-import com.numble.team3.video.domain.enums.VideoType;
 import com.numble.team3.video.infra.JpaVideoRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -43,23 +42,6 @@ public class VideoApiTest extends Team3ApplicationTests {
   Account account;
   List<Video> saveResult;
 
-  Video createVideoForTest(String title, long view, long like, VideoCategory category) {
-    Video video =
-        Video.builder()
-            .category(category)
-            .videoDuration(10L)
-            .videoUrl("https://video-url")
-            .thumbnailUrl("https://thumbnail-url")
-            .type(VideoType.VIDEO)
-            .title(title)
-            .account(account)
-            .content("content")
-            .build();
-    setField(video, "like", like);
-    setField(video, "view", view);
-    return video;
-  }
-
   @BeforeEach
   void beforeEach() {
     account =
@@ -70,12 +52,13 @@ public class VideoApiTest extends Team3ApplicationTests {
     saveResult =
         videoRepository.saveAll(
             List.of(
-                createVideoForTest("catcatcat", 10, 10, VideoCategory.CAT),
-                createVideoForTest("bird", 100, 100, VideoCategory.BIRD),
-                createVideoForTest("dogdogdog", 1000, 1000, VideoCategory.DOG),
-                createVideoForTest("lizard_highest", 100, Integer.MAX_VALUE, VideoCategory.LIZARD),
-                createVideoForTest("cat123", 1, 1, VideoCategory.CAT),
-                createVideoForTest("dog123", 1, 1, VideoCategory.DOG)));
+                createVideoForTest("catcatcat", 10, 10, VideoCategory.CAT, account),
+                createVideoForTest("bird", 100, 100, VideoCategory.BIRD, account),
+                createVideoForTest("dogdogdog", 1000, 1000, VideoCategory.DOG, account),
+                createVideoForTest(
+                    "lizard_highest", 100, Integer.MAX_VALUE, VideoCategory.LIZARD, account),
+                createVideoForTest("cat123", 1, 1, VideoCategory.CAT, account),
+                createVideoForTest("dog123", 1, 1, VideoCategory.DOG, account)));
   }
 
   @AfterEach
