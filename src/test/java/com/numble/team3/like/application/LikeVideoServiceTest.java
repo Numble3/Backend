@@ -2,9 +2,7 @@ package com.numble.team3.like.application;
 
 import static com.numble.team3.factory.UserInfoFactory.createUserInfo;
 import static com.numble.team3.factory.dto.LikeVideoDtoFactory.createGetLikeDto;
-import static com.numble.team3.factory.entity.LikeVideoEntityFactory.*;
 import static com.numble.team3.factory.entity.LikeVideoEntityFactory.createLike;
-import static com.numble.team3.factory.entity.VideoEntityFactory.createVideo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -17,21 +15,16 @@ import static org.mockito.Mockito.verify;
 
 import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.account.resolver.UserInfo;
-import com.numble.team3.exception.like.LikeVideoNotFoundException;
-import com.numble.team3.exception.video.VideoNotFoundException;
-import com.numble.team3.factory.entity.LikeVideoEntityFactory;
 import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
 import com.numble.team3.like.application.response.GetLikeVideoDto;
 import com.numble.team3.like.application.response.GetLikeListDto;
-import com.numble.team3.like.application.response.GetVideoRankDto;
+import com.numble.team3.like.application.response.GetLikeVideoRankDto;
 import com.numble.team3.like.domain.LikeVideo;
 import com.numble.team3.like.domain.LikeVideoUtils;
 import com.numble.team3.like.infra.JpaLikeVideoRepository;
-import com.numble.team3.video.domain.Video;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import com.numble.team3.video.infra.JpaVideoRepository;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -131,7 +124,7 @@ class LikeVideoServiceTest {
     given(likeVideoUtils.getDayRanking(anyString())).willReturn(List.of());
 
     // when
-    List<GetVideoRankDto> result = likeVideoService.getRank("day");
+    List<GetLikeVideoRankDto> result = likeVideoService.getRank("day");
 
     // then
     assertEquals(0, result.size());

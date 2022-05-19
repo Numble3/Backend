@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,11 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.numble.team3.account.domain.RoleType;
 import com.numble.team3.account.resolver.LoginMethodArgumentResolver;
 import com.numble.team3.account.resolver.UserInfo;
-import com.numble.team3.factory.UserInfoFactory;
 import com.numble.team3.like.application.LikeVideoService;
 import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
 import com.numble.team3.like.application.response.GetLikeListDto;
-import com.numble.team3.like.application.response.GetVideoRankDto;
+import com.numble.team3.like.application.response.GetLikeVideoRankDto;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -191,7 +189,7 @@ class LikeVideoVideoControllerTest {
   @Test
   void getRankByDay_테스트() throws Exception {
     // given
-    List<GetVideoRankDto> dto = createGetVideoRankDtoList();
+    List<GetLikeVideoRankDto> dto = createGetVideoRankDtoList();
 
     given(likeVideoService.getRank(anyString())).willReturn(dto);
 
@@ -202,15 +200,6 @@ class LikeVideoVideoControllerTest {
     // then
     result
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$.ranking").exists())
-      .andExpect(jsonPath("$.ranking[0].videoDto").exists())
-      .andExpect(jsonPath("$.ranking[0].likes").value(50))
-      .andExpect(jsonPath("$.ranking[0].videoDto.videoId").value(1))
-      .andExpect(jsonPath("$.ranking[0].videoDto.thumbnailPath").value("https://thumbnail-url"))
-      .andExpect(jsonPath("$.ranking[0].videoDto.title").value("title"))
-      .andExpect(jsonPath("$.ranking[0].videoDto.nickname").value("nickname"))
-      .andExpect(jsonPath("$.ranking[0].videoDto.view").value(300))
-      .andExpect(jsonPath("$.ranking[0].videoDto.like").value(150))
-      .andExpect(jsonPath("$.ranking[0].videoDto.createdAt").exists());
+      .andExpect(jsonPath("$.contents").exists());
   }
 }

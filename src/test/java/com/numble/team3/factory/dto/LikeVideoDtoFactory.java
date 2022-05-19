@@ -5,8 +5,8 @@ import com.numble.team3.like.application.response.GetLikeVideoCategoryListLimitD
 import com.numble.team3.like.application.response.GetLikeVideoDto;
 import com.numble.team3.like.application.response.GetLikeListDto;
 import com.numble.team3.like.application.response.GetLikeVideoRankDto;
-import com.numble.team3.like.application.response.GetVideoRankDto;
 import com.numble.team3.video.application.response.GetVideoDto;
+import com.numble.team3.video.domain.enums.VideoCategory;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +50,7 @@ public class LikeVideoDtoFactory {
     return new GetLikeListDto(List.of(getLikeVideoDto), 1L);
   }
 
-  public static List<GetVideoRankDto> createGetVideoRankDtoList() {
+  public static List<GetLikeVideoRankDto> createGetVideoRankDtoList() {
     GetLikeVideoRankDto dto = GetLikeVideoRankDto.builder()
       .videoId(1L)
       .thumbnailPath("https://thumbnail-url")
@@ -59,9 +59,9 @@ public class LikeVideoDtoFactory {
       .view(300L)
       .like(150L)
       .createdAt(LocalDateTime.now().toLocalDate())
+      .category(VideoCategory.CAT.toString())
       .build();
 
-    GetVideoRankDto result = new GetVideoRankDto(dto, 50L);
-    return List.of(result);
+    return List.of(dto);
   }
 }
