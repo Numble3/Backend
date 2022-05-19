@@ -12,7 +12,7 @@ import com.numble.team3.like.application.response.GetAllLikeVideoListDto;
 import com.numble.team3.like.application.response.GetLikeVideoCategoryListLimitDto;
 import com.numble.team3.like.application.response.GetLikeVideoDto;
 import com.numble.team3.like.application.response.GetLikeListDto;
-import com.numble.team3.like.application.response.GetVideoRankDto;
+import com.numble.team3.like.application.response.GetLikeVideoRankDto;
 import com.numble.team3.like.domain.LikeVideo;
 import com.numble.team3.like.domain.LikeVideoUtils;
 import com.numble.team3.like.infra.JpaLikeVideoRepository;
@@ -124,12 +124,12 @@ public class LikeVideoService {
     likeVideoUtils.processChangeDayRanking(standard, likeRepository.getRankingByLikes());
   }
 
-  public List<GetVideoRankDto> getRank(String standard) {
+  public List<GetLikeVideoRankDto> getRank(String standard) {
     return likeVideoUtils.getDayRanking(standard);
   }
 
-  public List<GetVideoRankDto> getRank(String standard, VideoCategory videoCategory) {
-    List<GetVideoRankDto> dtos = likeVideoUtils.getDayRanking(standard);
-    return dtos.stream().filter(dto -> dto.getVideoDto().getVideoCategory().equals(videoCategory)).collect(toList());
+  public List<GetLikeVideoRankDto> getRank(String standard, VideoCategory videoCategory) {
+    List<GetLikeVideoRankDto> dtos = likeVideoUtils.getDayRanking(standard);
+    return dtos.stream().filter(dto -> dto.getCategory().equals(videoCategory.toString())).collect(toList());
   }
 }

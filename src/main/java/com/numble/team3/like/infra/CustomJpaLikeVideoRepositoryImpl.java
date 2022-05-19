@@ -7,7 +7,6 @@ import com.numble.team3.account.resolver.UserInfo;
 import com.numble.team3.like.application.response.GetLikeVideoDto;
 import com.numble.team3.like.application.response.GetLikeVideoRankDto;
 import com.numble.team3.like.application.response.GetLikeVideoQuerydsl;
-import com.numble.team3.like.application.response.GetVideoRankDto;
 import com.numble.team3.like.domain.LikeVideo;
 import com.numble.team3.video.domain.enums.VideoCategory;
 import com.querydsl.core.types.Projections;
@@ -52,7 +51,7 @@ public class CustomJpaLikeVideoRepositoryImpl implements CustomJpaLikeVideoRepos
   }
 
   @Override
-  public List<GetVideoRankDto> getRankingByLikes() {
+  public List<GetLikeVideoRankDto> getRankingByLikes() {
     LocalDate today = LocalDate.now();
     LocalDate yesterday = today.minusDays(1L);
 
@@ -72,11 +71,9 @@ public class CustomJpaLikeVideoRepositoryImpl implements CustomJpaLikeVideoRepos
       .limit(limit)
       .fetch();
 
-    return rank.stream().map(
-      getLikeVideoQuerydsl -> new GetVideoRankDto(GetLikeVideoRankDto.fromEntity(
-        getLikeVideoQuerydsl.getVideo()),
-        getLikeVideoQuerydsl.getLikes())).collect(
-      Collectors.toList());
+    return rank.stream()
+      .map(getLikeVideoQuerydsl -> GetLikeVideoRankDto.fromEntity(getLikeVideoQuerydsl.getVideo()))
+      .collect(Collectors.toList());
   }
 
   private BooleanExpression ltLikeId(Long likeId) {
