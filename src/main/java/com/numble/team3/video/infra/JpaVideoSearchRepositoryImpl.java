@@ -10,6 +10,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class JpaVideoSearchRepositoryImpl implements JpaVideoSearchRepository {
                 video.adminDeleteYn.isFalse(),
                 isTitleContain(filter),
                 isCategoryEq(filter))
-            .orderBy(videoSort(filter))
+            .orderBy(videoSort(filter).stream().toArray(OrderSpecifier[]::new))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize() + 1)
             .fetch();
@@ -46,12 +47,13 @@ public class JpaVideoSearchRepositoryImpl implements JpaVideoSearchRepository {
     return new SliceImpl<>(contents, pageable, hasNext);
   }
 
-  private OrderSpecifier videoSort(SearchCondition filter) {
-    if (filter.getSort() == VideoSortCondition.POPULARITY) {
-      return new OrderSpecifier<>(Order.DESC, video.like);
-    } else {
-      return new OrderSpecifier<>(Order.DESC, video.createdAt);
+  private List<OrderSpecifier> videoSort(SearchCondition filter) {
+    List<OrderSpecifier> orders = new ArrayList<>();
+    if(filter.getSort() == VideoSortCondition.LATEST){
+      orders.add(video.createdAt.desc());
     }
+    orders.add(video.like.desc());
+    return orders;
   }
 
   private BooleanExpression isTitleContain(SearchCondition filter) {

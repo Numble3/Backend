@@ -14,7 +14,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JpaVideoRepository extends JpaRepository<Video, Long>, JpaVideoSearchRepository, JpaAccountVideoRepository {
+public interface JpaVideoRepository
+    extends JpaRepository<Video, Long>, JpaVideoSearchRepository, JpaAccountVideoRepository {
   Optional<Video> findByAccountIdAndId(Long accountId, Long videoId);
 
   @Modifying
@@ -30,4 +31,8 @@ public interface JpaVideoRepository extends JpaRepository<Video, Long>, JpaVideo
 
   @Query("SELECT v FROM Video v WHERE v.account.id = :accountId")
   Page<Video> findAllByAccountIdWithAdmin(@Param("accountId") Long accountId, Pageable pageable);
+
+  @Query(
+      "SELECT v FROM Video v WHERE v.id = :videoId AND v.deleteYn = false AND v.adminDeleteYn = false")
+  Optional<Video> findByIdNotDeleted(@Param("videoId") Long videoId);
 }
